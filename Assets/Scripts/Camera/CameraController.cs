@@ -66,7 +66,7 @@ public class CameraController : MonoBehaviour
 
         // Get player scrollwheel to increase/decrease 
         float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
-        zoom += scrollWheelInput * zoomspeed;
+        zoom += -scrollWheelInput * zoomspeed;
         zoom = Mathf.Clamp(zoom, 1, maxZoom);
 
 
@@ -97,7 +97,7 @@ public class CameraController : MonoBehaviour
 
         if (belowGround == true)
         {
-            Debug.Log("LateUpdate belowground " + groundOffset);
+            //Debug.Log("LateUpdate belowground " + groundOffset);
             tempPos.y = 0.3f;
             transform.position = tempPos;
             transform.LookAt(player.transform);

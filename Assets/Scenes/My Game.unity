@@ -803,12 +803,14 @@ MonoBehaviour:
   sprintSpeed: 15
   rollDistance: 9
   playerRb: {fileID: 0}
-  rollCooldown: 1
-  rollReady: 1
-  isRolling: 0
-  timeSinceRoll: 0
-  timeToRoll: 0.4
-  timeSpentRolling: 0
+  onGround: 0
+  canJump: 1
+  isJumping: 0
+  isFalling: 0
+  isSprinting: 0
+  maxFallSpeed: 30
+  currentFallSpeed: 0
+  gravity: 5
 --- !u!135 &239724731
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -927,7 +929,7 @@ GameObject:
   - component: {fileID: 245240364}
   - component: {fileID: 245240363}
   - component: {fileID: 245240366}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1370,12 +1372,14 @@ MonoBehaviour:
   sprintSpeed: 15
   rollDistance: 4
   playerRb: {fileID: 0}
-  rollCooldown: 1
-  rollReady: 1
-  isRolling: 0
-  timeSinceRoll: 0
-  timeToRoll: 1
-  timeSpentRolling: 0
+  onGround: 0
+  canJump: 1
+  isJumping: 0
+  isFalling: 0
+  isSprinting: 0
+  maxFallSpeed: 30
+  currentFallSpeed: 0
+  gravity: 5
 --- !u!54 &373045458
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1877,10 +1881,10 @@ MonoBehaviour:
   rightClickActive: 0
   distToPlayer: 15
   player: {fileID: 373045454}
-  cameraYOffset: 0
+  cameraYOffset: 2
   horizontalInput: 0
   verticalInput: 0
-  zoom: 0
+  zoom: 10
   belowGround: 0
   groundOffset: 1
 --- !u!1 &754677456
@@ -8405,12 +8409,14 @@ MonoBehaviour:
   sprintSpeed: 15
   rollDistance: 4
   playerRb: {fileID: 0}
-  rollCooldown: 1
-  rollReady: 1
-  isRolling: 0
-  timeSinceRoll: 0
-  timeToRoll: 1
-  timeSpentRolling: 0
+  onGround: 0
+  canJump: 1
+  isJumping: 0
+  isFalling: 0
+  isSprinting: 0
+  maxFallSpeed: 30
+  currentFallSpeed: 0
+  gravity: 5
 --- !u!65 &2090195991
 BoxCollider:
   m_ObjectHideFlags: 0
