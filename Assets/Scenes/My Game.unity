@@ -803,13 +803,15 @@ MonoBehaviour:
   sprintSpeed: 15
   rollDistance: 9
   playerRb: {fileID: 0}
+  playerCap: {fileID: 0}
   onGround: 0
   canJump: 1
   isJumping: 0
   isFalling: 0
   isSprinting: 0
   maxFallSpeed: 30
-  currentFallSpeed: 0
+  currentFallVelocity: 0
+  jumpVelocity: 20
   gravity: 5
 --- !u!135 &239724731
 SphereCollider:
@@ -985,7 +987,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 245240361}
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &245240365
 Transform:
   m_ObjectHideFlags: 0
@@ -996,7 +998,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7, y: 1, z: 7}
+  m_LocalScale: {x: 75, y: 1, z: 75}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1020,7 +1022,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 9.999999, y: 2.220446e-16, z: 9.999999}
+  m_Size: {x: 0.99999994, y: 1, z: 0.99999994}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &286443811
 GameObject:
@@ -1372,14 +1374,16 @@ MonoBehaviour:
   sprintSpeed: 15
   rollDistance: 4
   playerRb: {fileID: 0}
+  playerCap: {fileID: 0}
   onGround: 0
   canJump: 1
   isJumping: 0
   isFalling: 0
   isSprinting: 0
   maxFallSpeed: 30
-  currentFallSpeed: 0
-  gravity: 5
+  currentFallVelocity: -30
+  jumpVelocity: 20
+  gravity: -25
 --- !u!54 &373045458
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1406,7 +1410,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &373045459
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1427,9 +1431,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 1.928739
+  m_Height: 1.846092
   m_Direction: 1
-  m_Center: {x: 0, y: 0.87468725, z: 0}
+  m_Center: {x: 0, y: 0.91601074, z: 0}
 --- !u!1 &508297699
 GameObject:
   m_ObjectHideFlags: 0
@@ -7088,15 +7092,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.6025777
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00000047683716
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.4944282
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 81bb9eea30387e442899949a80011e55, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7655,6 +7659,7 @@ GameObject:
   - component: {fileID: 1332509614}
   - component: {fileID: 1332509613}
   - component: {fileID: 1332509612}
+  - component: {fileID: 1332509615}
   - component: {fileID: 1332509611}
   m_Layer: 0
   m_Name: Powerup
@@ -7745,12 +7750,39 @@ Transform:
   m_GameObject: {fileID: 1332509610}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.347658, y: -1.388587, z: 2.031466}
+  m_LocalPosition: {x: -10.47, y: 5.93, z: 2.031466}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &1332509615
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332509610}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1362483421
 GameObject:
   m_ObjectHideFlags: 0
@@ -8409,13 +8441,15 @@ MonoBehaviour:
   sprintSpeed: 15
   rollDistance: 4
   playerRb: {fileID: 0}
+  playerCap: {fileID: 0}
   onGround: 0
   canJump: 1
   isJumping: 0
   isFalling: 0
   isSprinting: 0
   maxFallSpeed: 30
-  currentFallSpeed: 0
+  currentFallVelocity: 0
+  jumpVelocity: 20
   gravity: 5
 --- !u!65 &2090195991
 BoxCollider:

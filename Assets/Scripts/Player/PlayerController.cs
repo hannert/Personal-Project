@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public float sprintSpeed = 15.0f;
     public float rollDistance = 4f;
     public Rigidbody playerRb;
+    public CapsuleCollider playerCap;
     private CameraController camera;
 
 
@@ -29,11 +30,15 @@ public class PlayerController : MonoBehaviour
     public float jumpVelocity = 20.0f;
     public float gravity = -5.0f;
     private float currentYPos = 0f;
+    private RaycastHit[] hits = new RaycastHit[10];
+    private Collider[] groundColliders = new Collider[5];
+
 
     // Start is called before the first frame update
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+        playerCap = GetComponent<CapsuleCollider>();
 
         // Get the cameracontroller component to get a reference to the focal point for rotating the character
         camera = GameObject.Find("Camera").GetComponent<CameraController>();
@@ -48,9 +53,8 @@ public class PlayerController : MonoBehaviour
         {
             if (canJump == true)
             {
+                Debug.Log("Jumped");
                 currentFallVelocity = jumpVelocity;
-                isJumping = true;
-                // JUMP
             }
         }
 
@@ -62,7 +66,7 @@ public class PlayerController : MonoBehaviour
     // Physics updates go here
     private void FixedUpdate()
     {
-        checkGroundCollision();
+
 
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -98,30 +102,32 @@ public class PlayerController : MonoBehaviour
 #endif
 
 
-        var endingPosition = playerRb.position + endDirection * speed * Time.deltaTime;
+        var endingPosition = playerRb.position + endDirection * speed * Time.fixedDeltaTime;
 
         // Get rotation of the player to reflect the keys inputted 
         if (endDirection != Vector3.zero)
         {
             var testFinalRotation = Quaternion.LookRotation(endDirection, Vector3.up);
             playerRb.MoveRotation(testFinalRotation);
-            //playerRb.MovePosition(playerRb.position + endDirection * speed * Time.deltaTime);
-            
         }
 
-        if (isJumping || !onGround)
+        checkGroundCollision();
+        if (!onGround)
         {
+            Debug.Log("Not grounded " + currentFallVelocity.ToString());
             endingPosition = applyGravityToVector(endingPosition);
             if (currentFallVelocity < 0) { isFalling = true; }
         }
+        // Naively snapping player onto ground correct y coord AFTER collision, maybe we want to do it BEFORE
+        //if (onGround)
+        //{
+        //    endingPosition = snapToGround(endingPosition);
+        //    Debug.Log(endingPosition);
+        //    Debug.Break();
+        //}
 
-
+        
         playerRb.MovePosition(endingPosition);
-
-        if (horizontalInput != 0 || verticalInput != 0)
-        {
-            
-        }
 
 
     }
@@ -129,37 +135,57 @@ public class PlayerController : MonoBehaviour
     // Should return a vector of the position the player should be AFTER gravity is applied in said time unit
     private Vector3 applyGravityToVector(Vector3 currentTrajectedPosition)
     {
-        float newYPos = currentYPos + (currentFallVelocity * Time.deltaTime + ((0.5f) * gravity * Time.deltaTime * Time.deltaTime));
+        float newYPos = currentYPos + (currentFallVelocity * Time.fixedDeltaTime + ((0.5f) * gravity * Time.fixedDeltaTime * Time.fixedDeltaTime));
         Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, newYPos, currentTrajectedPosition.z);
-        currentFallVelocity += gravity * Time.deltaTime;
+        currentFallVelocity += gravity * Time.fixedDeltaTime;
         currentFallVelocity = Mathf.Clamp(currentFallVelocity, -maxFallSpeed, jumpVelocity);
         return projectedPos;
     }
 
-    // Perhaps we change this to capsule cast
     private void checkGroundCollision()
     {
-        Ray ray = new Ray(playerRb.transform.position, Vector3.down * 0.0001f);
-        Debug.DrawRay(playerRb.transform.position, Vector3.down, Color.red);
-        if (Physics.Raycast(playerRb.transform.position, Vector3.down, out RaycastHit hit))
+        Array.Clear(groundColliders, 0, groundColliders.Length);
+
+        var localPoint1 = playerCap.center - Vector3.down * (playerCap.height / 2 - playerCap.radius);
+        var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - playerCap.radius); // Above point
+
+        var point1 = transform.TransformPoint(localPoint1);
+        var point2 = transform.TransformPoint(localPoint2);
+
+        // Perhaps we can also try using a sphere overlap on the base of the player?
+        DebugExtension.DebugWireSphere(point2, playerCap.radius * 2, Time.fixedDeltaTime);
+        int numColliders = Physics.OverlapSphereNonAlloc(point2, playerCap.radius * 2, groundColliders, LayerMask.GetMask("Ground"));
+        if (numColliders == 0)
         {
-            if (hit.distance < 0.1f)
+            Debug.Log("Nothing underneath");
+            onGround = false;
+        }
+        if (numColliders != 0)
+        {
+            if(currentFallVelocity <= 0)
             {
                 onGround = true;
                 isJumping = false;
                 canJump = true;
                 isFalling = false;
                 currentFallVelocity = 0;
+            } else
+            {
+                onGround = false;
             }
-            
         }
-        else
-        {
-            // Player is in the air or in the falling state
-            onGround = false;
-            isFalling = true;
 
-        }
+
+    }
+
+    // Function should snap the player to the ground when its within a certain distance from landing
+    private Vector3 snapToGround(Vector3 currentTrajectedPosition)
+    {
+        float yDisplacement = groundColliders[0].transform.position.y;
+        float collideeSize = groundColliders[0].bounds.size.y / 2;
+        Vector3 projectedPos = currentTrajectedPosition + new Vector3(0, collideeSize + 0.01f);
+        return projectedPos;
+
     }
 
 
