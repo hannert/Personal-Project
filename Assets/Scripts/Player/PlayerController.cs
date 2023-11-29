@@ -24,7 +24,8 @@ public class PlayerController : MonoBehaviour
     public bool isJumping = false;
     public bool isFalling = false;
     public bool isSprinting = false;
-
+    public bool snapFlag = false;
+    
     public float maxFallSpeed = 30.0f;
     public float currentFallVelocity = 0.0f;
     public float jumpVelocity = 20.0f;
@@ -119,14 +120,14 @@ public class PlayerController : MonoBehaviour
             if (currentFallVelocity < 0) { isFalling = true; }
         }
         // Naively snapping player onto ground correct y coord AFTER collision, maybe we want to do it BEFORE
-        //if (onGround)
-        //{
-        //    endingPosition = snapToGround(endingPosition);
-        //    Debug.Log(endingPosition);
-        //    Debug.Break();
-        //}
+        if (onGround && snapFlag)
+        {
+            snapFlag = false;
+            endingPosition = snapToGround(endingPosition);
+            Debug.Log(endingPosition);
+        }
 
-        
+
         playerRb.MovePosition(endingPosition);
 
 
@@ -147,7 +148,8 @@ public class PlayerController : MonoBehaviour
         Array.Clear(groundColliders, 0, groundColliders.Length);
 
         var localPoint1 = playerCap.center - Vector3.down * (playerCap.height / 2 - playerCap.radius);
-        var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - playerCap.radius); // Above point
+        // Have the point SLIGHTLY more UNDER the player collider
+        var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - playerCap.radius) * 1.1f ; // Above point
 
         var point1 = transform.TransformPoint(localPoint1);
         var point2 = transform.TransformPoint(localPoint2);
@@ -164,6 +166,14 @@ public class PlayerController : MonoBehaviour
         {
             if(currentFallVelocity <= 0)
             {
+                if (!onGround)
+                {
+                    // First time entering onGround state
+                    // Should snap player position ONCE
+                    snapFlag = true;
+
+
+                }
                 onGround = true;
                 isJumping = false;
                 canJump = true;
@@ -183,7 +193,7 @@ public class PlayerController : MonoBehaviour
     {
         float yDisplacement = groundColliders[0].transform.position.y;
         float collideeSize = groundColliders[0].bounds.size.y / 2;
-        Vector3 projectedPos = currentTrajectedPosition + new Vector3(0, collideeSize + 0.01f);
+        Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, yDisplacement + collideeSize + 0.01f, currentTrajectedPosition.z);
         return projectedPos;
 
     }
