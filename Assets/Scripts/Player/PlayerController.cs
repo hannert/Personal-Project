@@ -17,6 +17,10 @@ public class PlayerController : MonoBehaviour
     public CapsuleCollider playerCap;
     private CameraController camera;
 
+    [SerializeField]
+    private float horizontalInput;
+    [SerializeField]
+    private float verticalInput;
 
     // TODO : Seperate these into a state machine for modularity 
     public bool onGround = false;
@@ -49,7 +53,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (canJump == true)
@@ -67,13 +72,6 @@ public class PlayerController : MonoBehaviour
     // Physics updates go here
     private void FixedUpdate()
     {
-
-
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-
-        //Store user input as a movement vector
-        Vector3 m_Input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
         // Get position of the player and the camera without the Y component
         var tempPlayer = new Vector3(transform.position.x, 0, transform.position.z);
@@ -96,11 +94,11 @@ public class PlayerController : MonoBehaviour
         // Based on Freya Holmers rotation vector video
         var endDirection = betweenVector.x * perpVector + betweenVector.z * testDirection;
 
-#if DEBUG
+        #if DEBUG
         Debug.DrawLine(playerRb.transform.position + testYOffset, playerRb.transform.position + testDirection + testYOffset, Color.yellow);
         Debug.DrawLine(playerRb.transform.position + testYOffset, playerRb.transform.position + perpVector + testYOffset, Color.magenta);
         Debug.DrawLine(playerRb.transform.position + testYOffset, playerRb.transform.position + endDirection + testYOffset, Color.green);
-#endif
+        #endif
 
 
         var endingPosition = playerRb.position + endDirection * speed * Time.fixedDeltaTime;
@@ -155,8 +153,8 @@ public class PlayerController : MonoBehaviour
         var point2 = transform.TransformPoint(localPoint2);
 
         // Perhaps we can also try using a sphere overlap on the base of the player?
-        DebugExtension.DebugWireSphere(point2, playerCap.radius * 2, Time.fixedDeltaTime);
-        int numColliders = Physics.OverlapSphereNonAlloc(point2, playerCap.radius * 2, groundColliders, LayerMask.GetMask("Ground"));
+        DebugExtension.DebugWireSphere(point2, playerCap.radius, Time.fixedDeltaTime);
+        int numColliders = Physics.OverlapSphereNonAlloc(point2, playerCap.radius, groundColliders, LayerMask.GetMask("Ground"));
         if (numColliders == 0)
         {
             Debug.Log("Nothing underneath");
@@ -189,12 +187,33 @@ public class PlayerController : MonoBehaviour
     }
 
     // Function should snap the player to the ground when its within a certain distance from landing
+    // But what if we land on a SLANTED surface? -> Currently we keep teleporting up and falling down
     private Vector3 snapToGround(Vector3 currentTrajectedPosition)
     {
         float yDisplacement = groundColliders[0].transform.position.y;
         float collideeSize = groundColliders[0].bounds.size.y / 2;
-        Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, yDisplacement + collideeSize + 0.01f, currentTrajectedPosition.z);
+        float newYPos = getGroundPoint().y;
+        Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, newYPos + 0.01f, currentTrajectedPosition.z);
         return projectedPos;
+
+    }
+    
+    // Function should raycast from the player feet downwards to get the worldspace
+    // coordinate of the surface they are standing on 
+    private Vector3 getGroundPoint()
+    {
+        Ray rayFromFeet = new Ray(playerRb.transform.position, Vector3.down);
+        // We shoot a ray from the midpoint of the player to avoid faulty positions
+        if (Physics.Raycast(playerRb.transform.position + new Vector3(0, playerCap.height/2), Vector3.down,  out RaycastHit hit, 5.0f, LayerMask.GetMask("Ground")))
+        {
+            Debug.DrawRay(playerRb.transform.position, Vector3.down);
+            return hit.point;
+        }
+        return Vector3.zero;
+    }
+
+    private void detectSlope(Vector3 position)
+    {
 
     }
 
