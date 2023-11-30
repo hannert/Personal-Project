@@ -157,6 +157,7 @@ public class PlayerController : MonoBehaviour
         int numColliders = Physics.OverlapSphereNonAlloc(point2, playerCap.radius, groundColliders, LayerMask.GetMask("Ground"));
         if (numColliders == 0)
         {
+            // Enter the falling state
             Debug.Log("Nothing underneath");
             onGround = false;
         }
@@ -179,6 +180,7 @@ public class PlayerController : MonoBehaviour
                 currentFallVelocity = 0;
             } else
             {
+                // Enter the falling state
                 onGround = false;
             }
         }
