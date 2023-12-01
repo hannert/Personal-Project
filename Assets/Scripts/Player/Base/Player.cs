@@ -12,7 +12,7 @@ public class Player : MonoBehaviour, IDamagable
     private Rigidbody playerRb;
     private CapsuleCollider playerCap;
     private CameraController camera;
-
+    private Animator playerAnim;
 
     public void Damage(float damage)
     {
@@ -45,12 +45,12 @@ public class Player : MonoBehaviour, IDamagable
     {
         playerRb = GetComponent<Rigidbody>();
         playerCap = GetComponent<CapsuleCollider>();
-
+        playerAnim = GetComponent<Animator>();
         // Get the cameracontroller component to get a reference to the focal point for rotating the character
         camera = GameObject.Find("Camera").GetComponent<CameraController>();
 
 
-        stateMachine = new PlayerStateMachine(playerRb, playerCap, camera);
+        stateMachine = new PlayerStateMachine(playerRb, playerCap, camera, playerAnim);
         playerIdleState = new PlayerIdleState(this, stateMachine);
         playerGroundedState = new PlayerGroundedState(this, stateMachine);
         playerFallingState = new PlayerFallingState(this, stateMachine);

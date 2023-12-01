@@ -12,6 +12,8 @@ public class PlayerStateMachine
     public CapsuleCollider playerCap { get; set; }
     public CameraController camera { get; set; }
 
+    public Animator playerAnim { get; set; }
+
     [SerializeField]
     public float horizontalInput { get; set; }
     [SerializeField]
@@ -38,11 +40,12 @@ public class PlayerStateMachine
 
     private RaycastHit[] hits = new RaycastHit[10];
 
-    public PlayerStateMachine(Rigidbody playerRb, CapsuleCollider playerCap, CameraController camera)
+    public PlayerStateMachine(Rigidbody playerRb, CapsuleCollider playerCap, CameraController camera, Animator playerAnim)
     {
         this.playerRb = playerRb;
         this.playerCap = playerCap;
         this.camera = camera;
+        this.playerAnim = playerAnim;
     }
 
     

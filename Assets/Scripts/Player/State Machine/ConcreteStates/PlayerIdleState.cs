@@ -13,7 +13,7 @@ public class PlayerIdleState : PlayerState
         if (playerStateMachine.horizontalInput != 0 || playerStateMachine.verticalInput != 0)
         {
             Debug.Log("Entering Walking substate");
-
+            playerStateMachine.playerAnim.SetBool("isWalking", true);
             SwitchState(player.playerWalkingState);
             return true;
         }
@@ -24,6 +24,7 @@ public class PlayerIdleState : PlayerState
     public override void EnterState()
     {
         Debug.Log("Entered Idle State");
+
     }
 
     public override void ExitState()

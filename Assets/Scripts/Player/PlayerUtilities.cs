@@ -27,6 +27,21 @@ public class PlayerUtilities
 
     }
 
+    public static int checkWallCollision(Collider[] wallColliders, CapsuleCollider playerCap, Vector3 projectedPosition)
+    {
+        var localPoint1 = projectedPosition - Vector3.down * (playerCap.height / 2 - playerCap.radius);
+        var localPoint2 = projectedPosition + Vector3.down * (playerCap.height / 2 - playerCap.radius);
+
+        // Perhaps we dont need these for our application
+        var point1 = playerCap.transform.TransformPoint(localPoint1);
+        var point2 = playerCap.transform.TransformPoint(localPoint2);
+
+
+        int numColliders = Physics.OverlapCapsuleNonAlloc(localPoint1, localPoint2, playerCap.radius, wallColliders, LayerMask.GetMask("Wall"));
+
+        return numColliders;
+    }
+
 
 
 }
