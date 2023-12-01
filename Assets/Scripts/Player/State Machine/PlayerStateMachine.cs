@@ -34,6 +34,8 @@ public class PlayerStateMachine
     public Vector3 projectedPos { get; set; }
     public Collider[] groundColliders { get; set; } = new Collider[5];
 
+    public Collider[] wallColliders { get; set; } = new Collider[10];
+
     private RaycastHit[] hits = new RaycastHit[10];
 
     public PlayerStateMachine(Rigidbody playerRb, CapsuleCollider playerCap, CameraController camera)
@@ -72,11 +74,11 @@ public class PlayerStateMachine
 
     public void Update()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-        if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D)) horizontalInput = 0;
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        //if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D)) horizontalInput = 0;
 
-        verticalInput = Input.GetAxis("Vertical");
-        if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S)) verticalInput = 0;
+        verticalInput = Input.GetAxisRaw("Vertical");
+        //if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S)) verticalInput = 0;
 
         currentPlayerState.UpdateStates();
         
