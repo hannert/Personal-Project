@@ -8,14 +8,17 @@ public class PlayerIdleState : PlayerState
     {
     }
 
-    public override void CheckSwitchStates()
+    public override bool CheckSwitchStates()
     {
         if (playerStateMachine.horizontalInput != 0 || playerStateMachine.verticalInput != 0)
         {
             Debug.Log("Entering Walking substate");
 
             SwitchState(player.playerWalkingState);
+            return true;
         }
+
+        return false;
     }
 
     public override void EnterState()
@@ -38,15 +41,20 @@ public class PlayerIdleState : PlayerState
     public override void PhysicsUpdate()
     {
         // Idle would move if player is not pressing anything but also in the air!
-        CheckSwitchStates();
+        if (CheckSwitchStates())
+        {
+            return;
+        }
+        
         if (playerStateMachine.playerRb.transform.position == playerStateMachine.projectedPos)
         {
             return;
         }
         else
         {
-            Debug.Log("Moving in idle");
+            Debug.Log("Moving in idle to " + playerStateMachine.projectedPos);
             playerStateMachine.playerRb.MovePosition(playerStateMachine.projectedPos);
+            //player.transform.position = playerStateMachine.projectedPos;
         }
     }
 

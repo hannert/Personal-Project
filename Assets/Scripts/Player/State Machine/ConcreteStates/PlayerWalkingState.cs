@@ -9,13 +9,15 @@ public class PlayerWalkingState : PlayerState
 
     }
 
-    public override void CheckSwitchStates()
+    public override bool CheckSwitchStates()
     {
         if (playerStateMachine.horizontalInput == 0 && playerStateMachine.verticalInput == 0)
         {
             Debug.Log("Entering Idle substate");
             SwitchState(player.playerIdleState);
+            return true;
         }
+        return false;
     }
 
     public override void EnterState()
@@ -70,12 +72,70 @@ public class PlayerWalkingState : PlayerState
             playerStateMachine.playerRb.MoveRotation(testFinalRotation);
         }
 
+        // Check if player is gonna collide into anything
+        var newPos = checkFuturePosition(endDirection);
+        
+        if (newPos != Vector3.zero)
+        {
+            Debug.Log(newPos);
+            playerStateMachine.projectedPos = newPos;
+        }
+        
+
+        //Debug.Log(playerStateMachine.projectedPos);
 
         playerStateMachine.playerRb.MovePosition(playerStateMachine.projectedPos);
-
         CheckSwitchStates();
     }
 
+    private Vector3 checkFuturePosition(Vector3 direction)
+    {
+        var localPoint1 = playerStateMachine.playerCap.center - Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);
+        // Have the point SLIGHTLY more UNDER the player collider
+        var localPoint2 = playerStateMachine.playerCap.center + Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);// Above point
+
+
+        var point1 = playerStateMachine.playerCap.transform.TransformPoint(localPoint1);
+        var point2 = playerStateMachine.playerCap.transform.TransformPoint(localPoint2);
+
+        if (Physics.CapsuleCast(point1, point2, playerStateMachine.playerCap.radius, direction, out RaycastHit hit, 5f, LayerMask.GetMask("Ground"))){
+            Debug.DrawLine(playerStateMachine.playerCap.transform.position + new Vector3(0, playerStateMachine.playerCap.height/2), hit.point, Color.red);
+            var distanceToProjected = Vector3.Distance(playerStateMachine.projectedPos, playerStateMachine.playerRb.position);
+            Debug.Log(distanceToProjected);
+            Debug.Log(hit.distance);
+            if (hit.distance < 1)
+            {
+
+                Vector3 oppoNorm = -direction.normalized;
+                Debug.Log(playerStateMachine.projectedPos);
+                return new Vector3(
+                    hit.point.x + oppoNorm.x * (playerStateMachine.playerCap.radius),
+                    playerStateMachine.projectedPos.y, 
+                    hit.point.z + oppoNorm.z * (playerStateMachine.playerCap.radius));
+
+                
+
+
+            }
+
+        }
+        return Vector3.zero;
+
+
+    }
+    private void checkWallCollision()
+    {
+        var localPoint1 = playerStateMachine.playerCap.center - Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);
+        // Have the point SLIGHTLY more UNDER the player collider
+        var localPoint2 = playerStateMachine.playerCap.center + Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);// Above point
+
+
+        var point1 = playerStateMachine.playerCap.transform.TransformPoint(localPoint1);
+        var point2 = playerStateMachine.playerCap.transform.TransformPoint(localPoint2);
+
+        int numColliders = Physics.OverlapCapsuleNonAlloc(point1, point2, playerStateMachine.playerCap.radius, playerStateMachine.wallColliders, LayerMask.GetMask("Ground"));
+
+    }
 
 
 

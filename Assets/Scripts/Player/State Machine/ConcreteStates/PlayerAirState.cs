@@ -15,13 +15,15 @@ public class PlayerAirState : PlayerState
         _isRootState = true;
     }
 
-    public override void CheckSwitchStates()
+    public override bool CheckSwitchStates()
     {
         if (playerStateMachine.onGround)
         {
             Debug.Log("Air TO ground switch");
             SwitchState(player.playerGroundedState);
+            return true;
         }
+        return false;
     }
 
     public override void EnterState()
@@ -66,8 +68,14 @@ public class PlayerAirState : PlayerState
             playerStateMachine.isFalling = false;
             playerStateMachine.currentFallVelocity = 0;
         }
-        CheckSwitchStates();
+        if(CheckSwitchStates())
+        {
+            return;
+        }
+        Debug.Log("Modifying projected Pos in Air state");
         playerStateMachine.projectedPos = applyGravityToVector(playerStateMachine.playerRb.position);
+        Debug.Log("Modifying projected Pos in Air state to " + playerStateMachine.projectedPos);
+
     }
     private Vector3 applyGravityToVector(Vector3 currentTrajectedPosition)
     {

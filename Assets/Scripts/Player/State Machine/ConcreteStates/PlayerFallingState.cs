@@ -9,12 +9,14 @@ public class PlayerFallingState : PlayerState
     {
     }
 
-    public override void CheckSwitchStates()
+    public override bool CheckSwitchStates()
     {
         if (playerStateMachine.onGround)
         {
             SwitchState(player.playerGroundedState);
+            return true;
         }
+        return false;
 
     }
 

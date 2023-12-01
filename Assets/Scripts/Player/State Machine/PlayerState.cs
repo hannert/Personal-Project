@@ -18,12 +18,21 @@ public abstract class PlayerState
     }
 
     // Virtual methods are used when we want to override a certain behavior for the dervied class
+    
+    // Execute code within method upon entering the state
     public abstract void EnterState();
+
+    // Execute code within method upon exiting the state
     public abstract void ExitState();
+
+    // Execute Update() code within method
     public abstract void FrameUpdate();
+
+    // Execute FixedUpdate() code within method
     public abstract void PhysicsUpdate();
 
-    public abstract void CheckSwitchStates();
+    // Check if its time to switch states, returns true if possible, false otherwise
+    public abstract bool CheckSwitchStates();
     public abstract void InitializeSubState();
 
     public void UpdateStates() {

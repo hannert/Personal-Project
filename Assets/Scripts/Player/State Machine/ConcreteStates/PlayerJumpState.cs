@@ -8,7 +8,7 @@ public class PlayerJumpState : PlayerState
     {
     }
 
-    public override void CheckSwitchStates()
+    public override bool CheckSwitchStates()
     {
         throw new System.NotImplementedException();
     }

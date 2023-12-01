@@ -14,9 +14,12 @@ public class PlayerGroundedState : PlayerState
         // Should snap the player to the ground here upon ENTERING
         // Send info to projectedPos
         playerStateMachine.onGround = true;
-        playerStateMachine.projectedPos = snapToGround(playerStateMachine.playerRb.position);
-        //playerStateMachine.playerRb.MovePosition(snapToGround(playerStateMachine.playerRb.position));
         InitializeSubState();
+        Vector3 newPos = snapToGround(playerStateMachine.playerRb.position);
+        playerStateMachine.projectedPos = newPos;
+        Debug.Log("--" + playerStateMachine.projectedPos);
+        //playerStateMachine.playerRb.MovePosition(snapToGround(playerStateMachine.playerRb.position));
+        
     }
 
     public override void ExitState()
@@ -72,19 +75,23 @@ public class PlayerGroundedState : PlayerState
         // We shoot a ray from the midpoint of the player to avoid faulty positions
         if (Physics.Raycast(playerStateMachine.playerRb.transform.position + new Vector3(0, playerStateMachine.playerCap.height / 2), Vector3.down, out RaycastHit hit, 5.0f, LayerMask.GetMask("Ground")))
         {
-            Debug.DrawRay(playerStateMachine.playerRb.transform.position, Vector3.down);
-
+            //Debug.DrawRay(playerStateMachine.playerRb.transform.position, Vector3.down);
+            Debug.DrawRay(hit.point, Vector3.up, Color.red, 3);
+            Debug.Log(hit.point.y);
             return hit.point;
         }
         return Vector3.zero;
     }
 
-    public override void CheckSwitchStates()
+    public override bool CheckSwitchStates()
     {
         if (playerStateMachine.onGround == false)
         {
             SwitchState(player.playerAirState);
+            return true;
         }
+
+        return false;
 
     }
 
