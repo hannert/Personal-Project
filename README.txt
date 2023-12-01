@@ -1,3 +1,6 @@
 I should have been keeping this in a repository when I started but OOPS! We'll start now. 
 Following the Unity's Create With Code tutorials and prototypes, this will serve as my personal project and place to learn more coding/coding patterns and how everything works together.
 What I plan on doing is making most of the parts of the game myself or atleast learning about it if it's too difficult. At this point I have a rudementary third person camera controller with spring arm (only for below ground) and a basic kinematic rigidbody player controller script to control the player based on the cameras movement and position in worldspace. I hope to log everything and see how far I can go with this! :)
+
+
+-Currently developing a custom kinematic player controller 🏃‍♀️
