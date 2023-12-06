@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// Helper class that contains functions regarding player movement and status
+/// </summary>
 public class PlayerUtilities
 {
 

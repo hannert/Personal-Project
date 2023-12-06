@@ -117,49 +117,56 @@ public class PlayerWalkingState : PlayerState
                 // projected position is now in FRONT of the raycast hit with player radius accounted for 
                 //───-─────┬─┬── <- Player at wall
                 //         └─┘
-                //           x
-                //            x
-                //             x
-                //              x
+                //           ^
+                //            \
+                //             \
+                //              \
                 //             ┌─┐
                 //             └─┘
-
-                //playerStateMachine.projectedPos = new Vector3(
-                //    hit.point.x + normalAngle.x * (playerStateMachine.playerCap.radius),
-                //    playerStateMachine.projectedPos.y,
-                //    hit.point.z + normalAngle.z * (playerStateMachine.playerCap.radius));
 
 
                 //───-─────┬─┬── Now we should move it based on speed and angle hit 
                 //     <-- └─┘
-                //           x
-                //            x
-                //             x
-                //              x
+                //           ^
+                //            \
+                //             \
+                //              \
                 //             ┌─┐
                 //             └─┘
 
 
-                playerStateMachine.projectedPos = new Vector3(
-                    playerStateMachine.playerRb.position.x,
-                    playerStateMachine.projectedPos.y,
-                    playerStateMachine.playerRb.position.z
-                    ) + rotatedNormal * playerStateMachine.speed * Time.fixedDeltaTime;
 
-                //playerStateMachine.projectedPos = new Vector3(
-                //    hit.point.x + normalAngle.x * (playerStateMachine.playerCap.radius),
-                //    playerStateMachine.projectedPos.y,
-                //    hit.point.z + normalAngle.z * (playerStateMachine.playerCap.radius));
-                //Debug.Log(playerStateMachine.projectedPos);
+                // We should also capsule cast its proposed position, no move if capsulecast collides with another wall
+
+                var distanceVector = rotatedNormal * playerStateMachine.speed * Time.fixedDeltaTime;
+                var distance = Vector3.Distance(Vector3.zero, distanceVector);
+                var localPoint1 = playerStateMachine.playerCap.center - Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);
+                // Have the point SLIGHTLY more UNDER the player collider
+                var localPoint2 = playerStateMachine.playerCap.center + Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);// Above point
+
+
+                var point1 = playerStateMachine.playerCap.transform.TransformPoint(localPoint1);
+                var point2 = playerStateMachine.playerCap.transform.TransformPoint(localPoint2);
+
+                
+                playerStateMachine.projectedPos = new Vector3(
+                   playerStateMachine.playerRb.position.x,
+                   playerStateMachine.projectedPos.y,
+                   playerStateMachine.playerRb.position.z
+                );
+
+                // If the projected CapsuleCast of the player into a wall returns false, we move. Otherwise the position to move to is unchanged
+                if (! Physics.CapsuleCast(point1, point2, playerStateMachine.playerCap.radius, rotatedNormal, distance + playerStateMachine.playerCap.radius, LayerMask.GetMask("Wall"))){
+                    playerStateMachine.projectedPos += distanceVector;
+                } 
+
+                
+                
+
             }
 
 
         }
-
-
-
-
-        //Debug.Log(playerStateMachine.projectedPos);
 
         playerStateMachine.playerRb.MovePosition(playerStateMachine.projectedPos);
         CheckSwitchStates();

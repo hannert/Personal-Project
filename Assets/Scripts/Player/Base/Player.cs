@@ -1,7 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// The overarching Player script to be attached to the player GameObject
+/// <para>Contains everything about the player..</para>
+/// </summary>
 public class Player : MonoBehaviour, IDamagable
 {
     public float maxHealth { get ; set ; }

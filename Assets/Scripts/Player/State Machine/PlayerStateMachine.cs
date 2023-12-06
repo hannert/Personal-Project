@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Hierarchal State Machine to be used by the Player
+/// <para>Contains information on current state of the player movement</para>
+/// </summary>
 public class PlayerStateMachine
 {
     // State machine will have all the data?

@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Player in the air state, we apply gravity here
-// Superstate
-// -> In air and jumping
-// -> In air and falling
+/// <summary>
+/// Root State
+/// <para>Player state if player has no ground beneath them</para>
+/// ------ We apply gravity here ------
+///
+/// <para>-> In air and jumping</para>
+/// <para>-> In air and falling</para>
+/// </summary>
 public class PlayerAirState : PlayerState
 {
     
