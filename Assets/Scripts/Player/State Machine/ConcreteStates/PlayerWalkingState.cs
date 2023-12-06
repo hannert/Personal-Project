@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -86,28 +86,78 @@ public class PlayerWalkingState : PlayerState
             var pointBehindPlayer = -endDirection.normalized + playerStateMachine.playerRb.position + (Vector3.up * (playerStateMachine.playerCap.height / 2));
             Debug.DrawLine(pointBehindPlayer, playerStateMachine.projectedPos + (Vector3.up * (playerStateMachine.playerCap.height / 2)), Color.red);
 
-            if (Physics.Raycast(pointBehindPlayer, endDirection, out RaycastHit hit, 20f, LayerMask.GetMask("Wall")))
+            if (Physics.Raycast(pointBehindPlayer, endDirection, out RaycastHit hit, 2f, LayerMask.GetMask("Wall")))
             {
 
                 Vector3 oppoNorm = -endDirection.normalized;
-                Debug.Log(playerStateMachine.projectedPos);
+                Vector3 normalAngle = hit.normal;
+
+
+                // Get info on if angle is left or right or the normal
+                var angleBtwn = Vector3.SignedAngle(hit.normal, oppoNorm, Vector3.up);
+                var rotatedNormal = Vector3.back;
+
+                // If negative angle, then player is coming in from the RIGHT to the raycast hit
+                if (angleBtwn < 0)
+                {
+                    // Rotate the normal angle CW 
+                    rotatedNormal = new Vector3(hit.normal.z, 0, -hit.normal.x);
+                    Debug.DrawLine(hit.point, hit.point + rotatedNormal, Color.blue, 1f);
+
+                }
+
+                // If positive angle, then player is coming in from the LEFT to the raycast hit
+                if (angleBtwn > 0)
+                {
+                    // Rotate the normal angle CCW
+                    rotatedNormal = new Vector3(-hit.normal.z, 0, hit.normal.x);
+                    Debug.DrawLine(hit.point, hit.point + rotatedNormal, Color.red, 1f);
+
+                }
+                // projected position is now in FRONT of the raycast hit with player radius accounted for 
+                //───-─────┬─┬── <- Player at wall
+                //         └─┘
+                //           x
+                //            x
+                //             x
+                //              x
+                //             ┌─┐
+                //             └─┘
+
+                //playerStateMachine.projectedPos = new Vector3(
+                //    hit.point.x + normalAngle.x * (playerStateMachine.playerCap.radius),
+                //    playerStateMachine.projectedPos.y,
+                //    hit.point.z + normalAngle.z * (playerStateMachine.playerCap.radius));
+
+
+                //───-─────┬─┬── Now we should move it based on speed and angle hit 
+                //     <-- └─┘
+                //           x
+                //            x
+                //             x
+                //              x
+                //             ┌─┐
+                //             └─┘
+
 
                 playerStateMachine.projectedPos = new Vector3(
-                    hit.point.x + oppoNorm.x * (playerStateMachine.playerCap.radius),
+                    playerStateMachine.playerRb.position.x,
                     playerStateMachine.projectedPos.y,
-                    hit.point.z + oppoNorm.z * (playerStateMachine.playerCap.radius));
-                Debug.Log(playerStateMachine.projectedPos);
+                    playerStateMachine.playerRb.position.z
+                    ) + rotatedNormal * playerStateMachine.speed * Time.fixedDeltaTime;
+
+                //playerStateMachine.projectedPos = new Vector3(
+                //    hit.point.x + normalAngle.x * (playerStateMachine.playerCap.radius),
+                //    playerStateMachine.projectedPos.y,
+                //    hit.point.z + normalAngle.z * (playerStateMachine.playerCap.radius));
+                //Debug.Log(playerStateMachine.projectedPos);
             }
 
 
         }
 
-        //if (newPos != Vector3.zero)
-        //{
-        //    Debug.Log(newPos);
-        //    playerStateMachine.projectedPos = newPos;
-        //}
-        
+
+
 
         //Debug.Log(playerStateMachine.projectedPos);
 
