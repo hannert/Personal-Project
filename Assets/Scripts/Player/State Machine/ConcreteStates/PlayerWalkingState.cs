@@ -81,133 +81,18 @@ public class PlayerWalkingState : PlayerState
 
         if (wallCollisionNum > 0)
         {
-            // Fire ray BEHIND player torwards direction player is FACING to get the ray's hit point to calculate player position AFTER
-
-            var pointBehindPlayer = -endDirection.normalized + playerStateMachine.playerRb.position + (Vector3.up * (playerStateMachine.playerCap.height / 2));
-            Debug.DrawLine(pointBehindPlayer, playerStateMachine.projectedPos + (Vector3.up * (playerStateMachine.playerCap.height / 2)), Color.red);
-
-            if (Physics.Raycast(pointBehindPlayer, endDirection, out RaycastHit hit, 2f, LayerMask.GetMask("Wall")))
-            {
-
-                Vector3 oppoNorm = -endDirection.normalized;
-                Vector3 normalAngle = hit.normal;
-
-
-                // Get info on if angle is left or right or the normal
-                var angleBtwn = Vector3.SignedAngle(hit.normal, oppoNorm, Vector3.up);
-                var rotatedNormal = Vector3.back;
-
-                // If negative angle, then player is coming in from the RIGHT to the raycast hit
-                if (angleBtwn < 0)
-                {
-                    // Rotate the normal angle CW 
-                    rotatedNormal = new Vector3(hit.normal.z, 0, -hit.normal.x);
-                    Debug.DrawLine(hit.point, hit.point + rotatedNormal, Color.blue, 1f);
-
-                }
-
-                // If positive angle, then player is coming in from the LEFT to the raycast hit
-                if (angleBtwn > 0)
-                {
-                    // Rotate the normal angle CCW
-                    rotatedNormal = new Vector3(-hit.normal.z, 0, hit.normal.x);
-                    Debug.DrawLine(hit.point, hit.point + rotatedNormal, Color.red, 1f);
-
-                }
-                // projected position is now in FRONT of the raycast hit with player radius accounted for 
-                //───-─────┬─┬── <- Player at wall
-                //         └─┘
-                //           ^
-                //            \
-                //             \
-                //              \
-                //             ┌─┐
-                //             └─┘
-
-
-                //───-─────┬─┬── Now we should move it based on speed and angle hit 
-                //     <-- └─┘
-                //           ^
-                //            \
-                //             \
-                //              \
-                //             ┌─┐
-                //             └─┘
-
-
-
-                // We should also capsule cast its proposed position, no move if capsulecast collides with another wall
-
-                var distanceVector = rotatedNormal * playerStateMachine.speed * Time.fixedDeltaTime;
-                var distance = Vector3.Distance(Vector3.zero, distanceVector);
-                var localPoint1 = playerStateMachine.playerCap.center - Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);
-                // Have the point SLIGHTLY more UNDER the player collider
-                var localPoint2 = playerStateMachine.playerCap.center + Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);// Above point
-
-
-                var point1 = playerStateMachine.playerCap.transform.TransformPoint(localPoint1);
-                var point2 = playerStateMachine.playerCap.transform.TransformPoint(localPoint2);
-
-                
-                playerStateMachine.projectedPos = new Vector3(
-                   playerStateMachine.playerRb.position.x,
-                   playerStateMachine.projectedPos.y,
-                   playerStateMachine.playerRb.position.z
-                );
-
-                // If the projected CapsuleCast of the player into a wall returns false, we move. Otherwise the position to move to is unchanged
-                if (! Physics.CapsuleCast(point1, point2, playerStateMachine.playerCap.radius, rotatedNormal, distance + playerStateMachine.playerCap.radius, LayerMask.GetMask("Wall"))){
-                    playerStateMachine.projectedPos += distanceVector;
-                } 
-
-                
-                
-
-            }
+            
+            playerStateMachine.projectedPos = PlayerUtilities.checkFuturePosition(
+                endDirection, playerStateMachine.projectedPos, playerStateMachine.playerRb, playerStateMachine.playerCap, playerStateMachine.speed);
 
 
         }
+
+        
 
         playerStateMachine.playerRb.MovePosition(playerStateMachine.projectedPos);
         CheckSwitchStates();
     }
-
-    private Vector3 checkFuturePosition(Vector3 direction)
-    {
-        var localPoint1 = playerStateMachine.playerCap.center - Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);
-        // Have the point SLIGHTLY more UNDER the player collider
-        var localPoint2 = playerStateMachine.playerCap.center + Vector3.down * (playerStateMachine.playerCap.height / 2 - playerStateMachine.playerCap.radius);// Above point
-
-
-        var point1 = playerStateMachine.playerCap.transform.TransformPoint(localPoint1);
-        var point2 = playerStateMachine.playerCap.transform.TransformPoint(localPoint2);
-
-        if (Physics.CapsuleCast(point1, point2, playerStateMachine.playerCap.radius, direction, out RaycastHit hit, 5f, LayerMask.GetMask("Ground"))){
-            Debug.DrawLine(playerStateMachine.playerCap.transform.position + new Vector3(0, playerStateMachine.playerCap.height/2), hit.point, Color.red);
-            var distanceToProjected = Vector3.Distance(playerStateMachine.projectedPos, playerStateMachine.playerRb.position);
-            Debug.Log(distanceToProjected);
-            Debug.Log(hit.distance);
-            if (hit.distance < 1)
-            {
-
-                Vector3 oppoNorm = -direction.normalized;
-                Debug.Log(playerStateMachine.projectedPos);
-                return new Vector3(
-                    hit.point.x + oppoNorm.x * (playerStateMachine.playerCap.radius),
-                    playerStateMachine.projectedPos.y, 
-                    hit.point.z + oppoNorm.z * (playerStateMachine.playerCap.radius));
-
-                
-
-
-            }
-
-        }
-        return Vector3.zero;
-
-
-    }
-
 
 
 

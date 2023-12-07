@@ -83,10 +83,12 @@ public class PlayerAirState : PlayerState
     }
     private Vector3 applyGravityToVector(Vector3 currentTrajectedPosition)
     {
-        float newYPos = playerStateMachine.playerRb.transform.position.y + (playerStateMachine.currentFallVelocity * Time.fixedDeltaTime + ((0.5f) * playerStateMachine.gravity * Time.fixedDeltaTime * Time.fixedDeltaTime));
+        float newYPos = playerStateMachine.playerRb.position.y + (playerStateMachine.currentFallVelocity * Time.fixedDeltaTime + ((0.5f) * playerStateMachine.gravity * Time.fixedDeltaTime * Time.fixedDeltaTime));
         Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, newYPos, currentTrajectedPosition.z);
         playerStateMachine.currentFallVelocity += playerStateMachine.gravity * Time.fixedDeltaTime;
         playerStateMachine.currentFallVelocity = Mathf.Clamp(playerStateMachine.currentFallVelocity, -playerStateMachine.maxFallSpeed, playerStateMachine.jumpVelocity);
+        Debug.Log(playerStateMachine.currentFallVelocity);
+        Debug.Log(newYPos);
         return projectedPos;
     }
 
