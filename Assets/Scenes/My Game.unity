@@ -889,7 +889,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 66357bc5e1e96234cb269bd0d2898634, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 12.866
+      value: 10.29
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 66357bc5e1e96234cb269bd0d2898634, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1439,7 +1439,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: d00ccb7f73194a14587a294f5e8e7c26, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 

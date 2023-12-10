@@ -1,54 +1,56 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
-public class PlayerWalkingState : PlayerState
+public class PlayerSprintingState : PlayerWalkingState
 {
-    public PlayerWalkingState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
+    public PlayerSprintingState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
     {
-
     }
 
     public override bool CheckSwitchStates()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        // Player is not holding shift
+        if (!Input.GetKey(KeyCode.LeftShift))
         {
-            playerStateMachine.playerAnim.SetBool("isWalking", false);
-            playerStateMachine.playerAnim.SetBool("isSprinting", true);
-            SwitchState(player.playerSprintingState);
-            return true;
-
-        }
-        if (playerStateMachine.horizontalInput == 0 && playerStateMachine.verticalInput == 0)
-        {
-            Debug.Log("Entering Idle substate");
-            playerStateMachine.playerAnim.SetBool("isWalking", false);
-            playerStateMachine.playerAnim.SetBool("isIdle", true);
-            SwitchState(player.playerIdleState);
-            return true;
+            if (playerStateMachine.horizontalInput == 0 && playerStateMachine.verticalInput == 0)
+            {
+                Debug.Log("Entering Idle substate");
+                playerStateMachine.playerAnim.SetBool("isSprinting", false);
+                playerStateMachine.playerAnim.SetBool("isIdle", true);
+                SwitchState(player.playerIdleState);
+                return true;
+            }
+            // Let go of shift but still holding onto a button
+            else if (playerStateMachine.horizontalInput != 0 || playerStateMachine.verticalInput != 0)
+            {
+                playerStateMachine.playerAnim.SetBool("isSprinting", false);
+                playerStateMachine.playerAnim.SetBool("isWalking", true);
+                SwitchState(player.playerIdleState);
+                return true;
+            }
+           
         }
         return false;
     }
 
     public override void EnterState()
     {
-        // Play animation
-        Debug.Log("Entered Walking state");
+        throw new System.NotImplementedException();
     }
 
     public override void ExitState()
     {
+        throw new System.NotImplementedException();
     }
 
     public override void FrameUpdate()
     {
-        // Take in input
-
     }
 
     public override void InitializeSubState()
     {
+        throw new System.NotImplementedException();
     }
 
     public override void PhysicsUpdate()
@@ -74,7 +76,7 @@ public class PlayerWalkingState : PlayerState
         // Based on Freya Holmers rotation vector video
         var endDirection = betweenVector.x * perpVector + betweenVector.z * testDirection;
 
-        playerStateMachine.projectedPos += endDirection * playerStateMachine.speed * Time.fixedDeltaTime;
+        playerStateMachine.projectedPos += endDirection * playerStateMachine.sprintSpeed * Time.fixedDeltaTime;
 
         // Get rotation of the player to reflect the keys inputted 
         if (endDirection != Vector3.zero)
@@ -90,19 +92,28 @@ public class PlayerWalkingState : PlayerState
 
         if (wallCollisionNum > 0)
         {
-            
+
             playerStateMachine.projectedPos = PlayerUtilities.checkFuturePosition(
                 endDirection, playerStateMachine.projectedPos, playerStateMachine.playerRb, playerStateMachine.playerCap, playerStateMachine.speed);
 
 
         }
 
-        
+
 
         playerStateMachine.playerRb.MovePosition(playerStateMachine.projectedPos);
         CheckSwitchStates();
     }
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
 
-
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 }

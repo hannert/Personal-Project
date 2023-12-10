@@ -12,10 +12,25 @@ public class PlayerIdleState : PlayerState
     {
         if (playerStateMachine.horizontalInput != 0 || playerStateMachine.verticalInput != 0)
         {
-            Debug.Log("Entering Walking substate");
-            playerStateMachine.playerAnim.SetBool("isWalking", true);
-            SwitchState(player.playerWalkingState);
-            return true;
+
+            // Left shift detected, go into sprint
+            if (Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                playerStateMachine.playerAnim.SetBool("isIdle", false);
+                playerStateMachine.playerAnim.SetBool("isSprinting", true);
+                return true;
+            }
+
+            // Else go into normal walking
+            else
+            {
+                Debug.Log("Entering Walking substate");
+                playerStateMachine.playerAnim.SetBool("isIdle", false);
+                playerStateMachine.playerAnim.SetBool("isWalking", true);
+                SwitchState(player.playerWalkingState);
+                return true;
+            }
+            
         }
 
         return false;
@@ -55,7 +70,6 @@ public class PlayerIdleState : PlayerState
         {
             Debug.Log("Moving in idle to " + playerStateMachine.projectedPos);
             playerStateMachine.playerRb.MovePosition(playerStateMachine.projectedPos);
-            //player.transform.position = playerStateMachine.projectedPos;
         }
     }
 

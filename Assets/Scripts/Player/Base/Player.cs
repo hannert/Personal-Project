@@ -32,13 +32,18 @@ public class Player : MonoBehaviour, IDamagable
     public PlayerStateMachine stateMachine;
 
     #region Root States
-    public PlayerAirState playerAirState { get; set; }
     public PlayerGroundedState playerGroundedState { get; set; }
+    public PlayerAirState playerAirState { get; set; }
+   
     #endregion
 
+
+
     public PlayerIdleState playerIdleState { get; set; }
-    public PlayerFallingState playerFallingState { get; set; }
     public PlayerWalkingState playerWalkingState { get; set; }
+    public PlayerSprintingState playerSprintingState { get; set; }
+    public PlayerFallingState playerFallingState { get; set; }
+    
     public PlayerJumpState playerJumpState { get; set; }
 
     #endregion
@@ -53,12 +58,20 @@ public class Player : MonoBehaviour, IDamagable
 
 
         stateMachine = new PlayerStateMachine(playerRb, playerCap, camera, playerAnim);
-        playerIdleState = new PlayerIdleState(this, stateMachine);
+
+        # region root states
         playerGroundedState = new PlayerGroundedState(this, stateMachine);
-        playerFallingState = new PlayerFallingState(this, stateMachine);
-        playerWalkingState = new PlayerWalkingState(this, stateMachine);
-        playerJumpState = new PlayerJumpState(this, stateMachine);
         playerAirState = new PlayerAirState(this, stateMachine);
+        # endregion
+        
+
+        playerIdleState = new PlayerIdleState(this, stateMachine);
+        playerWalkingState = new PlayerWalkingState(this, stateMachine);
+        playerSprintingState = new PlayerSprintingState(this, stateMachine);
+
+        playerFallingState = new PlayerFallingState(this, stateMachine);
+        
+        playerJumpState = new PlayerJumpState(this, stateMachine);
 
         stateMachine.Initialize(playerGroundedState);
     }

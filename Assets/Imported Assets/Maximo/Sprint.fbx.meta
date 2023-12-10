@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 360036c7ff5573543a7aa010c89fff29
+guid: 3554f909521775f4cbb8b0dbc75f4523
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,11 +33,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Idle
-      takeName: mixamo.com
-      internalID: -203655887218126122
+      name: PlayerSprinting
+      takeName: Armature|Armature|mixamo.com|Layer0
+      internalID: -4791504522942941401
       firstFrame: 0
-      lastFrame: 60
+      lastFrame: 32
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -45,7 +45,7 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 1
+      loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
