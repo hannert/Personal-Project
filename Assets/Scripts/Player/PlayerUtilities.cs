@@ -10,8 +10,12 @@ using UnityEngine;
 public class PlayerUtilities
 {
 
-    // Check the sphere at players feet for ground collision
-    // Returns the number of valid colliders that are hit
+    /// <summary>
+    /// Check for ground collision with a sphere at the player's feet
+    /// </summary>
+    /// <param name="groundColliders"></param>
+    /// <param name="playerCap"></param>
+    /// <returns>The number of valid colliders that are hit</returns>
     public static int checkGroundCollision(Collider[] groundColliders, CapsuleCollider playerCap)
     {
         Array.Clear(groundColliders, 0, groundColliders.Length);
@@ -31,6 +35,13 @@ public class PlayerUtilities
 
     }
 
+    /// <summary>
+    /// Checks for wall collision at projectedPosition with an OverlapCapsule method 
+    /// </summary>
+    /// <param name="wallColliders"></param>
+    /// <param name="playerCap"></param>
+    /// <param name="projectedPosition"></param>
+    /// <returns>The number of valid wall colliders that are overlapping the projected capsule</returns>
     public static int checkWallCollision(Collider[] wallColliders, CapsuleCollider playerCap, Vector3 projectedPosition)
     {
         var localPoint1 = projectedPosition - Vector3.down * (playerCap.height / 2 - playerCap.radius);
@@ -46,7 +57,15 @@ public class PlayerUtilities
         return numColliders;
     }
 
-
+    /// <summary>
+    /// Applicable when moving the player on the X & Z plane. Checks if player will collide when 'surfing' across a wall
+    /// </summary>
+    /// <param name="endDirection"></param>
+    /// <param name="projectedPos"></param>
+    /// <param name="playerRb"></param>
+    /// <param name="playerCap"></param>
+    /// <param name="speed"></param>
+    /// <returns>A Vector3 of a valid position, current position if no valid position (no change).</returns>
     public static Vector3 checkFuturePosition(Vector3 endDirection, Vector3 projectedPos, Rigidbody playerRb, CapsuleCollider playerCap, float speed)
     {
         var pointBehindPlayer = -endDirection.normalized + playerRb.position + (Vector3.up * (playerCap.height / 2));
@@ -135,4 +154,22 @@ public class PlayerUtilities
         return projectedPos;
     }
 
+    /// <summary>
+    ///  Takes in an euler angle from the player's rotation (-180, 180) (L, R) Respectively. Transforms it into a direction Vector3 the player is facing in.
+    /// </summary>
+    /// <param name="angle"></param>
+    /// <returns>The directional Vector3 the player is currently facing (Forward).</returns>
+    public static Vector3 getDirectionFromOrigin(float angle)
+    {
+        float angleInRadians = angle * Mathf.Deg2Rad;
+        float x = Mathf.Cos(angleInRadians);
+        float z = Mathf.Sin(angleInRadians);
+
+        if(angle < 0)
+        {
+            return new Vector3(x, 0, z).normalized;
+        }
+
+        return new Vector3(z, 0, x).normalized;
+    }
 }
