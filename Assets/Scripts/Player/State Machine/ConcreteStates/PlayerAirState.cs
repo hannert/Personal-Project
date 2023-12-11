@@ -34,11 +34,19 @@ public class PlayerAirState : PlayerState
     {
         playerStateMachine.onGround = false;
         InitializeSubState();
+
+        CheckAnimationCondition();
+
         Debug.Log("Entered Air State");
     }
 
     public override void ExitState()
     {
+        Debug.Log("Exiting air state!!!!!!!!!!!!!!!!!!!!!");
+        // Normally exit to the Grounded State
+
+        CheckAnimationCondition();
+
     }
 
     public override void FrameUpdate()
@@ -72,12 +80,18 @@ public class PlayerAirState : PlayerState
             playerStateMachine.isFalling = false;
             playerStateMachine.currentFallVelocity = 0;
         }
-        if(CheckSwitchStates())
-        {
-            return;
-        }
+
+        
+
+        if (CheckSwitchStates()) return;
+
         Debug.Log("Modifying projected Pos in Air state");
         playerStateMachine.projectedPos = applyGravityToVector(playerStateMachine.playerRb.position);
+
+        UpdatePlayerBools();
+        CheckAnimationCondition();
+
+
         Debug.Log("Modifying projected Pos in Air state to " + playerStateMachine.projectedPos);
 
     }
@@ -92,4 +106,46 @@ public class PlayerAirState : PlayerState
         return projectedPos;
     }
 
+    private void CheckAnimationCondition()
+    {
+        if (playerStateMachine.onGround)
+        {
+            playerStateMachine.playerAnim.SetBool("isFalling", false);
+            playerStateMachine.playerAnim.SetBool("isJumping", false);
+            return;
+        }
+
+        // If not falling, ascending
+        if (!isFalling())
+        {
+            playerStateMachine.playerAnim.SetBool("isFalling", false);
+            playerStateMachine.playerAnim.SetBool("isJumping", true);
+
+        }
+        // Player is jumping up
+        else
+        {
+            playerStateMachine.playerAnim.SetBool("isFalling", true);
+            playerStateMachine.playerAnim.SetBool("isJumping", false);
+        }
+    }
+
+
+    private bool isFalling()
+    {
+        return playerStateMachine.isFalling;
+    }
+
+    private void UpdatePlayerBools()
+    {
+        if (playerStateMachine.currentFallVelocity < 0)
+        {
+            playerStateMachine.isFalling = true;
+            playerStateMachine.isJumping = false;
+        } else
+        {
+            playerStateMachine.isFalling = false;
+            playerStateMachine.isJumping = true;
+        }
+    }
 }

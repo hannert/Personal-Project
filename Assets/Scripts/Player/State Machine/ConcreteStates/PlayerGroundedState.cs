@@ -11,19 +11,21 @@ public class PlayerGroundedState : PlayerState
     public override void EnterState()
     {
         Debug.Log("Entered grounded state");
+        playerStateMachine.playerAnim.SetBool("isGrounded", true);
         // Should snap the player to the ground here upon ENTERING
         // Send info to projectedPos
         playerStateMachine.onGround = true;
         InitializeSubState();
         Vector3 newPos = snapToGround(playerStateMachine.playerRb.position);
         playerStateMachine.projectedPos = newPos;
-        Debug.Log("--" + playerStateMachine.projectedPos);
-        //playerStateMachine.playerRb.MovePosition(snapToGround(playerStateMachine.playerRb.position));
+        //Debug.Log("--" + playerStateMachine.projectedPos);
         
     }
 
     public override void ExitState()
     {
+        playerStateMachine.playerAnim.SetBool("isGrounded", false);
+
     }
 
     public override void FrameUpdate()
@@ -97,9 +99,11 @@ public class PlayerGroundedState : PlayerState
 
     public void getKeyPress()
     {
+        // Jump
         if (Input.GetKeyDown(KeyCode.Space))
         {
             playerStateMachine.currentFallVelocity = playerStateMachine.jumpVelocity;
+            playerStateMachine.playerAnim.SetTrigger("jump");
             SwitchState(player.playerAirState);
             Debug.Log("Space pressed");
         }

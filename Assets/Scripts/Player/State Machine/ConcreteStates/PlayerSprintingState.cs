@@ -15,17 +15,12 @@ public class PlayerSprintingState : PlayerWalkingState
         {
             if (playerStateMachine.horizontalInput == 0 && playerStateMachine.verticalInput == 0)
             {
-                Debug.Log("Entering Idle substate");
-                playerStateMachine.playerAnim.SetBool("isSprinting", false);
-                playerStateMachine.playerAnim.SetBool("isIdle", true);
                 SwitchState(player.playerIdleState);
                 return true;
             }
             // Let go of shift but still holding onto a button
             else if (playerStateMachine.horizontalInput != 0 || playerStateMachine.verticalInput != 0)
             {
-                playerStateMachine.playerAnim.SetBool("isSprinting", false);
-                playerStateMachine.playerAnim.SetBool("isWalking", true);
                 SwitchState(player.playerIdleState);
                 return true;
             }
@@ -36,12 +31,14 @@ public class PlayerSprintingState : PlayerWalkingState
 
     public override void EnterState()
     {
-        throw new System.NotImplementedException();
+        playerStateMachine.playerAnim.SetBool("isSprinting", true);
+
     }
 
     public override void ExitState()
     {
-        throw new System.NotImplementedException();
+        playerStateMachine.playerAnim.SetBool("isSprinting", false);
+
     }
 
     public override void FrameUpdate()

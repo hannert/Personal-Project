@@ -14,17 +14,12 @@ public class PlayerWalkingState : PlayerState
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            playerStateMachine.playerAnim.SetBool("isWalking", false);
-            playerStateMachine.playerAnim.SetBool("isSprinting", true);
             SwitchState(player.playerSprintingState);
             return true;
 
         }
         if (playerStateMachine.horizontalInput == 0 && playerStateMachine.verticalInput == 0)
         {
-            Debug.Log("Entering Idle substate");
-            playerStateMachine.playerAnim.SetBool("isWalking", false);
-            playerStateMachine.playerAnim.SetBool("isIdle", true);
             SwitchState(player.playerIdleState);
             return true;
         }
@@ -35,10 +30,15 @@ public class PlayerWalkingState : PlayerState
     {
         // Play animation
         Debug.Log("Entered Walking state");
+        playerStateMachine.playerAnim.SetBool("isWalking", true);
+
     }
 
     public override void ExitState()
     {
+        playerStateMachine.playerAnim.SetBool("isWalking", false);
+
+
     }
 
     public override void FrameUpdate()

@@ -109,6 +109,7 @@ public abstract class PlayerState
     {
         _currentSubState = newSubState;
         newSubState.SetSuperState(this);
+        newSubState.EnterState();
     }
 
     /// <summary>
@@ -121,11 +122,16 @@ public abstract class PlayerState
     {
         if (_isRootState)
         {
+            // Root state is entered within the playerStateMachine
             playerStateMachine.ChangeState(newState);
         }
         else if (_currentSuperState != null)
         {
+            // Old substate needs to be exited and new substate to be entered
+            _currentSuperState._currentSubState.ExitState();
             _currentSuperState.SetSubState(newState);
+            
+
         }
     }
 
