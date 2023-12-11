@@ -12,6 +12,7 @@ public class PlayerStateMachine
     public float speed = 10.0f;
     public float sprintSpeed = 15.0f;
     public float rollDistance = 4f;
+    private float decceleration = 8f;
     public Rigidbody playerRb;
     public CapsuleCollider playerCap { get; set; }
     public CameraController camera { get; set; }
@@ -23,7 +24,7 @@ public class PlayerStateMachine
     [SerializeField]
     public float verticalInput { get; set; }
 
-    // TODO : Seperate these into a state machine for modularity 
+
     public bool onGround { get; set; } = false;
     public bool canJump { get; set; } = true;
     public bool isJumping { get; set; } = false;
@@ -33,7 +34,7 @@ public class PlayerStateMachine
 
     public float maxFallSpeed { get; set; } = 30.0f;
     public float currentFallVelocity { get; set; } = 0.0f;
-    public float jumpVelocity { get; set; } = 10.0f;
+    public float jumpVelocity { get; set; } = 20.0f;
     public float gravity { get; set; } = -25.0f;
     public float currentYPos { get; set; } = 0f;
 
@@ -81,11 +82,97 @@ public class PlayerStateMachine
 
     public void Update()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
+        float rawHorizontal = Input.GetAxisRaw("Horizontal");
+        float rawVertical = Input.GetAxisRaw("Vertical");
+
         //if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D)) horizontalInput = 0;
 
-        verticalInput = Input.GetAxisRaw("Vertical");
         //if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S)) verticalInput = 0;
+
+        // If any of the movement buttons are pressed, process
+        if (rawHorizontal != 0f || rawVertical != 0f)
+        {
+            // If player is sprinting build up the input at a faster rate
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                horizontalInput += Time.deltaTime * rawHorizontal * 3f;
+                //horizontalInput = (rawHorizontal > 0) ?
+                //    Mathf.Clamp(horizontalInput, 0f, 2.0f) 
+                //    :
+                //    Mathf.Clamp(horizontalInput, -2.0f, 0f);
+                horizontalInput = Mathf.Clamp(horizontalInput, -2.0f, 2.0f);
+
+                verticalInput += Time.deltaTime * rawVertical * 3f;
+                //verticalInput = (rawVertical > 0) ?
+                //    Mathf.Clamp(verticalInput, 0f, 2.0f)
+                //    :
+                //    Mathf.Clamp(verticalInput, -2.0f, 0f);
+                verticalInput = Mathf.Clamp(verticalInput, -2.0f, 2.0f);
+
+            }
+            // Else player is holding a direction button 
+            // Need to be able to deccelerate when going from max sprint speed to walking speed instead of being instantly clamped 
+            else
+            {
+                if (horizontalInput <= 1.0f && horizontalInput >= -1.0f)
+                {
+                    horizontalInput += Time.deltaTime * rawHorizontal * 2f;
+                    //horizontalInput = (rawHorizontal > 0) ?
+                    //    Mathf.Clamp(horizontalInput, 0f, 1.0f)
+                    //    :
+                    //    Mathf.Clamp(horizontalInput, -1.0f, 0f);
+                    horizontalInput = Mathf.Clamp(horizontalInput, -1.0f, 1.0f);
+
+                }
+                if (verticalInput <= 1.0f && verticalInput >= -1.0f)
+                {
+                    verticalInput += Time.deltaTime * rawVertical * 2f;
+                    //verticalInput = (rawVertical > 0) ?
+                    //    Mathf.Clamp(verticalInput, 0f, 1.0f)
+                    //    :
+                    //    Mathf.Clamp(verticalInput, -1.0f, 0f);
+                    verticalInput = Mathf.Clamp(verticalInput, -1.0f, 1.0f);
+                }
+                
+
+                
+            }
+        } 
+
+
+        // Input values will also need to be reset when we are NOT pressing an input button
+        if (rawVertical == 0 || (verticalInput > 1.0f && !Input.GetKey(KeyCode.LeftShift) || (verticalInput < -1.0f && !Input.GetKey(KeyCode.LeftShift))))
+        {
+            if (verticalInput > 0)
+            {
+                verticalInput -= Time.deltaTime * decceleration;
+                verticalInput = Mathf.Clamp(verticalInput, 0f, 2f);
+            } else
+            {
+                verticalInput += Time.deltaTime * decceleration;
+                verticalInput = Mathf.Clamp(verticalInput, -2f, 0f);
+
+            }
+        }
+        if (rawHorizontal == 0 || (horizontalInput > 1.0f && !Input.GetKey(KeyCode.LeftShift)) || (horizontalInput < -1.0f && !Input.GetKey(KeyCode.LeftShift)))
+        {
+            if (horizontalInput > 0)
+            {
+                horizontalInput -= Time.deltaTime * decceleration;
+                horizontalInput = Mathf.Clamp(horizontalInput, 0f, 2f);
+            }
+            else
+            {
+                horizontalInput += Time.deltaTime * decceleration;
+                horizontalInput = Mathf.Clamp(horizontalInput, -2f, 0f);
+
+            }
+        }
+
+
+
+        playerAnim.SetFloat("horizontalInput", horizontalInput);
+        playerAnim.SetFloat("verticalInput", verticalInput);
 
         currentPlayerState.UpdateStates();
         
