@@ -18,7 +18,14 @@ public class CameraController : MonoBehaviour
     public float distToPlayer = 15.0f;
     private float maxZoom = 15.0f;
 
+    public float lockOnXOffset = 0f;
+    public float lockOnYOffset = 0f;
+    public float lockOnZOffset = 0f;
+    public bool isLockedOn;
+    public GameObject lockOnReference;
+    public GameObject lockOnFocusObject;
     public GameObject player;
+    private Rigidbody playerRb;
     private float playerYHalf;
     public float cameraYOffset = 0f;
     public float horizontalInput;
@@ -40,14 +47,14 @@ public class CameraController : MonoBehaviour
         // Show the mouse 
         Cursor.visible = true;
         playerYHalf = player.GetComponent<CapsuleCollider>().center.y + cameraYOffset;
-
+        playerRb = player.GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
         CheckForCollider();
-        if (rightClickActive)
+        if (rightClickActive && !isLockedOn)
         {
             // Drag left and right , -360 to 360
             horizontalInput += Input.GetAxis("Mouse X") * rotateSpeed;
@@ -77,19 +84,32 @@ public class CameraController : MonoBehaviour
         {
             rightClickActive = false;
         }
+
+        
+
+
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         // Vertical input should move the X axis, Horizontal move Y
         var targetRotation = Quaternion.Euler(verticalInput, horizontalInput, 0);
 
         // Focal point with addition of a Vector3(Offset)
         var focusPosition = player.transform.position + new Vector3(0, playerYHalf, 0);
-
-        //transform.position = focusPosition - targetRotation * new Vector3(0, 0, 15);
-
         var tempPos = focusPosition - targetRotation * new Vector3(0, 0, zoom);
+
+        if (isLockedOn)
+        {
+            targetRotation = Quaternion.LookRotation(lockOnFocusObject.transform.position - transform.position, Vector3.up);
+            focusPosition += lockOnFocusObject.transform.position;
+            var awayFromPlayer = (lockOnFocusObject.transform.position - playerRb.transform.position).normalized;
+            var cameraDirection = new Vector3(awayFromPlayer.z, awayFromPlayer.y, -awayFromPlayer.x);
+            tempPos = playerRb.transform.position + cameraDirection + new Vector3(0, playerYHalf + 1.5f, 0) - (5 * awayFromPlayer);
+        }
+
+
+        
 
         // The ghost point shares the position, it is only the cameras true position that is modified after
         ghostPoint = tempPos;
@@ -103,8 +123,16 @@ public class CameraController : MonoBehaviour
             transform.LookAt(player.transform);
         } else
         {
+            Vector3 vel = Vector3.zero;
             // Scale rotation to same magnitude of distance of focal point?
-            transform.position = tempPos;
+            if (!isLockedOn)
+            {
+                transform.position = tempPos;
+            }
+            if (isLockedOn)
+            {
+                transform.position = Vector3.SmoothDamp(transform.position, tempPos, ref vel, 0.05f);
+            }
             transform.rotation = targetRotation;
         }
 
@@ -125,6 +153,14 @@ public class CameraController : MonoBehaviour
             belowGround = false;
         }
         
+
+    }
+    public void toggleLockOn()
+    {
+        isLockedOn = !isLockedOn;
+    }
+    public void ChangeLockOn()
+    {
 
     }
 }

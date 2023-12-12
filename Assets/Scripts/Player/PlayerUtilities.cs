@@ -58,7 +58,7 @@ public class PlayerUtilities
     }
 
     /// <summary>
-    /// Applicable when moving the player on the X & Z plane. Checks if player will collide when 'surfing' across a wall
+    /// Checks if player will collide when 'surfing' across a wall. Applicable when moving the player on the X & Z plane. 
     /// </summary>
     /// <param name="endDirection"></param>
     /// <param name="projectedPos"></param>
@@ -171,5 +171,40 @@ public class PlayerUtilities
         }
 
         return new Vector3(z, 0, x).normalized;
+    }
+
+    /// <summary>
+    /// Takes in player position, reference and player input values to calculate direction the player wants to move to based on reference.
+    /// </summary>
+    /// <param name="projectedPosition"></param>
+    /// <param name="referencePosition"></param>
+    /// <param name="horizontalInput"></param>
+    /// <param name="verticalInput"></param>
+    /// <returns>A Vector3 of the direction the player wants to move to.</returns>
+    /// 
+
+    //
+    public static Vector3 GetDirectionFromCamera(Vector3 projectedPosition, Vector3 referencePosition, float horizontalInput, float verticalInput)
+    {
+        // Get position of the player and the camera without the Y component
+        var tempPlayer = new Vector3(projectedPosition.x, 0, projectedPosition.z);
+        var tempCamera = new Vector3(referencePosition.x, 0, referencePosition.z);
+
+        // Get the direction from the camera to the player 
+        var testDirection = (tempPlayer - tempCamera).normalized;
+
+        // Already normalized ( 0 - 1 value for x and z )
+        var horizontalVector = new Vector3(horizontalInput, 0, 0);
+        var verticalVector = new Vector3(0, 0, verticalInput);
+
+        // Get the combined vector from horizontal and vertical input
+        var betweenVector = (horizontalVector + verticalVector).normalized;
+
+        // Rotate the vector perpendicular
+        var perpVector = new Vector3(testDirection.z, 0, -testDirection.x);
+
+        var endDirection = betweenVector.x * perpVector + betweenVector.z * testDirection;
+
+        return endDirection;
     }
 }

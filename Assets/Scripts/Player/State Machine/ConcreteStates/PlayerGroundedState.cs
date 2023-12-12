@@ -99,10 +99,11 @@ public class PlayerGroundedState : PlayerState
 
     public void getKeyPress()
     {
-        // Jump
+        // Jump from grounded state
         if (Input.GetKeyDown(KeyCode.Space))
         {
             playerStateMachine.currentFallVelocity = playerStateMachine.jumpVelocity;
+            playerStateMachine.distanceFromCameraAtJump = playerStateMachine.camera.transform.position - playerStateMachine.playerRb.position ;
             playerStateMachine.playerAnim.SetTrigger("jump");
             SwitchState(player.playerAirState);
             Debug.Log("Space pressed");

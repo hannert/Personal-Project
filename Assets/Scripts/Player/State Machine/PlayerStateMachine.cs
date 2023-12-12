@@ -32,6 +32,7 @@ public class PlayerStateMachine
     public bool isSprinting { get; set; } = false;
     public bool snapFlag { get; set; } = false;
 
+    public bool isLockedOn { get; set; } = false;
     public float maxFallSpeed { get; set; } = 30.0f;
     public float currentFallVelocity { get; set; } = 0.0f;
     public float jumpVelocity { get; set; } = 20.0f;
@@ -39,6 +40,9 @@ public class PlayerStateMachine
     public float currentYPos { get; set; } = 0f;
 
     public Vector3 projectedPos { get; set; }
+
+    public Vector3 distanceFromCameraAtJump { get; set; }
+
     public Collider[] groundColliders { get; set; } = new Collider[5];
 
     public Collider[] wallColliders { get; set; } = new Collider[10];
@@ -169,7 +173,10 @@ public class PlayerStateMachine
             }
         }
 
-
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            camera.toggleLockOn();
+        }
 
         playerAnim.SetFloat("horizontalInput", horizontalInput);
         playerAnim.SetFloat("verticalInput", verticalInput);

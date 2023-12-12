@@ -31,20 +31,15 @@ public class PlayerWalkingState : PlayerState
         // Play animation
         Debug.Log("Entered Walking state");
         playerStateMachine.playerAnim.SetBool("isWalking", true);
-
     }
 
     public override void ExitState()
     {
         playerStateMachine.playerAnim.SetBool("isWalking", false);
-
-
     }
 
     public override void FrameUpdate()
     {
-        // Take in input
-
     }
 
     public override void InitializeSubState()
@@ -53,52 +48,57 @@ public class PlayerWalkingState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        // Move player
-        // Get position of the player and the camera without the Y component
-        var tempPlayer = new Vector3(playerStateMachine.projectedPos.x, 0, playerStateMachine.projectedPos.z);
-        var tempCamera = new Vector3(playerStateMachine.camera.transform.position.x, 0, playerStateMachine.camera.transform.position.z);
+        // Get direction the player is already facing 
+        var endDirection = PlayerUtilities.getDirectionFromOrigin(playerStateMachine.playerRb.rotation.eulerAngles.y);
 
-        // Get the direction from the camera to the player 
-        var testDirection = (tempPlayer - tempCamera).normalized;
+        // Vector3 of proposed player position if player input being taken into account in relation to a camera
+        var normalWalkPosition = 
+            PlayerUtilities.GetDirectionFromCamera(playerStateMachine.projectedPos, playerStateMachine.camera.transform.position, playerStateMachine.horizontalInput, playerStateMachine.verticalInput);
 
-        // Already normalized ( 0 - 1 value for x and z )
-        var horizontalVector = new Vector3(playerStateMachine.horizontalInput, 0, 0);
-        var verticalVector = new Vector3(0, 0, playerStateMachine.verticalInput);
+        if (playerStateMachine.camera.isLockedOn)
+        {
+            normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(playerStateMachine.camera.lockOnFocusObject.transform.position, playerStateMachine.projectedPos, playerStateMachine.horizontalInput, playerStateMachine.verticalInput);
+        }
 
-        // Get the combined vector from horizontal and vertical input
-        var betweenVector = (horizontalVector + verticalVector).normalized;
 
-        // Rotate the vector perpendicular
-        var perpVector = new Vector3(testDirection.z, 0, -testDirection.x);
 
-        // Based on Freya Holmers rotation vector video
-        var endDirection = betweenVector.x * perpVector + betweenVector.z * testDirection;
+        // TODO: Camera angle having an INSTANT effect on the player position is not desireable
+        if (playerStateMachine.onGround)
+        {
+            // Based on Freya Holmers rotation vector video
 
+            endDirection = normalWalkPosition;
+        }
+        if (!playerStateMachine.onGround)
+        {
+            // should be able to control the player a little bit when they are in the air
+            // the strength of the rotation end direction should be dampened
+            normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(playerStateMachine.projectedPos, playerStateMachine.projectedPos + playerStateMachine.distanceFromCameraAtJump, playerStateMachine.horizontalInput, playerStateMachine.verticalInput);
+            Debug.Log(normalWalkPosition);
+            endDirection = Vector3.Lerp(endDirection, normalWalkPosition, 0.2f);
+        }
+
+        // Apply the direction vector to the player position with speed 
         playerStateMachine.projectedPos += endDirection * playerStateMachine.speed * Time.fixedDeltaTime;
 
-        // Get rotation of the player to reflect the keys inputted 
+        // Get rotation of the player to reflect where the player is headed
         if (endDirection != Vector3.zero)
         {
-            var testFinalRotation = Quaternion.LookRotation(endDirection, Vector3.up);
-            playerStateMachine.playerRb.MoveRotation(testFinalRotation);
+            var directionOfMovement = Quaternion.LookRotation(endDirection, Vector3.up);
+            playerStateMachine.playerRb.MoveRotation(directionOfMovement);
         }
 
         // Check if player is gonna collide into anything
-        //var newPos = checkFuturePosition(endDirection);
-
         int wallCollisionNum = PlayerUtilities.checkWallCollision(playerStateMachine.wallColliders, playerStateMachine.playerCap, playerStateMachine.projectedPos);
 
+        // Player will collide with a wall
         if (wallCollisionNum > 0)
         {
-            
             playerStateMachine.projectedPos = PlayerUtilities.checkFuturePosition(
                 endDirection, playerStateMachine.projectedPos, playerStateMachine.playerRb, playerStateMachine.playerCap, playerStateMachine.speed);
-
-
         }
 
-        
-
+        // Actually move the player
         playerStateMachine.playerRb.MovePosition(playerStateMachine.projectedPos);
         CheckSwitchStates();
     }

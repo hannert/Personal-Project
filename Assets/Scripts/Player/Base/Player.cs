@@ -89,6 +89,9 @@ public class Player : MonoBehaviour, IDamagable
     void Update()
     {
         stateMachine.Update();
+
+
+
     }
 
     void FixedUpdate()
