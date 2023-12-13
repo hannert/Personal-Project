@@ -11,20 +11,20 @@ public class PlayerGroundedState : PlayerState
     public override void EnterState()
     {
         Debug.Log("Entered grounded state");
-        playerStateMachine.playerAnim.SetBool("isGrounded", true);
+        _psm.playerAnim.SetBool("isGrounded", true);
         // Should snap the player to the ground here upon ENTERING
         // Send info to projectedPos
-        playerStateMachine.onGround = true;
+        _psm.onGround = true;
         InitializeSubState();
-        Vector3 newPos = snapToGround(playerStateMachine.playerRb.position);
-        playerStateMachine.projectedPos = newPos;
-        //Debug.Log("--" + playerStateMachine.projectedPos);
+        Vector3 newPos = snapToGround(_psm.playerRb.position);
+        _psm.projectedPos = newPos;
+        //Debug.Log("--" + _psm.projectedPos);
         
     }
 
     public override void ExitState()
     {
-        playerStateMachine.playerAnim.SetBool("isGrounded", false);
+        _psm.playerAnim.SetBool("isGrounded", false);
 
     }
 
@@ -36,7 +36,7 @@ public class PlayerGroundedState : PlayerState
     public override void InitializeSubState()
     {
         // While grounded, not moving -> Idle
-        if(playerStateMachine.horizontalInput == 0 && playerStateMachine.verticalInput == 0)
+        if(_psm.horizontalInput == 0 && _psm.verticalInput == 0)
         {
             SetSubState(player.playerIdleState);
         } else
@@ -50,9 +50,9 @@ public class PlayerGroundedState : PlayerState
     public override void PhysicsUpdate()
     {
         // When grounded, check if there is floor beneath to trigger falling state
-        if(PlayerUtilities.checkGroundCollision(playerStateMachine.groundColliders, playerStateMachine.playerCap) == 0)
+        if(PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) == 0)
         {
-            playerStateMachine.onGround = false;
+            _psm.onGround = false;
         }
         CheckSwitchStates();
     }
@@ -75,7 +75,7 @@ public class PlayerGroundedState : PlayerState
     private Vector3 getGroundPoint()
     {
         // We shoot a ray from the midpoint of the player to avoid faulty positions
-        if (Physics.Raycast(playerStateMachine.playerRb.transform.position + new Vector3(0, playerStateMachine.playerCap.height / 2), Vector3.down, out RaycastHit hit, 5.0f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(_psm.playerRb.transform.position + new Vector3(0, _psm.playerCap.height / 2), Vector3.down, out RaycastHit hit, 5.0f, LayerMask.GetMask("Ground")))
         {
             if (hit.distance < 2f)
             {
@@ -87,7 +87,7 @@ public class PlayerGroundedState : PlayerState
 
     public override bool CheckSwitchStates()
     {
-        if (playerStateMachine.onGround == false)
+        if (_psm.onGround == false)
         {
             SwitchState(player.playerAirState);
             return true;
@@ -102,11 +102,11 @@ public class PlayerGroundedState : PlayerState
         // Jump from grounded state
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            playerStateMachine.currentFallVelocity = playerStateMachine.jumpVelocity;
-            playerStateMachine.distanceFromCameraAtJump = playerStateMachine.camera.transform.position - playerStateMachine.playerRb.position ;
-            playerStateMachine.playerAnim.SetTrigger("jump");
+            _psm.currentFallVelocity = _psm.jumpVelocity;
+            _psm.distanceFromCameraAtJump = _psm.camera.transform.position - _psm.playerRb.position ;
             SwitchState(player.playerAirState);
-            Debug.Log("Space pressed");
         }
+        // Roll from grounded state
+
     }
 }

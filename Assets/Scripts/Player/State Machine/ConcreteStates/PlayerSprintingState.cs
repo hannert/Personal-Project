@@ -16,7 +16,7 @@ public class PlayerSprintingState : PlayerWalkingState
             return true;
 
         }
-        if (playerStateMachine.horizontalInput == 0 && playerStateMachine.verticalInput == 0)
+        if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
         {
             SwitchState(player.playerIdleState);
             return true;
@@ -27,12 +27,14 @@ public class PlayerSprintingState : PlayerWalkingState
     public override void EnterState()
     {
         Debug.Log("Entered Sprinting state");
-        playerStateMachine.playerAnim.SetBool("isSprinting", true);
+        _psm.isSprinting = true;
+        _psm.playerAnim.SetBool("isSprinting", true);
     }
 
     public override void ExitState()
     {
-        playerStateMachine.playerAnim.SetBool("isSprinting", false);
+        _psm.isSprinting = false;
+        _psm.playerAnim.SetBool("isSprinting", false);
 
     }
 

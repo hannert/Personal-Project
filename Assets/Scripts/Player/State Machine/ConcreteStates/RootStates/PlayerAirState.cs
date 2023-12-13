@@ -21,7 +21,7 @@ public class PlayerAirState : PlayerState
 
     public override bool CheckSwitchStates()
     {
-        if (playerStateMachine.onGround)
+        if (_psm.onGround)
         {
             Debug.Log("Air TO ground switch");
             SwitchState(player.playerGroundedState);
@@ -32,7 +32,7 @@ public class PlayerAirState : PlayerState
 
     public override void EnterState()
     {
-        playerStateMachine.onGround = false;
+        _psm.onGround = false;
         InitializeSubState();
 
         CheckAnimationCondition();
@@ -57,7 +57,7 @@ public class PlayerAirState : PlayerState
     public override void InitializeSubState()
     {
         // Is falling or ascending(Jumping)
-        if (playerStateMachine.horizontalInput == 0 && playerStateMachine.verticalInput == 0)
+        if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
         {
             Debug.Log("Set sub of air to idle");
             SetSubState(player.playerIdleState);
@@ -72,13 +72,13 @@ public class PlayerAirState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        if (PlayerUtilities.checkGroundCollision(playerStateMachine.groundColliders, playerStateMachine.playerCap) != 0 && playerStateMachine.currentFallVelocity < 0)
+        if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) != 0 && _psm.currentFallVelocity < 0)
         {
-            playerStateMachine.onGround = true;
-            playerStateMachine.isJumping = false;
-            playerStateMachine.canJump = true;
-            playerStateMachine.isFalling = false;
-            playerStateMachine.currentFallVelocity = 0;
+            _psm.onGround = true;
+            _psm.isJumping = false;
+            _psm.canJump = true;
+            _psm.isFalling = false;
+            _psm.currentFallVelocity = 0;
         }
 
         
@@ -86,66 +86,66 @@ public class PlayerAirState : PlayerState
         if (CheckSwitchStates()) return;
 
         Debug.Log("Modifying projected Pos in Air state");
-        playerStateMachine.projectedPos = applyGravityToVector(playerStateMachine.playerRb.position);
+        _psm.projectedPos = applyGravityToVector(_psm.playerRb.position);
 
         UpdatePlayerBools();
         CheckAnimationCondition();
 
 
-        Debug.Log("Modifying projected Pos in Air state to " + playerStateMachine.projectedPos);
+        Debug.Log("Modifying projected Pos in Air state to " + _psm.projectedPos);
 
     }
     private Vector3 applyGravityToVector(Vector3 currentTrajectedPosition)
     {
-        float newYPos = playerStateMachine.playerRb.position.y + (playerStateMachine.currentFallVelocity * Time.fixedDeltaTime + ((0.5f) * playerStateMachine.gravity * Time.fixedDeltaTime * Time.fixedDeltaTime));
+        float newYPos = _psm.playerRb.position.y + (_psm.currentFallVelocity * Time.fixedDeltaTime + ((0.5f) * _psm.gravity * Time.fixedDeltaTime * Time.fixedDeltaTime));
         Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, newYPos, currentTrajectedPosition.z);
-        playerStateMachine.currentFallVelocity += playerStateMachine.gravity * Time.fixedDeltaTime;
-        playerStateMachine.currentFallVelocity = Mathf.Clamp(playerStateMachine.currentFallVelocity, -playerStateMachine.maxFallSpeed, playerStateMachine.jumpVelocity);
-        Debug.Log(playerStateMachine.currentFallVelocity);
+        _psm.currentFallVelocity += _psm.gravity * Time.fixedDeltaTime;
+        _psm.currentFallVelocity = Mathf.Clamp(_psm.currentFallVelocity, -_psm.maxFallSpeed, _psm.jumpVelocity);
+        Debug.Log(_psm.currentFallVelocity);
         Debug.Log(newYPos);
         return projectedPos;
     }
 
     private void CheckAnimationCondition()
     {
-        if (playerStateMachine.onGround)
+        if (_psm.onGround)
         {
-            playerStateMachine.playerAnim.SetBool("isFalling", false);
-            playerStateMachine.playerAnim.SetBool("isJumping", false);
+            _psm.playerAnim.SetBool("isFalling", false);
+            _psm.playerAnim.SetBool("isJumping", false);
             return;
         }
 
         // If not falling, ascending
         if (!isFalling())
         {
-            playerStateMachine.playerAnim.SetBool("isFalling", false);
-            playerStateMachine.playerAnim.SetBool("isJumping", true);
+            _psm.playerAnim.SetBool("isFalling", false);
+            _psm.playerAnim.SetBool("isJumping", true);
 
         }
         // Player is jumping up
         else
         {
-            playerStateMachine.playerAnim.SetBool("isFalling", true);
-            playerStateMachine.playerAnim.SetBool("isJumping", false);
+            _psm.playerAnim.SetBool("isFalling", true);
+            _psm.playerAnim.SetBool("isJumping", false);
         }
     }
 
 
     private bool isFalling()
     {
-        return playerStateMachine.isFalling;
+        return _psm.isFalling;
     }
 
     private void UpdatePlayerBools()
     {
-        if (playerStateMachine.currentFallVelocity < 0)
+        if (_psm.currentFallVelocity < 0)
         {
-            playerStateMachine.isFalling = true;
-            playerStateMachine.isJumping = false;
+            _psm.isFalling = true;
+            _psm.isJumping = false;
         } else
         {
-            playerStateMachine.isFalling = false;
-            playerStateMachine.isJumping = true;
+            _psm.isFalling = false;
+            _psm.isJumping = true;
         }
     }
 }

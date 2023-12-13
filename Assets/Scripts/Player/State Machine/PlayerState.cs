@@ -29,7 +29,7 @@ public abstract class PlayerState
     /// reference to the PlayerStateMachine
     /// <para>PlayerStateMachine playerStateMachine</para>
     /// </summary>
-    protected PlayerStateMachine playerStateMachine;
+    protected PlayerStateMachine _psm;
 
     /// <summary>
     /// Constructor to pass in a reference to the player its attached to and its stateMachine code
@@ -39,7 +39,7 @@ public abstract class PlayerState
     public PlayerState(Player player, PlayerStateMachine playerStateMachine)
     {
         this.player = player;
-        this.playerStateMachine = playerStateMachine;
+        this._psm = playerStateMachine;
     }
 
     // Virtual methods are used when we want to override a certain behavior for the dervied class
@@ -123,7 +123,7 @@ public abstract class PlayerState
         if (_isRootState)
         {
             // Root state is entered within the playerStateMachine
-            playerStateMachine.ChangeState(newState);
+            _psm.ChangeState(newState);
         }
         else if (_currentSuperState != null)
         {

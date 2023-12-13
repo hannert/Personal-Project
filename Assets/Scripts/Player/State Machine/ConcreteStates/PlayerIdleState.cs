@@ -10,7 +10,7 @@ public class PlayerIdleState : PlayerState
 
     public override bool CheckSwitchStates()
     {
-        if (playerStateMachine.horizontalInput != 0 || playerStateMachine.verticalInput != 0)
+        if (_psm.horizontalInput != 0 || _psm.verticalInput != 0)
         {
 
             // Left shift detected, go into sprint
@@ -36,12 +36,12 @@ public class PlayerIdleState : PlayerState
     public override void EnterState()
     {
         Debug.Log("Entered Idle State");
-        playerStateMachine.playerAnim.SetBool("isIdle", true);
+        _psm.playerAnim.SetBool("isIdle", true);
     }
 
     public override void ExitState()
     {
-        playerStateMachine.playerAnim.SetBool("isIdle", false);
+        _psm.playerAnim.SetBool("isIdle", false);
     }
 
     public override void FrameUpdate()
@@ -60,14 +60,14 @@ public class PlayerIdleState : PlayerState
             return;
         }
         
-        if (playerStateMachine.playerRb.transform.position == playerStateMachine.projectedPos)
+        if (_psm.playerRb.transform.position == _psm.projectedPos)
         {
             return;
         }
         else
         {
-            Debug.Log("Moving in idle to " + playerStateMachine.projectedPos);
-            playerStateMachine.playerRb.MovePosition(playerStateMachine.projectedPos);
+            Debug.Log("Moving in idle to " + _psm.projectedPos);
+            _psm.playerRb.MovePosition(_psm.projectedPos);
         }
     }
 
