@@ -94,7 +94,7 @@ public class PlayerWalkingState : PlayerMovementState
             playerStateMachine.projectedPos = CalculatePositionToMoveTo(playerStateMachine.projectedPos, endDirection, playerStateMachine.speed);
         } else
         {
-            
+
             // Get direction with axes of LockOnTarget and Player
             normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(playerStateMachine.camera.lockOnFocusObject.transform.position, playerStateMachine.projectedPos, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             playerStateMachine.projectedPos = CalculatePositionToMoveTo(playerStateMachine.projectedPos, normalWalkPosition, playerStateMachine.speed);
@@ -106,14 +106,18 @@ public class PlayerWalkingState : PlayerMovementState
         // Get rotation of the player to reflect where the player is headed
         if (endDirection != Vector3.zero)
         {
+            // If player is NOT locked on
             if (!playerStateMachine.camera.isLockedOn)
             {
                 var directionOfMovement = Quaternion.LookRotation(endDirection, Vector3.up);
                 playerStateMachine.playerRb.MoveRotation(directionOfMovement);
             } else
             {
-                // If locked on, look at the object that is locked onto
+                // If locked on, look at the object that is locked onto]
+                // Currently, we only want the Y rotation component from the LookRotation. 
+                // !!! TODO: Perhaps we want all of the rotation for in-air movement and further states
                 var directionToLockOn = Quaternion.LookRotation(playerStateMachine.camera.lockOnFocusObject.transform.position - playerStateMachine.playerRb.position, Vector3.up);
+                directionToLockOn = Quaternion.Euler(0, directionToLockOn.eulerAngles.y, 0);
                 playerStateMachine.playerRb.MoveRotation(directionToLockOn);
             }
             
