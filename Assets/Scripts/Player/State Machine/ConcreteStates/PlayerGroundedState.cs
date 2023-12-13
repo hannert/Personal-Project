@@ -77,10 +77,10 @@ public class PlayerGroundedState : PlayerState
         // We shoot a ray from the midpoint of the player to avoid faulty positions
         if (Physics.Raycast(playerStateMachine.playerRb.transform.position + new Vector3(0, playerStateMachine.playerCap.height / 2), Vector3.down, out RaycastHit hit, 5.0f, LayerMask.GetMask("Ground")))
         {
-            //Debug.DrawRay(playerStateMachine.playerRb.transform.position, Vector3.down);
-            Debug.DrawRay(hit.point, Vector3.up, Color.red, 3);
-            Debug.Log(hit.point.y);
-            return hit.point;
+            if (hit.distance < 2f)
+            {
+                return hit.point;
+            }            
         }
         return Vector3.zero;
     }

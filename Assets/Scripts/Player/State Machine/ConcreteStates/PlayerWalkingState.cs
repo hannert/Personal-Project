@@ -48,46 +48,76 @@ public class PlayerWalkingState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        // Get direction the player is already facing 
-        var endDirection = PlayerUtilities.getDirectionFromOrigin(playerStateMachine.playerRb.rotation.eulerAngles.y);
+        // While in walking
+        // ------------------------
+        // Grounded walking
+        // Grounded locked on walking
+        // Air walking
+        // Air locked on walking
+        
 
+        // Direction the player is already facing 
+        var endDirection = Vector3.zero;
         // Vector3 of proposed player position if player input being taken into account in relation to a camera
-        var normalWalkPosition = 
-            PlayerUtilities.GetDirectionFromCamera(playerStateMachine.projectedPos, playerStateMachine.camera.transform.position, playerStateMachine.horizontalInput, playerStateMachine.verticalInput);
-
-        if (playerStateMachine.camera.isLockedOn)
-        {
-            normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(playerStateMachine.camera.lockOnFocusObject.transform.position, playerStateMachine.projectedPos, playerStateMachine.horizontalInput, playerStateMachine.verticalInput);
-        }
+        var normalWalkPosition = Vector3.zero;
 
 
-
-        // TODO: Camera angle having an INSTANT effect on the player position is not desireable
+        // Player is on the ground
         if (playerStateMachine.onGround)
         {
-            // Based on Freya Holmers rotation vector video
+            var directionOfPlayerForwardRotation = PlayerUtilities.getDirectionFromOrigin(playerStateMachine.playerRb.rotation.eulerAngles.y);
+            normalWalkPosition =  PlayerUtilities.GetDirectionFromCamera(playerStateMachine.projectedPos, playerStateMachine.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
             endDirection = normalWalkPosition;
         }
+
+
+        // Player is NOT on the ground
         if (!playerStateMachine.onGround)
         {
             // should be able to control the player a little bit when they are in the air
             // the strength of the rotation end direction should be dampened
-            normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(playerStateMachine.projectedPos, playerStateMachine.projectedPos + playerStateMachine.distanceFromCameraAtJump, playerStateMachine.horizontalInput, playerStateMachine.verticalInput);
-            Debug.Log(normalWalkPosition);
+            normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(
+                playerStateMachine.projectedPos, playerStateMachine.projectedPos + playerStateMachine.distanceFromCameraAtJump, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             endDirection = Vector3.Lerp(endDirection, normalWalkPosition, 0.2f);
         }
 
-        // Apply the direction vector to the player position with speed 
-        playerStateMachine.projectedPos += endDirection * playerStateMachine.speed * Time.fixedDeltaTime;
 
+        #region Calculate the position the player will move to
+        // If the player is not locked on, proceed with movement based on where the camera is looking.
+        // If player IS locked on, move the player based on an axis based on the Vector3 of the LockOnTarget and the Player rather than the camera.
+        if (!playerStateMachine.camera.isLockedOn)
+        {
+            // Apply the direction vector to the player position with speed 
+            playerStateMachine.projectedPos = CalculatePositionToMoveTo(playerStateMachine.projectedPos, endDirection, playerStateMachine.speed);
+        } else
+        {
+            // Get direction with axes of LockOnTarget and Player
+            normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(playerStateMachine.camera.lockOnFocusObject.transform.position, playerStateMachine.projectedPos, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            playerStateMachine.projectedPos = CalculatePositionToMoveTo(playerStateMachine.projectedPos, normalWalkPosition, playerStateMachine.speed);
+
+        }
+        #endregion
+
+        #region Rotate the players model
         // Get rotation of the player to reflect where the player is headed
         if (endDirection != Vector3.zero)
         {
-            var directionOfMovement = Quaternion.LookRotation(endDirection, Vector3.up);
-            playerStateMachine.playerRb.MoveRotation(directionOfMovement);
+            if (!playerStateMachine.camera.isLockedOn)
+            {
+                var directionOfMovement = Quaternion.LookRotation(endDirection, Vector3.up);
+                playerStateMachine.playerRb.MoveRotation(directionOfMovement);
+            } else
+            {
+                // If locked on, look at the object that is locked onto
+                var directionToLockOn = Quaternion.LookRotation(playerStateMachine.camera.lockOnFocusObject.transform.position - playerStateMachine.playerRb.position, Vector3.up);
+                playerStateMachine.playerRb.MoveRotation(directionToLockOn);
+            }
+            
         }
+        #endregion
 
+        #region Wall collision 
         // Check if player is gonna collide into anything
         int wallCollisionNum = PlayerUtilities.checkWallCollision(playerStateMachine.wallColliders, playerStateMachine.playerCap, playerStateMachine.projectedPos);
 
@@ -97,12 +127,17 @@ public class PlayerWalkingState : PlayerState
             playerStateMachine.projectedPos = PlayerUtilities.checkFuturePosition(
                 endDirection, playerStateMachine.projectedPos, playerStateMachine.playerRb, playerStateMachine.playerCap, playerStateMachine.speed);
         }
+        #endregion
 
         // Actually move the player
         playerStateMachine.playerRb.MovePosition(playerStateMachine.projectedPos);
         CheckSwitchStates();
     }
 
+    private Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed)
+    {
+        return projectedPosition + directionToMove * speed * Time.fixedDeltaTime;
+    }
 
 
 }

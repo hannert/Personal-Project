@@ -155,9 +155,10 @@ public class CameraController : MonoBehaviour
         
 
     }
-    public void toggleLockOn()
+    public bool toggleLockOn()
     {
         isLockedOn = !isLockedOn;
+        return isLockedOn;
     }
     public void ChangeLockOn()
     {

@@ -207,4 +207,16 @@ public class PlayerUtilities
 
         return endDirection;
     }
+
+    public static void checkRigidBodyOverlap()
+    {
+
+    }
+
+    public static void pushRigidBodyOut()
+    {
+
+    }
+
+
 }

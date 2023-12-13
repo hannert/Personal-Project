@@ -13,7 +13,7 @@ public class Player : MonoBehaviour, IDamagable
     public float sprintSpeed = 15.0f;
     private Rigidbody playerRb;
     private CapsuleCollider playerCap;
-    private CameraController camera;
+    private new CameraController camera;
     private Animator playerAnim;
 
     public void Damage(float damage)

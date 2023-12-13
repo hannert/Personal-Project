@@ -8,6 +8,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerStateMachine
 {
+    #region getters/setters
     // State machine will have all the data?
     public float speed = 10.0f;
     public float sprintSpeed = 15.0f;
@@ -35,7 +36,7 @@ public class PlayerStateMachine
     public bool isLockedOn { get; set; } = false;
     public float maxFallSpeed { get; set; } = 30.0f;
     public float currentFallVelocity { get; set; } = 0.0f;
-    public float jumpVelocity { get; set; } = 20.0f;
+    public float jumpVelocity { get; set; } = 15.0f;
     public float gravity { get; set; } = -25.0f;
     public float currentYPos { get; set; } = 0f;
 
@@ -49,6 +50,9 @@ public class PlayerStateMachine
 
     private RaycastHit[] hits = new RaycastHit[10];
 
+    #endregion
+
+    // Dependency Injection of the most important player aspects
     public PlayerStateMachine(Rigidbody playerRb, CapsuleCollider playerCap, CameraController camera, Animator playerAnim)
     {
         this.playerRb = playerRb;
@@ -57,19 +61,7 @@ public class PlayerStateMachine
         this.playerAnim = playerAnim;
     }
 
-    
-
-
-
-    #region getters/setters
-    
-    #endregion
-    
-
     public PlayerState currentPlayerState { get; set; }
-
-
-    
 
     public void Initialize(PlayerState startingState)
     {
@@ -175,7 +167,7 @@ public class PlayerStateMachine
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            camera.toggleLockOn();
+            playerAnim.SetBool("isLockedOn", camera.toggleLockOn());
         }
 
         playerAnim.SetFloat("horizontalInput", horizontalInput);
