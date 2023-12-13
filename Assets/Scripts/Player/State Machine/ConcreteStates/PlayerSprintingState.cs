@@ -36,8 +36,14 @@ public class PlayerSprintingState : PlayerWalkingState
 
     }
 
-    private override Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed)
+    public override Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed)
     {
+        Debug.Log("Calculate positon in sprint");
         return projectedPosition + directionToMove * speed * 1.5f * Time.fixedDeltaTime;
+    }
+
+    public override void PhysicsUpdate()
+    {
+        base.PhysicsUpdate();
     }
 }

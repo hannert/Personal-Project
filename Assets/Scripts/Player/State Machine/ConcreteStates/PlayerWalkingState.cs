@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class PlayerWalkingState : PlayerState
+public class PlayerWalkingState : PlayerMovementState
 {
     public PlayerWalkingState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
     {
@@ -79,7 +80,7 @@ public class PlayerWalkingState : PlayerState
             // the strength of the rotation end direction should be dampened
             normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(
                 playerStateMachine.projectedPos, playerStateMachine.projectedPos + playerStateMachine.distanceFromCameraAtJump, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            endDirection = Vector3.Lerp(endDirection, normalWalkPosition, 0.2f);
+            endDirection = Vector3.Lerp(endDirection, normalWalkPosition, 1f);
         }
 
 
@@ -88,10 +89,12 @@ public class PlayerWalkingState : PlayerState
         // If player IS locked on, move the player based on an axis based on the Vector3 of the LockOnTarget and the Player rather than the camera.
         if (!playerStateMachine.camera.isLockedOn)
         {
+            Debug.Log("WOWW!!!");
             // Apply the direction vector to the player position with speed 
             playerStateMachine.projectedPos = CalculatePositionToMoveTo(playerStateMachine.projectedPos, endDirection, playerStateMachine.speed);
         } else
         {
+            
             // Get direction with axes of LockOnTarget and Player
             normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(playerStateMachine.camera.lockOnFocusObject.transform.position, playerStateMachine.projectedPos, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             playerStateMachine.projectedPos = CalculatePositionToMoveTo(playerStateMachine.projectedPos, normalWalkPosition, playerStateMachine.speed);
@@ -134,7 +137,7 @@ public class PlayerWalkingState : PlayerState
         CheckSwitchStates();
     }
 
-    private Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed)
+    public override Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed)
     {
         return projectedPosition + directionToMove * speed * Time.fixedDeltaTime;
     }

@@ -43,37 +43,37 @@ public abstract class PlayerState
     }
 
     // Virtual methods are used when we want to override a certain behavior for the dervied class
-    
+
     /// <summary>
     /// Execute code within method upon entering the state
     /// </summary>
-    public abstract void EnterState();
+    public virtual void EnterState() { }
 
     /// <summary>
     /// Execute code within method upon exiting the state
     /// </summary>
-    public abstract void ExitState();
+    public virtual void ExitState() { }
 
     /// <summary>
     /// Execute Update() code within method
     /// </summary>
-    public abstract void FrameUpdate();
+    public virtual void FrameUpdate() { }
 
     /// <summary>
     /// Execute FixedUpdate() code within method
     /// </summary>
-    public abstract void PhysicsUpdate();
+    public virtual void PhysicsUpdate() { }
 
     /// <summary>
     /// Check if its time to switch states, returns true if possible, false otherwise
     /// </summary>
     /// <returns>should return true if state change if successful, false if not</returns>
-    public abstract bool CheckSwitchStates();
+    public virtual bool CheckSwitchStates() { return false; }
 
     /// <summary>
     /// Sets up the correct substates for a parent state
     /// </summary>
-    public abstract void InitializeSubState();
+    public virtual void InitializeSubState() { }
 
     /// <summary>
     /// Updates the current states through its FrameUpdate() method and proceeds to its children to do the same
