@@ -70,7 +70,15 @@ public class PlayerRollingState : PlayerMovementState
         distanceToRoll = _psm.speed * 0.8f;
 
         // Once we enter, we need the direction of the roll!
-        directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_psm.projectedPos, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        if (_psm.isLockedOn)
+        {
+            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_psm.camera.lockOnFocusObject.transform.position, _psm.playerRb.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        }
+        else
+        {
+            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_psm.projectedPos, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        }
+        
 
         Debug.Log(distanceToRoll);
     }
@@ -104,6 +112,8 @@ public class PlayerRollingState : PlayerMovementState
         _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, directionOfRoll, _psm.speed);
         var directionOfMovement = Quaternion.LookRotation(directionOfRoll, Vector3.up);
         _psm.playerRb.MoveRotation(directionOfMovement);
+
+        
 
         _psm.playerRb.MovePosition(_psm.projectedPos);
 
