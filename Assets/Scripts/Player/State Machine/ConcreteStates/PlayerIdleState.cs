@@ -37,6 +37,7 @@ public class PlayerIdleState : PlayerState
     {
         Debug.Log("Entered Idle State");
         _psm.playerAnim.SetBool("isIdle", true);
+        InitializeSubState();
     }
 
     public override void ExitState()
@@ -50,6 +51,14 @@ public class PlayerIdleState : PlayerState
 
     public override void InitializeSubState()
     {
+        // Check if we have a weapon!
+        // TODO: Further check for a weapon must be done later!
+        if (_psm.isEquipped)
+        {
+            Debug.Log("Substate for idle set to weapon idle");
+            SetSubState(player.playerIdleWeaponState);
+        }
+
     }
 
     public override void PhysicsUpdate()

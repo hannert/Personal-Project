@@ -44,6 +44,13 @@ public class Player : MonoBehaviour, IDamagable
     public PlayerSprintingState playerSprintingState { get; set; }
     public PlayerRollingState playerRollingState { get; set; }
 
+    #region Combat States
+    public PlayerAttackState playerAttackState { get; set; }
+    public PlayerIdleWeaponState playerIdleWeaponState { get; set; }
+
+
+    #endregion
+
     #endregion
 
     public void Awake()
@@ -57,16 +64,22 @@ public class Player : MonoBehaviour, IDamagable
 
         stateMachine = new PlayerStateMachine(playerRb, playerCap, camera, playerAnim);
 
-        # region root states
+        # region Root States
         playerGroundedState = new PlayerGroundedState(this, stateMachine);
         playerAirState = new PlayerAirState(this, stateMachine);
-        # endregion
-        
+        #endregion
 
+        #region Movement States
         playerIdleState = new PlayerIdleState(this, stateMachine);
         playerWalkingState = new PlayerWalkingState(this, stateMachine);
         playerSprintingState = new PlayerSprintingState(this, stateMachine);
         playerRollingState = new PlayerRollingState(this, stateMachine);
+        #endregion
+
+        #region Combat States
+        playerAttackState = new PlayerAttackState(this, stateMachine);
+        playerIdleWeaponState = new PlayerIdleWeaponState(this, stateMachine);
+        #endregion
 
         stateMachine.Initialize(playerGroundedState);
     }

@@ -25,17 +25,29 @@ public class PlayerStateMachine
     [SerializeField]
     public float verticalInput { get; set; }
 
-
+    #region Movement booleans
+    // -----------------------
     public bool onGround { get; set; } = false;
     public bool canJump { get; set; } = true;
     public bool isJumping { get; set; } = false;
     public bool isFalling { get; set; } = false;
     public bool isWalking { get; set; } = false;
-    public bool isSprinting { get; set; } = false;
-    public bool isRolling { get; set; } = false;
-    public bool snapFlag { get; set; } = false;
-
+    public bool isSprinting { get; set; } = false;    
     public bool isLockedOn { get; set; } = false;
+    public bool isRolling { get; set; } = false;
+    // -----------------------
+    #endregion
+
+    #region Combat booleans
+    // -----------------------
+    public bool isAttacking { get; set; } = false;
+    public bool hasWeapon { get; set; } = false;
+    public bool hasShield { get; set; } = false;
+    public bool isEquipped { get; set; } = true;
+    // -----------------------
+    #endregion
+
+    public bool snapFlag { get; set; } = false;
     public float maxFallSpeed { get; set; } = 30.0f;
     public float currentFallVelocity { get; set; } = 0.0f;
     public float jumpVelocity { get; set; } = 15.0f;

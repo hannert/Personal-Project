@@ -33,6 +33,7 @@ public class PlayerWalkingState : PlayerMovementState
         Debug.Log("Entered Walking state");
         _psm.isWalking = true;
         _psm.playerAnim.SetBool("isWalking", true);
+        InitializeSubState();
     }
 
     public override void ExitState()
@@ -52,6 +53,13 @@ public class PlayerWalkingState : PlayerMovementState
 
     public override void InitializeSubState()
     {
+        // Check if we have a weapon!
+        // TODO: Further check for a weapon must be done later!
+        if (_psm.isEquipped)
+        {
+            Debug.Log("Substate for idle set to weapon idle");
+            SetSubState(player.playerIdleWeaponState);
+        }
     }
 
     public override void PhysicsUpdate()
@@ -69,6 +77,8 @@ public class PlayerWalkingState : PlayerMovementState
         // Vector3 of proposed player position if player input being taken into account in relation to a camera
         var normalWalkPosition = Vector3.zero;
 
+        var walkingVelocity = Vector3.zero;
+        var collideVector = Vector3.zero;
 
         // Player is on the ground
         if (_psm.onGround)
@@ -88,26 +98,48 @@ public class PlayerWalkingState : PlayerMovementState
             normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(
                 _psm.projectedPos, _psm.projectedPos + _psm.distanceFromCameraAtJump, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             endDirection = Vector3.Lerp(endDirection, normalWalkPosition, 1f);
+            
+
         }
 
+        #region Wall collision and Movement application
+        var playerVelocityVector = endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime;
 
-        #region Calculate the position the player will move to
-        // If the player is not locked on, proceed with movement based on where the camera is looking.
-        // If player IS locked on, move the player based on an axis based on the Vector3 of the LockOnTarget and the Player rather than the camera.
-        if (!_psm.camera.isLockedOn)
+        collideVector = PlayerUtilities.collideAndSlide(_psm.playerCap, playerVelocityVector, _psm.playerRb.position, 1, 0.2f, 3);
+        
+        // Player will collide with wall 
+        if(collideVector != playerVelocityVector)
         {
-            Debug.Log("WOWW!!!");
-            // Apply the direction vector to the player position with speed 
-            _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, endDirection, _psm.speed);
-        } else
+            _psm.projectedPos += collideVector;
+            _psm.playerRb.MovePosition(_psm.projectedPos);
+
+        }
+        // Player will not collide with wall. Proceed as normal       
+        else
         {
 
-            // Get direction with axes of LockOnTarget and Player
-            normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(_psm.camera.lockOnFocusObject.transform.position, _psm.projectedPos, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, normalWalkPosition, _psm.speed);
+            #region Calculate the position the player will move to
+            // If the player is not locked on, proceed with movement based on where the camera is looking.
+            // If player IS locked on, move the player based on an axis based on the Vector3 of the LockOnTarget and the Player rather than the camera.
+            if (!_psm.camera.isLockedOn)
+            {
+                // Apply the direction vector to the player position with speed
+                _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, endDirection, _psm.speed);
+            }
+            else
+            {
 
+                // Get direction with axes of LockOnTarget and Player
+                normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(_psm.camera.lockOnFocusObject.transform.position, _psm.projectedPos, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+                walkingVelocity = CalculatePositionToMoveTo(_psm.projectedPos, normalWalkPosition, _psm.speed);
+                _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, normalWalkPosition, _psm.speed);
+
+            }
+            #endregion
         }
         #endregion
+
+
 
         #region Rotate the players model
         // Get rotation of the player to reflect where the player is headed
@@ -131,20 +163,12 @@ public class PlayerWalkingState : PlayerMovementState
         }
         #endregion
 
-        #region Wall collision 
-        // Check if player is gonna collide into anything
-        int wallCollisionNum = PlayerUtilities.checkWallCollision(_psm.wallColliders, _psm.playerCap, _psm.projectedPos);
 
-        // Player will collide with a wall
-        if (wallCollisionNum > 0)
-        {
-            _psm.projectedPos = PlayerUtilities.checkFuturePosition(
-                endDirection, _psm.projectedPos, _psm.playerRb, _psm.playerCap, _psm.speed);
-        }
-        #endregion
 
         // Actually move the player
+
         _psm.playerRb.MovePosition(_psm.projectedPos);
+        
         CheckSwitchStates();
     }
 
