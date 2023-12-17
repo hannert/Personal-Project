@@ -55,7 +55,7 @@ public class PlayerIdleState : PlayerState
         // TODO: Further check for a weapon must be done later!
         if (_psm.isEquipped)
         {
-            Debug.Log("Substate for idle set to weapon idle");
+            //Debug.Log("Substate for idle set to weapon idle");
             SetSubState(player.playerIdleWeaponState);
         }
 

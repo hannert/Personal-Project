@@ -102,6 +102,14 @@ public class PlayerWalkingState : PlayerMovementState
 
         }
 
+        var slopeVector = PlayerUtilities.slideOnSlope(_psm.playerCap, endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime, _psm.playerRb.position, 0.2f);
+        if(slopeVector!= Vector3.zero)
+        {
+            Debug.Log("Slope found!");
+            endDirection = slopeVector;
+
+        }
+
         #region Wall collision and Movement application
         var playerVelocityVector = endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime;
 
@@ -149,6 +157,7 @@ public class PlayerWalkingState : PlayerMovementState
             if (!_psm.camera.isLockedOn)
             {
                 var directionOfMovement = Quaternion.LookRotation(endDirection, Vector3.up);
+                //directionOfMovement = Quaternion.Euler(0, directionOfMovement.eulerAngles.y, 0);
                 _psm.playerRb.MoveRotation(directionOfMovement);
             } else
             {

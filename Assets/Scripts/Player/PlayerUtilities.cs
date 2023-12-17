@@ -214,6 +214,43 @@ public class PlayerUtilities
         return vel;
     }
 
+    public static Vector3 slideOnSlope(CapsuleCollider playerCap, Vector3 vel, Vector3 pos, float skinWidth)
+    {
+        // We should capsule cast from behind the player =)
+        var oppositeDirection = -vel.normalized;
+        var backwardsOffset = oppositeDirection * (skinWidth + playerCap.radius);
+
+        var localPoint1 = (Vector3.up * 0.2f) + playerCap.center - Vector3.down * (playerCap.height / 2 - (playerCap.radius));// Above point
+        var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - (playerCap.radius)); 
+        var point1 = playerCap.transform.TransformPoint(localPoint1) + backwardsOffset;
+        var point2 = playerCap.transform.TransformPoint(localPoint2) + backwardsOffset;
+
+        Debug.DrawRay(point1, vel.normalized);
+
+        float dist = vel.magnitude + skinWidth + 0.4f + backwardsOffset.magnitude;
+        RaycastHit hit;
+
+        if (Physics.CapsuleCast(point1, point2, playerCap.radius, vel.normalized, out hit, dist, LayerMask.GetMask("Ground")))
+        {
+            //Vector3 snapToSurface = vel.normalized * (hit.distance - skinWidth + 0.4f);
+            Vector3 snapToSurface = vel.normalized * (hit.distance);
+
+            // Ensures we have enough room to perform our collision check properly
+            if (snapToSurface.magnitude <= skinWidth)
+            {
+                snapToSurface = Vector3.zero;
+            }
+
+            Vector3 answer  = Vector3.ProjectOnPlane(snapToSurface, hit.normal).normalized;
+
+            return answer;
+
+        }
+        return Vector3.zero;
+    }
+
+
+
     /// <summary>
     ///  Takes in an euler angle from the player's rotation (-180, 180) (L, R) Respectively. Transforms it into a direction Vector3 the player is facing in.
     /// </summary>
