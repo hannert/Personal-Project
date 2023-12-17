@@ -112,7 +112,7 @@ public class PlayerWalkingState : PlayerMovementState
             goingUpSlope = true;
 
         }
-        var slideDown = PlayerUtilities.slideDownSlope(_psm.playerCap, endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime, _psm.playerRb.position, 0.2f);
+        var slideDown = PlayerUtilities.slideDownSlope(_psm.playerRb, _psm.playerCap, endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime, _psm.playerRb.position, 0.2f);
         if (slideDown != Vector3.zero)
         {
            // Debug.Log("Slope found!");
@@ -128,8 +128,14 @@ public class PlayerWalkingState : PlayerMovementState
         // Player will collide with wall 
         if(collideVector != playerVelocityVector)
         {
-            _psm.projectedPos += collideVector;
-            _psm.playerRb.MovePosition(_psm.projectedPos);
+            _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, collideVector.normalized, _psm.speed);
+
+            if (!isGoingToCollide())
+            {
+                _psm.playerRb.MovePosition(_psm.projectedPos);
+                rotatePlayer(collideVector.normalized);
+                return;
+            }
 
         }
         // Player will not collide with wall. Proceed as normal       
@@ -146,7 +152,7 @@ public class PlayerWalkingState : PlayerMovementState
                 {
                     //Debug.Log("YEOWCH!");
                     _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, endDirection, _psm.speed);
-                    _psm.projectedPos = new Vector3(_psm.projectedPos.x, PlayerUtilities.getGroundPoint(_psm.playerRb, _psm.playerCap).y, _psm.projectedPos.z);
+                    //_psm.projectedPos = new Vector3(_psm.projectedPos.x, PlayerUtilities.getGroundPoint(_psm.playerRb, _psm.playerCap).y, _psm.projectedPos.z);
                 }
                 else
                 {
@@ -180,15 +186,72 @@ public class PlayerWalkingState : PlayerMovementState
 
         #region Rotate the players model
         // Get rotation of the player to reflect where the player is headed
-        if (endDirection != Vector3.zero)
+        rotatePlayer(endDirection);
+        #endregion
+
+
+
+        // Actually move the player
+
+        _psm.playerRb.MovePosition(_psm.projectedPos);
+        stopOnCollision();
+        CheckSwitchStates();
+    }
+
+    public override Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed)
+    {
+        return projectedPosition + directionToMove * speed * Time.fixedDeltaTime;
+    }
+
+    public void stopOnCollision()
+    {
+        //We dont need point1 right now, but will be used if we need to use a capsule cast to reflect the players capsule collider size
+        var localPoint1 = _psm.playerCap.center - Vector3.down * (_psm.playerCap.height / 2 - (_psm.playerCap.radius - 0.2f));
+        // Have the point SLIGHTLY more UNDER the player collider
+        var localPoint2 = _psm.playerCap.center + Vector3.down * (_psm.playerCap.height / 2 - (_psm.playerCap.radius - 0.2f)) * 1.1f; // Above point
+
+        var point1 = _psm.playerCap.transform.TransformPoint(localPoint1);
+        var point2 = _psm.playerCap.transform.TransformPoint(localPoint2);
+
+        if (Physics.OverlapCapsuleNonAlloc(point1, point2, _psm.playerCap.radius, _psm.wallColliders, LayerMask.GetMask("Wall")) != 0)
+        {
+            Debug.Break();
+        }
+    }
+
+    public bool isGoingToCollide()
+    {
+        //We dont need point1 right now, but will be used if we need to use a capsule cast to reflect the players capsule collider size
+        var localPoint1 = _psm.playerCap.center - Vector3.down * (_psm.playerCap.height / 2 - (_psm.playerCap.radius - 0.2f));
+        // Have the point SLIGHTLY more UNDER the player collider
+        var localPoint2 = _psm.playerCap.center + Vector3.down * (_psm.playerCap.height / 2 - (_psm.playerCap.radius - 0.2f)) * 1.1f; // Above point
+
+        var point1 = _psm.playerCap.transform.TransformPoint(localPoint1);
+        var point2 = _psm.playerCap.transform.TransformPoint(localPoint2);
+
+        point1 = _psm.projectedPos + Vector3.up * (_psm.playerCap.height - (_psm.playerCap.radius));
+        point2 = _psm.projectedPos + Vector3.up * _psm.playerCap.radius;
+
+
+        if (Physics.OverlapCapsuleNonAlloc(point1, point2, _psm.playerCap.radius, _psm.wallColliders, LayerMask.GetMask("Wall")) != 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private void rotatePlayer(Vector3 direction)
+    {
+        if (direction != Vector3.zero)
         {
             // If player is NOT locked on
             if (!_psm.camera.isLockedOn)
             {
-                var directionOfMovement = Quaternion.LookRotation(endDirection, Vector3.up);
+                var directionOfMovement = Quaternion.LookRotation(direction, Vector3.up);
                 directionOfMovement = Quaternion.Euler(0, directionOfMovement.eulerAngles.y, 0);
                 _psm.playerRb.MoveRotation(directionOfMovement);
-            } else
+            }
+            else
             {
                 // If locked on, look at the object that is locked onto]
                 // Currently, we only want the Y rotation component from the LookRotation. 
@@ -200,23 +263,8 @@ public class PlayerWalkingState : PlayerMovementState
 
 
             }
-            
         }
-        #endregion
 
-
-
-        // Actually move the player
-
-        _psm.playerRb.MovePosition(_psm.projectedPos);
         
-        CheckSwitchStates();
     }
-
-    public override Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed)
-    {
-        return projectedPosition + directionToMove * speed * Time.fixedDeltaTime;
-    }
-
-
 }
