@@ -77,7 +77,7 @@ public class PlayerGroundedState : PlayerState
     private Vector3 getGroundPoint()
     {
         // We shoot a ray from the midpoint of the player to avoid faulty positions
-        if (Physics.Raycast(_psm.playerRb.transform.position + new Vector3(0, _psm.playerCap.height / 2), Vector3.down, out RaycastHit hit, 5.0f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(_psm.playerRb.transform.position + new Vector3(0, _psm.playerCap.height / 2), Vector3.down, out RaycastHit hit, 5.0f, LayerMask.GetMask("Ground", "Wall")))
         {
             if (hit.distance < 2f)
             {
