@@ -29,7 +29,7 @@ public class PlayerUtilities
         var point2 = playerCap.transform.TransformPoint(localPoint2);
 
         DebugExtension.DebugWireSphere(point2, playerCap.radius - 0.2f, Time.fixedDeltaTime);
-        int numColliders = Physics.OverlapSphereNonAlloc(point2, playerCap.radius, groundColliders, LayerMask.GetMask("Ground"));
+        int numColliders = Physics.OverlapSphereNonAlloc(point2, playerCap.radius, groundColliders, LayerMask.GetMask("Ground", "Wall"));
 
         return numColliders;
 
@@ -246,7 +246,7 @@ public class PlayerUtilities
         return Vector3.zero;
     }
 
-    public static Vector3 slideDownSlope(CapsuleCollider playerCap, Vector3 vel, Vector3 pos, float skinWidth)
+    public static Vector3 slideDownSlope(Rigidbody playerRb, CapsuleCollider playerCap, Vector3 vel, Vector3 pos, float skinWidth)
     {
         // We have to cast the player DOWN a certain distance of where the player intends to go 
         float distanceToMove = vel.magnitude;
@@ -260,26 +260,30 @@ public class PlayerUtilities
         var point1 = playerCap.transform.TransformPoint(localPoint1) + distanceOffset;
         var point2 = playerCap.transform.TransformPoint(localPoint2) + distanceOffset;
 
+        var groundPoint = getGroundNormal(playerRb, playerCap);
+        Vector3 answer = Vector3.ProjectOnPlane(vel.normalized, groundPoint).normalized;
+        return answer;
 
-        float dist = vel.magnitude + skinWidth + 0.4f + velNormalized.magnitude;
-        RaycastHit hit;
-        Debug.DrawRay(point2, Vector3.down, Color.blue);
-        if (Physics.CapsuleCast(point1, point2, playerCap.radius, Vector3.down, out hit, dist, LayerMask.GetMask("Ground")))
-        {
 
-            Vector3 snapToSurface = vel.normalized * (hit.distance);
+        //float dist = vel.magnitude + skinWidth + 0.4f + velNormalized.magnitude;
+        //RaycastHit hit;
+        //Debug.DrawRay(point2, Vector3.down, Color.blue);
+        //if (Physics.CapsuleCast(point1, point2, playerCap.radius, Vector3.down, out hit, dist, LayerMask.GetMask("Ground")))
+        //{
 
-            // Ensures we have enough room to perform our collision check properly
-            if (snapToSurface.magnitude <= skinWidth)
-            {
-                snapToSurface = Vector3.zero;
-            }
+        //    Vector3 snapToSurface = vel.normalized * (hit.distance);
 
-            Vector3 answer = Vector3.ProjectOnPlane(snapToSurface, hit.normal).normalized;
+        //    // Ensures we have enough room to perform our collision check properly
+        //    if (snapToSurface.magnitude <= skinWidth)
+        //    {
+        //        snapToSurface = Vector3.zero;
+        //    }
 
-            return answer;
+        //    Vector3 answer = Vector3.ProjectOnPlane(snapToSurface, hit.normal).normalized;
 
-        }
+        //    return answer;
+
+        //}
 
 
         return Vector3.zero;
@@ -298,6 +302,18 @@ public class PlayerUtilities
         return Vector3.zero;
     }
 
+    public static Vector3 getGroundNormal(Rigidbody playerRb, CapsuleCollider playerCap)
+    {
+        // We shoot a ray from the midpoint of the player to avoid faulty positions
+        if (Physics.Raycast(playerRb.transform.position + new Vector3(0, playerCap.height / 2), Vector3.down, out RaycastHit hit, 5.0f, LayerMask.GetMask("Ground")))
+        {
+            if (hit.distance < 2f)
+            {
+                return hit.normal;
+            }
+        }
+        return Vector3.zero;
+    }
     /// <summary>
     ///  Takes in an euler angle from the player's rotation (-180, 180) (L, R) Respectively. Transforms it into a direction Vector3 the player is facing in.
     /// </summary>
