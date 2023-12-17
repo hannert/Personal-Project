@@ -73,7 +73,6 @@ public class PlayerUtilities
 
         if (Physics.Raycast(pointBehindPlayer, endDirection, out RaycastHit hit, 2f, LayerMask.GetMask("Wall")))
         {
-            Debug.Log("Hit!");
             Vector3 oppoNorm = -endDirection.normalized;
             Vector3 normalAngle = hit.normal;
 
@@ -220,7 +219,7 @@ public class PlayerUtilities
         var oppositeDirection = -vel.normalized;
         var backwardsOffset = oppositeDirection * (skinWidth + playerCap.radius);
 
-        var localPoint1 = (Vector3.up * 0.2f) + playerCap.center - Vector3.down * (playerCap.height / 2 - (playerCap.radius));// Above point
+        var localPoint1 = playerCap.center - Vector3.down * (playerCap.height / 2 - (playerCap.radius));// Above point
         var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - (playerCap.radius)); 
         var point1 = playerCap.transform.TransformPoint(localPoint1) + backwardsOffset;
         var point2 = playerCap.transform.TransformPoint(localPoint2) + backwardsOffset;
@@ -232,7 +231,6 @@ public class PlayerUtilities
 
         if (Physics.CapsuleCast(point1, point2, playerCap.radius, vel.normalized, out hit, dist, LayerMask.GetMask("Ground")))
         {
-            //Vector3 snapToSurface = vel.normalized * (hit.distance - skinWidth + 0.4f);
             Vector3 snapToSurface = vel.normalized * (hit.distance);
 
             // Ensures we have enough room to perform our collision check properly
@@ -241,15 +239,64 @@ public class PlayerUtilities
                 snapToSurface = Vector3.zero;
             }
 
-            Vector3 answer  = Vector3.ProjectOnPlane(snapToSurface, hit.normal).normalized;
-
+            Vector3 answer  = Vector3.ProjectOnPlane(snapToSurface, hit.normal);
             return answer;
 
         }
         return Vector3.zero;
     }
 
+    public static Vector3 slideDownSlope(CapsuleCollider playerCap, Vector3 vel, Vector3 pos, float skinWidth)
+    {
+        // We have to cast the player DOWN a certain distance of where the player intends to go 
+        float distanceToMove = vel.magnitude;
+        var velNormalized = vel.normalized;
 
+        // Should be ahead of player given our player pos and distance 
+        var distanceOffset = velNormalized * (skinWidth + playerCap.radius);
+
+        var localPoint1 = (Vector3.up * 0.2f) + playerCap.center - Vector3.down * (playerCap.height / 2 - (playerCap.radius));// Above point
+        var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - (playerCap.radius));
+        var point1 = playerCap.transform.TransformPoint(localPoint1) + distanceOffset;
+        var point2 = playerCap.transform.TransformPoint(localPoint2) + distanceOffset;
+
+
+        float dist = vel.magnitude + skinWidth + 0.4f + velNormalized.magnitude;
+        RaycastHit hit;
+        Debug.DrawRay(point2, Vector3.down, Color.blue);
+        if (Physics.CapsuleCast(point1, point2, playerCap.radius, Vector3.down, out hit, dist, LayerMask.GetMask("Ground")))
+        {
+
+            Vector3 snapToSurface = vel.normalized * (hit.distance);
+
+            // Ensures we have enough room to perform our collision check properly
+            if (snapToSurface.magnitude <= skinWidth)
+            {
+                snapToSurface = Vector3.zero;
+            }
+
+            Vector3 answer = Vector3.ProjectOnPlane(snapToSurface, hit.normal).normalized;
+
+            return answer;
+
+        }
+
+
+        return Vector3.zero;
+    }
+
+    public static Vector3 getGroundPoint(Rigidbody playerRb, CapsuleCollider playerCap)
+    {
+        // We shoot a ray from the midpoint of the player to avoid faulty positions
+        if (Physics.Raycast(playerRb.transform.position + new Vector3(0, playerCap.height / 2), Vector3.down, out RaycastHit hit, 5.0f, LayerMask.GetMask("Ground")))
+        {
+            if (hit.distance < 2f)
+            {
+                return hit.point;
+            }
+        }
+        return Vector3.zero;
+    }
 
     /// <summary>
     ///  Takes in an euler angle from the player's rotation (-180, 180) (L, R) Respectively. Transforms it into a direction Vector3 the player is facing in.

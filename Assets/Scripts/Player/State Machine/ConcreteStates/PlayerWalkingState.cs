@@ -57,7 +57,6 @@ public class PlayerWalkingState : PlayerMovementState
         // TODO: Further check for a weapon must be done later!
         if (_psm.isEquipped)
         {
-            Debug.Log("Substate for idle set to weapon idle");
             SetSubState(player.playerIdleWeaponState);
         }
     }
@@ -79,6 +78,8 @@ public class PlayerWalkingState : PlayerMovementState
 
         var walkingVelocity = Vector3.zero;
         var collideVector = Vector3.zero;
+        bool goingUpSlope = false;
+        bool goingDownSlope = false;
 
         // Player is on the ground
         if (_psm.onGround)
@@ -101,15 +102,24 @@ public class PlayerWalkingState : PlayerMovementState
             
 
         }
-
+        
+        if (_psm.onGround) {
         var slopeVector = PlayerUtilities.slideOnSlope(_psm.playerCap, endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime, _psm.playerRb.position, 0.2f);
-        if(slopeVector!= Vector3.zero)
+        if (slopeVector != Vector3.zero)
         {
-            Debug.Log("Slope found!");
+            //Debug.Log("Slope found!");
             endDirection = slopeVector;
+            goingUpSlope = true;
 
         }
-
+        var slideDown = PlayerUtilities.slideDownSlope(_psm.playerCap, endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime, _psm.playerRb.position, 0.2f);
+        if (slideDown != Vector3.zero)
+        {
+           // Debug.Log("Slope found!");
+            endDirection = slideDown;
+            goingDownSlope = true;
+        } 
+        }
         #region Wall collision and Movement application
         var playerVelocityVector = endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime;
 
@@ -132,7 +142,17 @@ public class PlayerWalkingState : PlayerMovementState
             if (!_psm.camera.isLockedOn)
             {
                 // Apply the direction vector to the player position with speed
-                _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, endDirection, _psm.speed);
+                if (goingUpSlope || goingDownSlope)
+                {
+                    //Debug.Log("YEOWCH!");
+                    _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, endDirection, _psm.speed);
+                    _psm.projectedPos = new Vector3(_psm.projectedPos.x, PlayerUtilities.getGroundPoint(_psm.playerRb, _psm.playerCap).y, _psm.projectedPos.z);
+                }
+                else
+                {
+                    _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, endDirection, _psm.speed);
+                }
+                
             }
             else
             {
@@ -140,8 +160,17 @@ public class PlayerWalkingState : PlayerMovementState
                 // Get direction with axes of LockOnTarget and Player
                 normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(_psm.camera.lockOnFocusObject.transform.position, _psm.projectedPos, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
                 walkingVelocity = CalculatePositionToMoveTo(_psm.projectedPos, normalWalkPosition, _psm.speed);
-                _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, normalWalkPosition, _psm.speed);
+                
 
+                if (goingUpSlope)
+                {
+                    _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, normalWalkPosition, _psm.speed);
+                }
+                else
+                {
+                    _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, normalWalkPosition, _psm.speed);
+                }
+                
             }
             #endregion
         }
@@ -157,7 +186,7 @@ public class PlayerWalkingState : PlayerMovementState
             if (!_psm.camera.isLockedOn)
             {
                 var directionOfMovement = Quaternion.LookRotation(endDirection, Vector3.up);
-                //directionOfMovement = Quaternion.Euler(0, directionOfMovement.eulerAngles.y, 0);
+                directionOfMovement = Quaternion.Euler(0, directionOfMovement.eulerAngles.y, 0);
                 _psm.playerRb.MoveRotation(directionOfMovement);
             } else
             {
@@ -167,6 +196,9 @@ public class PlayerWalkingState : PlayerMovementState
                 var directionToLockOn = Quaternion.LookRotation(_psm.camera.lockOnFocusObject.transform.position - _psm.playerRb.position, Vector3.up);
                 directionToLockOn = Quaternion.Euler(0, directionToLockOn.eulerAngles.y, 0);
                 _psm.playerRb.MoveRotation(directionToLockOn);
+
+
+
             }
             
         }

@@ -24,6 +24,8 @@ public class PlayerGroundedState : PlayerState
 
     public override void ExitState()
     {
+        Debug.Log("Exited grounded root state");
+        _psm.onGround = false;
         _psm.playerAnim.SetBool("isGrounded", false);
 
     }

@@ -23,7 +23,6 @@ public class PlayerAirState : PlayerState
     {
         if (_psm.onGround)
         {
-            Debug.Log("Air TO ground switch");
             SwitchState(player.playerGroundedState);
             return true;
         }
@@ -32,12 +31,13 @@ public class PlayerAirState : PlayerState
 
     public override void EnterState()
     {
+        Debug.Log("Entered Air State");
         _psm.onGround = false;
         InitializeSubState();
 
         CheckAnimationCondition();
 
-        Debug.Log("Entered Air State");
+        
     }
 
     public override void ExitState()
@@ -85,14 +85,13 @@ public class PlayerAirState : PlayerState
 
         if (CheckSwitchStates()) return;
 
-        Debug.Log("Modifying projected Pos in Air state");
         _psm.projectedPos = applyGravityToVector(_psm.playerRb.position);
 
         UpdatePlayerBools();
         CheckAnimationCondition();
 
 
-        Debug.Log("Modifying projected Pos in Air state to " + _psm.projectedPos);
+        //Debug.Log("Modifying projected Pos in Air state to " + _psm.projectedPos);
 
     }
     private Vector3 applyGravityToVector(Vector3 currentTrajectedPosition)
@@ -101,8 +100,6 @@ public class PlayerAirState : PlayerState
         Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, newYPos, currentTrajectedPosition.z);
         _psm.currentFallVelocity += _psm.gravity * Time.fixedDeltaTime;
         _psm.currentFallVelocity = Mathf.Clamp(_psm.currentFallVelocity, -_psm.maxFallSpeed, _psm.jumpVelocity);
-        Debug.Log(_psm.currentFallVelocity);
-        Debug.Log(newYPos);
         return projectedPos;
     }
 

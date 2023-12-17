@@ -75,7 +75,6 @@ public class PlayerIdleState : PlayerState
         }
         else
         {
-            Debug.Log("Moving in idle to " + _psm.projectedPos);
             _psm.playerRb.MovePosition(_psm.projectedPos);
         }
     }
