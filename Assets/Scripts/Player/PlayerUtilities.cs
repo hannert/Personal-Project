@@ -174,9 +174,13 @@ public class PlayerUtilities
         bounds = playerCap.bounds;
         bounds.Expand(-2 * skinWidth);
 
+        var backwardsDirection = -vel.normalized;
+
         var localPoint1 = playerCap.center - Vector3.down * (playerCap.height / 2 - (playerCap.radius));
         var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - (playerCap.radius)); // Above point
-        var point1 = playerCap.transform.TransformPoint(localPoint1);
+
+        // Maybe we cast behind the player to avoid some issues
+        var point1 = playerCap.transform.TransformPoint(localPoint1); 
         var point2 = playerCap.transform.TransformPoint(localPoint2);
         float dist = vel.magnitude + skinWidth;
         
@@ -184,7 +188,7 @@ public class PlayerUtilities
         Debug.DrawRay(bounds.center, vel.normalized);
         Debug.DrawRay(point1, vel.normalized, Color.red);
         Debug.DrawRay(point2, vel.normalized);
-        if (Physics.CapsuleCast(point1, point2, playerCap.radius, vel.normalized, out hit, dist, LayerMask.GetMask("Wall"))){
+        if (Physics.CapsuleCast(point1, point2, playerCap.radius + skinWidth, vel.normalized, out hit, dist, LayerMask.GetMask("Wall"))){
             Vector3 snapToSurface = vel.normalized * (hit.distance - skinWidth);
             Vector3 leftover = vel - snapToSurface;
 
@@ -197,18 +201,13 @@ public class PlayerUtilities
             float mag = leftover.magnitude;
             leftover = Vector3.ProjectOnPlane(leftover, hit.normal).normalized;
             leftover *= mag;
+            Debug.DrawRay(point1 + Vector3.up, Vector3.up, Color.green);
 
             return snapToSurface + collideAndSlide(playerCap, leftover, pos + snapToSurface, depth + 1, skinWidth, maxBounces);
 
         }
 
-        
-
-
-
-
-
-
+        Debug.DrawRay(point1, Vector3.up, Color.red);
 
         return vel;
     }
