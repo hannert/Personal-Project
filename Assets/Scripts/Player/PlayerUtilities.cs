@@ -212,6 +212,46 @@ public class PlayerUtilities
         return vel;
     }
 
+    public static Vector3 moveOnSlope(Rigidbody playerRb, CapsuleCollider playerCap, Vector3 vel, Vector3 pos, float skinWidth)
+    {
+        // Player will already be 'wedged' into the ground with the ground check collision sphere
+        // We should RAYCAST down from the player's midpoint and then project our velocity vector onto the normal of the surface hit
+        // Point to cast from = playerCap.center
+
+        // Capsule cast from ABOVE the player
+        var distanceOffset = Vector3.up * (playerCap.height / 2);
+
+        var localPoint1 = playerCap.center - Vector3.down * (playerCap.height / 2 - (playerCap.radius));
+        var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - (playerCap.radius));
+        var point1 = playerCap.transform.TransformPoint(localPoint1) + distanceOffset;
+        var point2 = playerCap.transform.TransformPoint(localPoint2) + distanceOffset;
+
+
+        // Should this be running forever (?) since we can project on the normal on a flat plane as well
+
+        //if (Physics.CapsuleCast(point1, point2, playerCap.radius, Vector3.down, out RaycastHit hit, 1.0f, LayerMask.GetMask("Wall", "Ground"))){
+        //    Debug.Log("Yippee!!");
+
+        //    var finalVelocity = Vector3.ProjectOnPlane(vel, hit.normal);
+        //    Debug.DrawRay(playerRb.position + (Vector3.up), finalVelocity, Color.blue);
+        //    return finalVelocity;
+        //}
+        
+        if (Physics.Raycast(playerRb.position + playerCap.center , Vector3.down, out RaycastHit hit, 2.0f, LayerMask.GetMask("Wall", "Ground")))
+        {
+            Debug.Log("Yippee!!");
+
+            var finalVelocity = Vector3.ProjectOnPlane(vel, hit.normal);
+            Debug.DrawRay(playerRb.position + (Vector3.up), finalVelocity, Color.blue);
+            return finalVelocity;
+        }
+
+
+
+        return vel;
+    }
+
+
     public static Vector3 slideOnSlope(CapsuleCollider playerCap, Vector3 vel, Vector3 pos, float skinWidth)
     {
         // We should capsule cast from behind the player =)
@@ -228,7 +268,7 @@ public class PlayerUtilities
         float dist = vel.magnitude + skinWidth + 0.4f + backwardsOffset.magnitude;
         RaycastHit hit;
 
-        if (Physics.CapsuleCast(point1, point2, playerCap.radius, vel.normalized, out hit, dist, LayerMask.GetMask("Ground")))
+        if (Physics.CapsuleCast(point1, point2, playerCap.radius + skinWidth, vel.normalized, out hit, dist, LayerMask.GetMask("Ground")))
         {
             Vector3 snapToSurface = vel.normalized * (hit.distance);
 

@@ -72,7 +72,8 @@ public class PlayerWalkingState : PlayerMovementState
         
 
         // Direction the player is already facing 
-        var endDirection = Vector3.zero;
+        var endDirection = _psm.projectedPos - _psm.playerRb.position;
+
         // Vector3 of proposed player position if player input being taken into account in relation to a camera
         var normalWalkPosition = Vector3.zero;
 
@@ -89,7 +90,7 @@ public class PlayerWalkingState : PlayerMovementState
             var directionOfPlayerForwardRotation = PlayerUtilities.getDirectionFromOrigin(_psm.playerRb.rotation.eulerAngles.y);
             normalWalkPosition =  PlayerUtilities.GetDirectionFromCamera(_psm.projectedPos, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-            endDirection = normalWalkPosition;
+            endDirection += normalWalkPosition;
         }
 
 
@@ -106,21 +107,8 @@ public class PlayerWalkingState : PlayerMovementState
         }
         
         if (_psm.onGround) {
-        var slopeVector = PlayerUtilities.slideOnSlope(_psm.playerCap, endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime, _psm.playerRb.position, 0.2f);
-        if (slopeVector != Vector3.zero)
-        {
-            //Debug.Log("Slope found!");
-            endDirection = slopeVector;
-            goingUpSlope = true;
 
-        }
-        var slideDown = PlayerUtilities.slideDownSlope(_psm.playerRb, _psm.playerCap, endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime, _psm.playerRb.position, 0.2f);
-        if (slideDown != Vector3.zero)
-        {
-           // Debug.Log("Slope found!");
-            endDirection = slideDown;
-            goingDownSlope = true;
-        } 
+            endDirection = PlayerUtilities.moveOnSlope(_psm.playerRb, _psm.playerCap, endDirection, _psm.projectedPos, 0.2f);
         }
 
 

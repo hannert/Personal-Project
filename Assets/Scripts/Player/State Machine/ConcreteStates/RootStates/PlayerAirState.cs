@@ -85,6 +85,9 @@ public class PlayerAirState : PlayerState
 
         if (CheckSwitchStates()) return;
 
+        // Check if we will hit our head on the wall
+
+
         _psm.projectedPos = applyGravityToVector(_psm.playerRb.position);
 
         UpdatePlayerBools();
