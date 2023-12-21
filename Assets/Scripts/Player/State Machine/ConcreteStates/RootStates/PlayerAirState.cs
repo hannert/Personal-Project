@@ -72,13 +72,14 @@ public class PlayerAirState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) != 0 && _psm.currentFallVelocity < 0)
+        if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) != 0 && _psm.yVelocity.y < 0)
         {
             _psm.onGround = true;
             _psm.isJumping = false;
             _psm.canJump = true;
             _psm.isFalling = false;
-            _psm.currentFallVelocity = 0;
+            //_psm.currentFallVelocity = 0;
+            _psm.yVelocity = Vector3.zero;
             Debug.Log(_psm.groundColliders[0].transform.position);
         }
 
@@ -90,7 +91,6 @@ public class PlayerAirState : PlayerState
 
 
         _psm.projectedPos = applyGravityToVector(_psm.playerRb.position);
-
         UpdatePlayerBools();
         CheckAnimationCondition();
 
@@ -100,15 +100,11 @@ public class PlayerAirState : PlayerState
     }
     private Vector3 applyGravityToVector(Vector3 currentTrajectedPosition)
     {
-        float newYPos = _psm.playerRb.position.y + (_psm.currentFallVelocity * Time.fixedDeltaTime + ((0.5f) * _psm.gravity * Time.fixedDeltaTime * Time.fixedDeltaTime));
-        Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, newYPos, currentTrajectedPosition.z);
-        _psm.currentFallVelocity += _psm.gravity * Time.fixedDeltaTime;
-        _psm.currentFallVelocity = Mathf.Clamp(_psm.currentFallVelocity, -_psm.maxFallSpeed, _psm.jumpVelocity);
+        Vector3 newPos = _psm.playerRb.position + (_psm.yVelocity * Time.fixedDeltaTime + ((0.5f) * _psm.gravityVector * Time.fixedDeltaTime * Time.fixedDeltaTime));
+        _psm.yVelocity += _psm.gravityVector * Time.fixedDeltaTime;
+        _psm.yVelocity = new Vector3(_psm.yVelocity.x, Mathf.Clamp(_psm.yVelocity.y, -_psm.maxFallSpeed, _psm.jumpVelocity), _psm.yVelocity.z);
 
-        Vector3 velocity = projectedPos - _psm.playerRb.position;
-        velocity = velocity * Time.fixedDeltaTime;
-        _psm.currentVelocity = velocity;
-        return projectedPos;
+        return newPos;
     }
 
     private void CheckAnimationCondition()

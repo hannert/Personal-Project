@@ -29,8 +29,8 @@ public class PlayerUtilities
         var point1 = playerCap.transform.TransformPoint(localPoint1);
         var point2 = playerCap.transform.TransformPoint(localPoint2);
 
-        DebugExtension.DebugWireSphere(playerCap.transform.position, playerCap.radius - 0.2f, Time.fixedDeltaTime);
-        int numColliders = Physics.OverlapSphereNonAlloc(playerCap.transform.position, playerCap.radius - 0.2f, groundColliders, LayerMask.GetMask("Ground", "Wall"));
+        DebugExtension.DebugWireSphere(playerCap.transform.position, playerCap.radius, Time.fixedDeltaTime);
+        int numColliders = Physics.OverlapSphereNonAlloc(playerCap.transform.position, playerCap.radius, groundColliders, LayerMask.GetMask("Ground", "Wall"));
 
         return numColliders;
 
@@ -164,18 +164,12 @@ public class PlayerUtilities
     /// <param name="skinWidth"></param>
     /// <param name="maxBounces"></param>
     /// <returns></returns>
-    public static Vector3 collideAndSlide(CapsuleCollider playerCap, Vector3 vel, Vector3 pos, int depth, float skinWidth, int maxBounces, bool gravityPass, Vector3 velInit)
+    public static Vector3 collideAndSlide(CapsuleCollider playerCap, Vector3 vel, Vector3 pos, int depth, float skinWidth, int maxBounces, bool gravityPass, Vector3 velInit, bool isGrounded)
     {
         if (depth >= maxBounces)
         {
             return Vector3.zero;
         }
-
-        Bounds bounds;
-        bounds = playerCap.bounds;
-        bounds.Expand(-2 * skinWidth);
-
-        var backwardsDirection = -vel.normalized;
 
         var localPoint1 = playerCap.center - Vector3.down * (playerCap.height / 2 - (playerCap.radius));
         var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - (playerCap.radius)); // Above point
@@ -186,9 +180,7 @@ public class PlayerUtilities
         float dist = vel.magnitude + skinWidth;
         
         RaycastHit hit;
-        //Debug.DrawRay(bounds.center, vel.normalized);
-        //Debug.DrawRay(point1, vel.normalized, Color.red);
-        //Debug.DrawRay(point2, vel.normalized);
+
 
         if (Physics.CapsuleCast(point1, point2, playerCap.radius + skinWidth, vel.normalized, out hit, dist, LayerMask.GetMask("Wall", "Ground"))){
             Vector3 snapToSurface = vel.normalized * (hit.distance - skinWidth);
@@ -215,15 +207,28 @@ public class PlayerUtilities
             else
             {
                 float scale = 1 - Vector3.Dot(new Vector3(hit.normal.x, 0, hit.normal.z).normalized, -new Vector3(velInit.x, 0, velInit.z).normalized);
-                leftover = ProjectAndScale(leftover, hit.normal) * scale;
+
+                if(isGrounded && !gravityPass)
+                {
+                  leftover = ProjectAndScale(new Vector3(leftover.x, 0, leftover.z),
+                        new Vector3(hit.normal.x, 0, hit.normal.z)).normalized;
+                    leftover *= scale;
+                }
+                else
+                {
+                    leftover = ProjectAndScale(leftover, hit.normal) * scale;
+                }
+                
             }
 
 
-            return snapToSurface + collideAndSlide(playerCap, leftover, pos + snapToSurface, depth + 1, skinWidth, maxBounces, gravityPass, velInit);
+            return snapToSurface + collideAndSlide(playerCap, leftover, pos + snapToSurface, depth + 1, skinWidth, maxBounces, gravityPass, velInit, isGrounded);
 
         }
         return vel;
     }
+
+
 
     public static Vector3 ProjectAndScale(Vector3 vector, Vector3 normal)
     {
@@ -257,11 +262,8 @@ public class PlayerUtilities
         //    Debug.DrawRay(playerRb.position + (Vector3.up), finalVelocity, Color.blue);
         //    return finalVelocity;
         //}
-        
-        if (Physics.Raycast(playerRb.position + playerCap.center , Vector3.down, out RaycastHit hit, 2.0f, LayerMask.GetMask("Wall", "Ground")))
+        if (Physics.Raycast(playerRb.position + playerCap.center , Vector3.down, out RaycastHit hit, playerCap.height + skinWidth, LayerMask.GetMask("Wall", "Ground")))
         {
-            Debug.Log("Yippee!!");
-
             var finalVelocity = Vector3.ProjectOnPlane(vel, hit.normal);
             Debug.DrawRay(playerRb.position + (Vector3.up), finalVelocity, Color.blue);
             return finalVelocity;

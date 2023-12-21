@@ -51,8 +51,9 @@ public class PlayerGroundedState : PlayerState
 
     public override void PhysicsUpdate()
     {
+
         // When grounded, check if there is floor beneath to trigger falling state
-        if(PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) == 0)
+        if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) == 0)
         {
             _psm.onGround = false;
         }
@@ -111,7 +112,8 @@ public class PlayerGroundedState : PlayerState
         // Jump from grounded state
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            _psm.currentFallVelocity = _psm.jumpVelocity;
+            //_psm.currentFallVelocity = _psm.jumpVelocity;
+            _psm.yVelocity = new Vector3(0, _psm.jumpVelocity, 0);
             _psm.distanceFromCameraAtJump = _psm.camera.transform.position - _psm.playerRb.position ;
             SwitchState(player.playerAirState);
         }

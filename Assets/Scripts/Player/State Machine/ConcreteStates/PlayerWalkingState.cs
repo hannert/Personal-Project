@@ -109,7 +109,7 @@ public class PlayerWalkingState : PlayerMovementState
         
         if (_psm.onGround) {
 
-            endDirection = PlayerUtilities.moveOnSlope(_psm.playerRb, _psm.playerCap, endDirection, _psm.projectedPos, 0.2f);
+            //endDirection = PlayerUtilities.moveOnSlope(_psm.playerRb, _psm.playerCap, endDirection, _psm.projectedPos, _psm.skinWidth);
         }
 
 
@@ -124,6 +124,7 @@ public class PlayerWalkingState : PlayerMovementState
         if (!_psm.camera.isLockedOn)
         {
             directionBuffer = endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime;
+            directionBuffer = PlayerUtilities.GetDirectionFromCamera(_psm.playerRb.position, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }
         // If player IS locked on, ditto
         if (_psm.camera.isLockedOn)
@@ -131,10 +132,23 @@ public class PlayerWalkingState : PlayerMovementState
             directionBuffer = normalWalkPosition.normalized * (_psm.speed) * Time.fixedDeltaTime;
         }
         var gravity = Vector3.down * -_psm.gravity * Time.fixedDeltaTime;
-        collideVelocity = PlayerUtilities.collideAndSlide(_psm.playerCap, directionBuffer, _psm.playerRb.position, 1, 0.1f, 3, false, directionBuffer);
-        finalVelocity = collideVelocity;
+        collideVelocity = PlayerUtilities.collideAndSlide(_psm.playerCap, directionBuffer, _psm.playerRb.position, 0, _psm.skinWidth, 3, false, directionBuffer, _psm.onGround);
+        if (_psm.onGround)
+        {
+            collideVelocity += PlayerUtilities.collideAndSlide(_psm.playerCap, _psm.gravityVector, _psm.playerRb.position + (collideVelocity * _psm.speed * Time.fixedDeltaTime), 0, _psm.skinWidth, 3, true, _psm.gravityVector, _psm.onGround);
+        } 
+        //else
+        //{
+        //    collideVelocity += _psm.yVelocity;
+        //}
 
-        _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, finalVelocity.normalized, _psm.speed);
+        
+
+
+
+        finalVelocity = collideVelocity;
+        Debug.Log("Final Velocity:" + finalVelocity);
+        _psm.projectedPos = CalculatePositionToMoveTo(_psm.playerRb.position, finalVelocity.normalized, _psm.speed);
         #endregion
 
 
@@ -144,6 +158,12 @@ public class PlayerWalkingState : PlayerMovementState
         #endregion
 
         // Actually move the player
+        if (!_psm.onGround)
+        {
+            _psm.projectedPos = CalculatePositionToMoveTo(_psm.playerRb.position, finalVelocity.normalized, _psm.speed);
+            _psm.projectedPos = _psm.projectedPos + (_psm.yVelocity * Time.fixedDeltaTime + ((0.5f) * _psm.gravityVector * Time.fixedDeltaTime * Time.fixedDeltaTime));
+        }
+
         _psm.playerRb.MovePosition(_psm.projectedPos);
         //stopOnCollision();
         CheckSwitchStates();

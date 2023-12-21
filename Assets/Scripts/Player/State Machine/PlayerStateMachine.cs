@@ -52,12 +52,17 @@ public class PlayerStateMachine
     public bool snapFlag { get; set; } = false;
     public float maxFallSpeed { get; set; } = 30.0f;
     public float currentFallVelocity { get; set; } = 0.0f;
-    public float jumpVelocity { get; set; } = 15.0f;
-    public float gravity { get; set; } = -25.0f;
+    public float jumpVelocity { get; set; } = 10.0f;
+    public float gravity { get; set; } = -15.0f;
     public float currentYPos { get; set; } = 0f;
 
     public Vector3 projectedPos { get; set; } = Vector3.zero;
 
+
+
+    public Vector3 gravityVector { get; set; } = new Vector3(0, -15.0f, 0);
+    public Vector3 yVelocity { get; set; } = Vector3.zero;
+    public Vector3 xzVelocity { get; set; } = Vector3.zero;
     public Vector3 currentVelocity { get; set; } = Vector3.zero;
 
 
