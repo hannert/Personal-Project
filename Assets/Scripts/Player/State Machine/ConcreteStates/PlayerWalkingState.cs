@@ -69,10 +69,11 @@ public class PlayerWalkingState : PlayerMovementState
         // Grounded locked on walking
         // Air walking
         // Air locked on walking
-        
+
 
         // Direction the player is already facing 
-        var endDirection = _psm.projectedPos - _psm.playerRb.position;
+        var prevCopy = _psm.projectedPos - _psm.playerRb.position;
+        var endDirection = Vector3.zero;
 
         // Vector3 of proposed player position if player input being taken into account in relation to a camera
         var normalWalkPosition = Vector3.zero;
@@ -90,7 +91,7 @@ public class PlayerWalkingState : PlayerMovementState
             var directionOfPlayerForwardRotation = PlayerUtilities.getDirectionFromOrigin(_psm.playerRb.rotation.eulerAngles.y);
             normalWalkPosition =  PlayerUtilities.GetDirectionFromCamera(_psm.projectedPos, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-            endDirection += normalWalkPosition;
+            endDirection = normalWalkPosition;
         }
 
 
@@ -101,7 +102,7 @@ public class PlayerWalkingState : PlayerMovementState
             // the strength of the rotation end direction should be dampened
             normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(
                 _psm.projectedPos, _psm.projectedPos + _psm.distanceFromCameraAtJump, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            endDirection = Vector3.Lerp(endDirection, normalWalkPosition, 1f);
+            endDirection = Vector3.Lerp(endDirection, normalWalkPosition, 0.2f);
             
 
         }
@@ -129,8 +130,8 @@ public class PlayerWalkingState : PlayerMovementState
         {
             directionBuffer = normalWalkPosition.normalized * (_psm.speed) * Time.fixedDeltaTime;
         }
-
-        collideVelocity = PlayerUtilities.collideAndSlide(_psm.playerCap, directionBuffer, _psm.playerRb.position, 1, 0.2f, 3);
+        var gravity = Vector3.down * -_psm.gravity * Time.fixedDeltaTime;
+        collideVelocity = PlayerUtilities.collideAndSlide(_psm.playerCap, directionBuffer, _psm.playerRb.position, 1, 0.1f, 3, false, directionBuffer);
         finalVelocity = collideVelocity;
 
         _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, finalVelocity.normalized, _psm.speed);
