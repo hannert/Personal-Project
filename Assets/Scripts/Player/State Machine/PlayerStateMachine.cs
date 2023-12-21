@@ -14,6 +14,8 @@ public class PlayerStateMachine
     public float sprintSpeed = 15.0f;
     public float rollDistance = 4f;
     private float decceleration = 8f;
+    public float skinWidth = 0.1f;
+
     public Rigidbody playerRb;
     public CapsuleCollider playerCap { get; set; }
     public CameraController camera { get; set; }
@@ -54,7 +56,10 @@ public class PlayerStateMachine
     public float gravity { get; set; } = -25.0f;
     public float currentYPos { get; set; } = 0f;
 
-    public Vector3 projectedPos { get; set; }
+    public Vector3 projectedPos { get; set; } = Vector3.zero;
+
+    public Vector3 currentVelocity { get; set; } = Vector3.zero;
+
 
     public Vector3 distanceFromCameraAtJump { get; set; }
 
@@ -65,6 +70,11 @@ public class PlayerStateMachine
     private RaycastHit[] hits = new RaycastHit[10];
 
     #endregion
+
+    private void Awake()
+    {
+        projectedPos = playerRb.position;
+    }
 
     // Dependency Injection of the most important player aspects
     public PlayerStateMachine(Rigidbody playerRb, CapsuleCollider playerCap, CameraController camera, Animator playerAnim)

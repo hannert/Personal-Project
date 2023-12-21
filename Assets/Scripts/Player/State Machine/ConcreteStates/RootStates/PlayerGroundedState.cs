@@ -16,8 +16,8 @@ public class PlayerGroundedState : PlayerState
         // Send info to projectedPos
         _psm.onGround = true;
         InitializeSubState();
-        Vector3 newPos = snapToGround(_psm.playerRb.position);
-        _psm.projectedPos = newPos;
+        Debug.Log(_psm.playerRb.position);
+        _psm.projectedPos = snapToGround(_psm.playerRb.position);
         //Debug.Log("--" + _psm.projectedPos);
         
     }
@@ -65,10 +65,17 @@ public class PlayerGroundedState : PlayerState
     // But what if we land on a SLANTED surface? -> Currently we keep teleporting up and falling down
     private Vector3 snapToGround(Vector3 currentTrajectedPosition)
     {
+        // Use whatever is inside psm.groundColliders
+        if (_psm.groundColliders[0] != null)
+        {
+            var groundObject = _psm.groundColliders[0];
+            // get the closest point from the feet of our player to the contacted collider
+            var contactPoint = groundObject.ClosestPoint(_psm.playerRb.position);
+            Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, contactPoint.y + 0.1f, currentTrajectedPosition.z);
+            return projectedPos;
+        }
 
-        float newYPos = getGroundPoint().y;
-        Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, newYPos + 0.01f, currentTrajectedPosition.z);
-        return projectedPos;
+        return currentTrajectedPosition;
 
     }
 

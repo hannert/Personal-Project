@@ -79,6 +79,7 @@ public class PlayerAirState : PlayerState
             _psm.canJump = true;
             _psm.isFalling = false;
             _psm.currentFallVelocity = 0;
+            Debug.Log(_psm.groundColliders[0].transform.position);
         }
 
         
@@ -103,6 +104,10 @@ public class PlayerAirState : PlayerState
         Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, newYPos, currentTrajectedPosition.z);
         _psm.currentFallVelocity += _psm.gravity * Time.fixedDeltaTime;
         _psm.currentFallVelocity = Mathf.Clamp(_psm.currentFallVelocity, -_psm.maxFallSpeed, _psm.jumpVelocity);
+
+        Vector3 velocity = projectedPos - _psm.playerRb.position;
+        velocity = velocity * Time.fixedDeltaTime;
+        _psm.currentVelocity = velocity;
         return projectedPos;
     }
 
