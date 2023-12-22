@@ -14,7 +14,7 @@ public class PlayerStateMachine
     public float sprintSpeed = 15.0f;
     public float rollDistance = 4f;
     private float decceleration = 8f;
-    public float skinWidth = 0.1f;
+    public float skinWidth = 0.05f;
 
     public Rigidbody playerRb;
     public CapsuleCollider playerCap { get; set; }

@@ -131,19 +131,14 @@ public class PlayerWalkingState : PlayerMovementState
         {
             directionBuffer = normalWalkPosition.normalized * (_psm.speed) * Time.fixedDeltaTime;
         }
-        var gravity = Vector3.down * -_psm.gravity * Time.fixedDeltaTime;
+
         collideVelocity = PlayerUtilities.collideAndSlide(_psm.playerCap, directionBuffer, _psm.playerRb.position, 0, _psm.skinWidth, 3, false, directionBuffer, _psm.onGround);
+
+        // Player is on ground, cast forward and DOWN (Going down ramps)
         if (_psm.onGround)
         {
             collideVelocity += PlayerUtilities.collideAndSlide(_psm.playerCap, _psm.gravityVector, _psm.playerRb.position + (collideVelocity * _psm.speed * Time.fixedDeltaTime), 0, _psm.skinWidth, 3, true, _psm.gravityVector, _psm.onGround);
         } 
-        //else
-        //{
-        //    collideVelocity += _psm.yVelocity;
-        //}
-
-        
-
 
 
         finalVelocity = collideVelocity;
@@ -161,7 +156,23 @@ public class PlayerWalkingState : PlayerMovementState
         if (!_psm.onGround)
         {
             _psm.projectedPos = CalculatePositionToMoveTo(_psm.playerRb.position, finalVelocity.normalized, _psm.speed);
-            _psm.projectedPos = _psm.projectedPos + (_psm.yVelocity * Time.fixedDeltaTime + ((0.5f) * _psm.gravityVector * Time.fixedDeltaTime * Time.fixedDeltaTime));
+
+
+            // If player is ascending
+            if(_psm.yVelocity.y > 0)
+            {
+                var ceilingVel = PlayerUtilities.collideAndSlide(_psm.playerCap, _psm.yVelocity, _psm.projectedPos, 0, _psm.skinWidth, 3, true, _psm.yVelocity, _psm.onGround);
+                var newDirection = ceilingVel.normalized * _psm.yVelocity.magnitude;
+                _psm.projectedPos += (newDirection * Time.fixedDeltaTime + ((0.5f) * _psm.gravityVector * Time.fixedDeltaTime * Time.fixedDeltaTime));
+            } else
+            {
+                _psm.projectedPos += (_psm.yVelocity * Time.fixedDeltaTime + ((0.5f) * _psm.gravityVector * Time.fixedDeltaTime * Time.fixedDeltaTime));
+            }
+            
+
+
+
+            
         }
 
         _psm.playerRb.MovePosition(_psm.projectedPos);

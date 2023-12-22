@@ -63,7 +63,6 @@ public class PlayerGroundedState : PlayerState
    
 
     // Function should snap the player to the ground when its within a certain distance from landing
-    // But what if we land on a SLANTED surface? -> Currently we keep teleporting up and falling down
     private Vector3 snapToGround(Vector3 currentTrajectedPosition)
     {
         // Use whatever is inside psm.groundColliders
@@ -72,7 +71,7 @@ public class PlayerGroundedState : PlayerState
             var groundObject = _psm.groundColliders[0];
             // get the closest point from the feet of our player to the contacted collider
             var contactPoint = groundObject.ClosestPoint(_psm.playerRb.position);
-            Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, contactPoint.y + 0.1f, currentTrajectedPosition.z);
+            Vector3 projectedPos = new Vector3(currentTrajectedPosition.x, contactPoint.y, currentTrajectedPosition.z);
             return projectedPos;
         }
 

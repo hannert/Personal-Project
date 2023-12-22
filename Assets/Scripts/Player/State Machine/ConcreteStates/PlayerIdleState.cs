@@ -75,6 +75,17 @@ public class PlayerIdleState : PlayerState
         }
         else
         {
+            if(_psm.yVelocity.y > 0)
+            {
+                var ceilingVel = PlayerUtilities.collideAndSlide(_psm.playerCap, _psm.yVelocity.normalized, _psm.projectedPos, 0, _psm.skinWidth, 3, true, _psm.yVelocity.normalized, _psm.onGround);
+                var newDirection = ceilingVel.normalized * _psm.yVelocity.magnitude;
+                _psm.projectedPos = _psm.playerRb.position + (newDirection * Time.fixedDeltaTime + ((0.5f) * _psm.gravityVector * Time.fixedDeltaTime * Time.fixedDeltaTime));
+            }
+            
+
+
+
+
             _psm.playerRb.MovePosition(_psm.projectedPos);
         }
     }
