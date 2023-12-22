@@ -21,16 +21,14 @@ public class PlayerUtilities
     {
         Array.Clear(groundColliders, 0, groundColliders.Length);
 
-        //We dont need point1 right now, but will be used if we need to use a capsule cast to reflect the players capsule collider size
-        var localPoint1 = playerCap.center - Vector3.down * (playerCap.height / 2 - (playerCap.radius - 0.2f));
+
         // Have the point SLIGHTLY more UNDER the player collider
-        var localPoint2 = playerCap.center + Vector3.down * (playerCap.height / 2 - (playerCap.radius - 0.2f)) * 1.1f; // Above point
+        var localPoint = playerCap.center + Vector3.down * (playerCap.height / 2 - (playerCap.radius - 0.2f)) * 1.1f; // Feet point
 
-        var point1 = playerCap.transform.TransformPoint(localPoint1);
-        var point2 = playerCap.transform.TransformPoint(localPoint2);
+        var point = playerCap.transform.TransformPoint(localPoint);
 
-        DebugExtension.DebugWireSphere(playerCap.transform.position, playerCap.radius, Time.fixedDeltaTime);
-        int numColliders = Physics.OverlapSphereNonAlloc(playerCap.transform.position, playerCap.radius, groundColliders, LayerMask.GetMask("Ground", "Wall"));
+        DebugExtension.DebugWireSphere(point, playerCap.radius * 0.9f, Time.fixedDeltaTime);
+        int numColliders = Physics.OverlapSphereNonAlloc(point, playerCap.radius * 0.9f, groundColliders, LayerMask.GetMask("Ground", "Wall"));
 
         return numColliders;
 
@@ -182,7 +180,7 @@ public class PlayerUtilities
         RaycastHit hit;
 
 
-        if (Physics.CapsuleCast(point1, point2, playerCap.radius + skinWidth, vel.normalized, out hit, dist, LayerMask.GetMask("Wall", "Ground"))){
+        if (Physics.CapsuleCast(point1, point2, playerCap.radius - skinWidth, vel.normalized, out hit, dist, LayerMask.GetMask("Wall", "Ground"))){
             Vector3 snapToSurface = vel.normalized * (hit.distance - skinWidth);
             Vector3 leftover = vel - snapToSurface;
 
