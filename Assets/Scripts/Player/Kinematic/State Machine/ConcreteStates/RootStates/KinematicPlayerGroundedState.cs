@@ -53,7 +53,7 @@ public class KinematicPlayerGroundedState : KinematicPlayerState
     {
 
         // When grounded, check if there is floor beneath to trigger falling state
-        if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) == 0)
+        if (KinematicPlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) == 0)
         {
             _psm.onGround = false;
         }

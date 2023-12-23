@@ -88,8 +88,8 @@ public class KinematicPlayerWalkingState : KinematicPlayerMovementState
         // Player is on the ground
         if (_psm.onGround)
         {
-            var directionOfPlayerForwardRotation = PlayerUtilities.getDirectionFromOrigin(_psm.playerRb.rotation.eulerAngles.y);
-            normalWalkPosition =  PlayerUtilities.GetDirectionFromCamera(_psm.projectedPos, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            var directionOfPlayerForwardRotation = KinematicPlayerUtilities.getDirectionFromOrigin(_psm.playerRb.rotation.eulerAngles.y);
+            normalWalkPosition = KinematicPlayerUtilities.GetDirectionFromCamera(_psm.projectedPos, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
             endDirection = normalWalkPosition;
         }
@@ -100,7 +100,7 @@ public class KinematicPlayerWalkingState : KinematicPlayerMovementState
         {
             // should be able to control the player a little bit when they are in the air
             // the strength of the rotation end direction should be dampened
-            normalWalkPosition = PlayerUtilities.GetDirectionFromCamera(
+            normalWalkPosition = KinematicPlayerUtilities.GetDirectionFromCamera(
                 _psm.projectedPos, _psm.projectedPos + _psm.distanceFromCameraAtJump, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             endDirection = Vector3.Lerp(endDirection, normalWalkPosition, 0.2f);
             
@@ -124,7 +124,7 @@ public class KinematicPlayerWalkingState : KinematicPlayerMovementState
         if (!_psm.camera.isLockedOn)
         {
             directionBuffer = endDirection.normalized * (_psm.speed) * Time.fixedDeltaTime;
-            directionBuffer = PlayerUtilities.GetDirectionFromCamera(_psm.playerRb.position, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            directionBuffer = KinematicPlayerUtilities.GetDirectionFromCamera(_psm.playerRb.position, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }
         // If player IS locked on, ditto
         if (_psm.camera.isLockedOn)
@@ -132,12 +132,12 @@ public class KinematicPlayerWalkingState : KinematicPlayerMovementState
             directionBuffer = normalWalkPosition.normalized * (_psm.speed) * Time.fixedDeltaTime;
         }
 
-        collideVelocity = PlayerUtilities.collideAndSlide(_psm.playerCap, directionBuffer, _psm.playerRb.position, 0, _psm.skinWidth, 3, false, directionBuffer, _psm.onGround);
+        collideVelocity = KinematicPlayerUtilities.collideAndSlide(_psm.playerCap, directionBuffer, _psm.playerRb.position, 0, _psm.skinWidth, 3, false, directionBuffer, _psm.onGround);
 
         // Player is on ground, cast forward and DOWN (Going down ramps)
         if (_psm.onGround)
         {
-            collideVelocity += PlayerUtilities.collideAndSlide(_psm.playerCap, _psm.gravityVector, _psm.playerRb.position + (collideVelocity * _psm.speed * Time.fixedDeltaTime), 0, _psm.skinWidth, 3, true, _psm.gravityVector, _psm.onGround);
+            collideVelocity += KinematicPlayerUtilities.collideAndSlide(_psm.playerCap, _psm.gravityVector, _psm.playerRb.position + (collideVelocity * _psm.speed * Time.fixedDeltaTime), 0, _psm.skinWidth, 3, true, _psm.gravityVector, _psm.onGround);
         } 
 
 
@@ -161,7 +161,7 @@ public class KinematicPlayerWalkingState : KinematicPlayerMovementState
             // If player is ascending
             if(_psm.yVelocity.y > 0)
             {
-                var ceilingVel = PlayerUtilities.collideAndSlide(_psm.playerCap, _psm.yVelocity, _psm.projectedPos, 0, _psm.skinWidth, 3, true, _psm.yVelocity, _psm.onGround);
+                var ceilingVel = KinematicPlayerUtilities.collideAndSlide(_psm.playerCap, _psm.yVelocity, _psm.projectedPos, 0, _psm.skinWidth, 3, true, _psm.yVelocity, _psm.onGround);
                 var newDirection = ceilingVel.normalized * _psm.yVelocity.magnitude;
                 _psm.projectedPos += (newDirection * Time.fixedDeltaTime + ((0.5f) * _psm.gravityVector * Time.fixedDeltaTime * Time.fixedDeltaTime));
             } else

@@ -72,7 +72,7 @@ public class KinematicPlayerAirState : KinematicPlayerState
 
     public override void PhysicsUpdate()
     {
-        if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) != 0 && _psm.yVelocity.y < 0)
+        if (KinematicPlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) != 0 && _psm.yVelocity.y < 0)
         {
             _psm.onGround = true;
             _psm.isJumping = false;

@@ -7,7 +7,7 @@ using UnityEngine;
 /// <summary>
 /// Helper class that contains functions regarding player movement and status
 /// </summary>
-public class PlayerUtilities
+public class KinematicPlayerUtilities
 {
     static float maxAngle = 70;
 

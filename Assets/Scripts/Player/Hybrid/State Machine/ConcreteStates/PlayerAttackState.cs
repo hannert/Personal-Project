@@ -50,7 +50,7 @@ public class PlayerAttackState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        var directionFacing = PlayerUtilities.getDirectionFromOrigin(_psm.playerRb.rotation.y);
+        var directionFacing = KinematicPlayerUtilities.getDirectionFromOrigin(_psm.playerRb.rotation.y);
         var endPosition = _psm.projectedPos + directionFacing * _psm.speed * 0.3f * Time.fixedDeltaTime;
         timeSpentAttacking += Time.fixedDeltaTime;
         _psm.projectedPos = endPosition;
