@@ -17,10 +17,12 @@ public class PlayerRollingState : PlayerMovementState
     {
     }
 
-    public override Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed)
+    public override void AddForceToRB(Vector3 directionToMove, float speed)
     {
-        return projectedPosition + directionToMove * speed * 1.5f * Time.fixedDeltaTime;
+        throw new System.NotImplementedException();
     }
+
+
 
     public override bool CheckSwitchStates()
     {
@@ -107,15 +109,6 @@ public class PlayerRollingState : PlayerMovementState
         var distanceToMove = _psm.speed * Time.fixedDeltaTime;
         distanceRolled += distanceToMove;
         Debug.Log(distanceRolled);
-
-
-        _psm.projectedPos = CalculatePositionToMoveTo(_psm.projectedPos, directionOfRoll, _psm.speed);
-        var directionOfMovement = Quaternion.LookRotation(directionOfRoll, Vector3.up);
-        _psm.playerRb.MoveRotation(directionOfMovement);
-
-        
-
-        _psm.playerRb.MovePosition(_psm.projectedPos);
 
 
         if (CheckSwitchStates()) return;

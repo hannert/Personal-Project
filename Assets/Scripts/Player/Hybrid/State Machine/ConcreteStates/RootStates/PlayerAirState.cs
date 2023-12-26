@@ -72,14 +72,15 @@ public class PlayerAirState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        if (KinematicPlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) != 0 && _psm.yVelocity.y < 0)
+        _psm.playerRb.AddForce(Physics.gravity * 3, ForceMode.Acceleration);
+
+
+        if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) != 0)
         {
             _psm.onGround = true;
             _psm.isJumping = false;
             _psm.canJump = true;
             _psm.isFalling = false;
-            //_psm.currentFallVelocity = 0;
-            _psm.yVelocity = Vector3.zero;
             Debug.Log(_psm.groundColliders[0].transform.position);
         }
 
@@ -87,15 +88,10 @@ public class PlayerAirState : PlayerState
 
         if (CheckSwitchStates()) return;
 
-        // Check if we will hit our head on the wall
-
-
-        _psm.projectedPos = applyGravityToVector(_psm.playerRb.position);
         UpdatePlayerBools();
         CheckAnimationCondition();
 
 
-        //Debug.Log("Modifying projected Pos in Air state to " + _psm.projectedPos);
 
     }
     private Vector3 applyGravityToVector(Vector3 currentTrajectedPosition)

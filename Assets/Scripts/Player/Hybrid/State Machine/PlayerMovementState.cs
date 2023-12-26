@@ -8,5 +8,5 @@ public abstract class PlayerMovementState : PlayerState
     {
     }
 
-    public abstract Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed);
+    public abstract void AddForceToRB(Vector3 directionToMove, float speed);
 }

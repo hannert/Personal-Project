@@ -16,6 +16,8 @@ public class PlayerStateMachine
     private float decceleration = 8f;
     public float skinWidth = 0.05f;
 
+    public float sprintModifier = 1.5f;
+
     public Rigidbody playerRb;
     public CapsuleCollider playerCap { get; set; }
     public CameraController camera { get; set; }

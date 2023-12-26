@@ -38,9 +38,9 @@ public class PlayerSprintingState : PlayerWalkingState
 
     }
 
-    public override Vector3 CalculatePositionToMoveTo(Vector3 projectedPosition, Vector3 directionToMove, float speed)
+    public override void AddForceToRB(Vector3 directionToMove, float speed)
     {
-        return projectedPosition + directionToMove * speed * 1.5f * Time.fixedDeltaTime;
+        _psm.playerRb.AddForce(directionToMove.normalized * speed * _psm.sprintModifier * Time.fixedDeltaTime * 4, ForceMode.VelocityChange);
     }
 
     public override void PhysicsUpdate()

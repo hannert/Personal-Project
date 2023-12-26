@@ -26,7 +26,7 @@ public class PlayerControllerHybrid : MonoBehaviour
     public bool onGround = false;
     public bool canJump = true;
     public bool isJumping = false;
-    public bool isFalling = false;
+    public bool isFalling = false;  
     public bool isSprinting = false;
     public bool snapFlag = false;
     

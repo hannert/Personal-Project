@@ -35,7 +35,7 @@ public class PlayerIdleState : PlayerState
 
     public override void EnterState()
     {
-        Debug.Log("Entered Idle State");
+        Debug.Log("Entered Idle State");    
         _psm.playerAnim.SetBool("isIdle", true);
         InitializeSubState();
     }
@@ -47,6 +47,18 @@ public class PlayerIdleState : PlayerState
 
     public override void FrameUpdate()
     {
+        if (CheckSwitchStates())
+        {
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (_psm.canJump == true)
+            {
+                Debug.Log("Jumped");
+                _psm.playerRb.AddForce(Vector3.up * 30, ForceMode.VelocityChange);
+            }
+        }
     }
 
     public override void InitializeSubState()
@@ -63,31 +75,12 @@ public class PlayerIdleState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        // Idle would move if player is not pressing anything but also in the air!
         if (CheckSwitchStates())
         {
             return;
         }
         
-        if (_psm.playerRb.transform.position == _psm.projectedPos)
-        {
-            return;
-        }
-        else
-        {
-            if(_psm.yVelocity.y > 0)
-            {
-                var ceilingVel = KinematicPlayerUtilities.collideAndSlide(_psm.playerCap, _psm.yVelocity.normalized, _psm.projectedPos, 0, _psm.skinWidth, 3, true, _psm.yVelocity.normalized, _psm.onGround);
-                var newDirection = ceilingVel.normalized * _psm.yVelocity.magnitude;
-                _psm.projectedPos = _psm.playerRb.position + (newDirection * Time.fixedDeltaTime + ((0.5f) * _psm.gravityVector * Time.fixedDeltaTime * Time.fixedDeltaTime));
-            }
-            
 
-
-
-
-            _psm.playerRb.MovePosition(_psm.projectedPos);
-        }
     }
 
 
