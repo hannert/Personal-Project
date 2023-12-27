@@ -9,8 +9,12 @@ public class Player : MonoBehaviour, IDamagable
     public float maxHealth { get ; set ; }
     public float currentHealth { get; set; }
 
+    [Header("Movement")]
+    public float currentSpeed;
     public float speed = 10.0f;
     public float sprintSpeed = 15.0f;
+    public float jumpForce = 20.0f;
+    
     private Rigidbody playerRb;
     private CapsuleCollider playerCap;
     private new CameraController camera;
@@ -97,13 +101,14 @@ public class Player : MonoBehaviour, IDamagable
     void Update()
     {
         stateMachine.Update();
-
-
+        stateMachine.speed = speed;
+        stateMachine.jumpForce = jumpForce;
 
     }
 
     void FixedUpdate()
-    {
+    {        
+        currentSpeed = stateMachine.currentSpeed;
         stateMachine.UpdatePhysicsStates();
     }
 }

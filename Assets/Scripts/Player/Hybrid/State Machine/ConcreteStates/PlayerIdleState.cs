@@ -56,7 +56,8 @@ public class PlayerIdleState : PlayerState
             if (_psm.canJump == true)
             {
                 Debug.Log("Jumped");
-                _psm.playerRb.AddForce(Vector3.up * 30, ForceMode.VelocityChange);
+                _psm.playerRb.AddForce(Vector3.up * _psm.jumpForce, ForceMode.Impulse);
+                _psm.canJump = false;
             }
         }
     }

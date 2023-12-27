@@ -53,8 +53,9 @@ public class PlayerWalkingState : PlayerMovementState
         {
             if (_psm.canJump == true)
             {
+                _psm.canJump = false;
                 Debug.Log("Jumped");
-                _psm.playerRb.AddForce(Vector3.up * 30, ForceMode.VelocityChange);
+                _psm.playerRb.AddForce(Vector3.up * _psm.jumpForce, ForceMode.Impulse);
             }
         }
     }
@@ -110,9 +111,17 @@ public class PlayerWalkingState : PlayerMovementState
         {
             _psm.playerRb.AddForce(Physics.gravity * 3, ForceMode.Acceleration);
         }
-        
 
-        AddForceToRB(endDirection.normalized, _psm.speed);
+        if (!_psm.onGround)
+        {
+            // While in the air, input should influence the player's movement less, by a multiplier
+            AddForceToRB(endDirection.normalized, _psm.speed * 0.4f);
+        }
+        else
+        {
+            AddForceToRB(endDirection.normalized, _psm.speed);
+        }
+        
 
         #region Rotate the players model
         // Get rotation of the player to reflect where the player is headed

@@ -10,13 +10,18 @@ public class PlayerStateMachine
 {
     #region getters/setters
     // State machine will have all the data?
-    public float speed = 10.0f;
+
+    // Movement variables
+    public float currentSpeed = 0f;
+    public float speed = 20.0f;
     public float sprintSpeed = 15.0f;
+    public float jumpForce = 20.0f;
+
     public float rollDistance = 4f;
     private float decceleration = 8f;
     public float skinWidth = 0.05f;
 
-    public float sprintModifier = 1.5f;
+    public float sprintModifier = 1.5f; 
 
     public Rigidbody playerRb;
     public CapsuleCollider playerCap { get; set; }
@@ -54,7 +59,7 @@ public class PlayerStateMachine
     public bool snapFlag { get; set; } = false;
     public float maxFallSpeed { get; set; } = 30.0f;
     public float currentFallVelocity { get; set; } = 0.0f;
-    public float jumpVelocity { get; set; } = 10.0f;
+    public float jumpVelocity { get; set; } = 7.0f;
     public float gravity { get; set; } = -15.0f;
     public float currentYPos { get; set; } = 0f;
 
@@ -176,6 +181,7 @@ public class PlayerStateMachine
                 verticalInput = Mathf.Clamp(verticalInput, 0f, 2f);
             } else
             {
+                //playerRb.velocity = new Vector3(playerRb.velocity.x, playerRb.velocity.y, 0);
                 verticalInput += Time.deltaTime * decceleration;
                 verticalInput = Mathf.Clamp(verticalInput, -2f, 0f);
 
@@ -190,6 +196,7 @@ public class PlayerStateMachine
             }
             else
             {
+                //playerRb.velocity = new Vector3(0, playerRb.velocity.y,  playerRb.velocity.z);
                 horizontalInput += Time.deltaTime * decceleration;
                 horizontalInput = Mathf.Clamp(horizontalInput, -2f, 0f);
 
@@ -210,6 +217,7 @@ public class PlayerStateMachine
 
     public void UpdatePhysicsStates()
     {
+        currentSpeed = playerRb.velocity.magnitude;
         currentPlayerState.UpdatePhysicsStates();
     }
 }

@@ -9,4 +9,6 @@ public abstract class PlayerMovementState : PlayerState
     }
 
     public abstract void AddForceToRB(Vector3 directionToMove, float speed);
+
+    public virtual void ProcessInput() { }
 }
