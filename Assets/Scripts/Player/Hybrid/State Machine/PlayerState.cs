@@ -12,12 +12,12 @@ public abstract class PlayerState
     /// reference to a parent state (if any)
     /// root states will typically NOT have a superstate
     /// </summary>
-    private PlayerState _currentSuperState;
+    protected PlayerState _currentSuperState;
 
     /// <summary>
     /// reference to a child state
     /// </summary>
-    private PlayerState _currentSubState;
+    protected PlayerState _currentSubState;
 
     /// <summary>
     /// reference to the Player script
@@ -120,15 +120,24 @@ public abstract class PlayerState
     /// <param name="newState"></param>
     protected void SwitchState(PlayerState newState)
     {
+        ExitState();
         if (_isRootState)
         {
+            _currentSubState.ExitState();
+            var tempSub = _currentSubState._currentSubState;
+            while (tempSub != null)
+            {
+                tempSub.ExitState();
+                tempSub = tempSub._currentSubState;
+            }
             // Root state is entered within the playerStateMachine
             _psm.ChangeState(newState);
+
         }
         else if (_currentSuperState != null)
         {
             // Old substate needs to be exited and new substate to be entered
-            _currentSuperState._currentSubState.ExitState();
+            //_currentSuperState._currentSubState.ExitState();
             _currentSuperState.SetSubState(newState);
             
 

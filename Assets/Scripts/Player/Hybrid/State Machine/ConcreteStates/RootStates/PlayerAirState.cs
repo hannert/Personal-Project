@@ -81,7 +81,6 @@ public class PlayerAirState : PlayerState
             _psm.isJumping = false;
             _psm.canJump = true;
             _psm.isFalling = false;
-            Debug.Log(_psm.groundColliders[0].transform.position);
         }
 
         

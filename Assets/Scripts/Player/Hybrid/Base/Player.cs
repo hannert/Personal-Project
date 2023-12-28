@@ -46,7 +46,10 @@ public class Player : MonoBehaviour, IDamagable
     public PlayerIdleState playerIdleState { get; set; }
     public PlayerWalkingState playerWalkingState { get; set; }
     public PlayerSprintingState playerSprintingState { get; set; }
+    public PlayerCrouchState playerCrouchState { get; set; }
     public PlayerRollingState playerRollingState { get; set; }
+
+
 
     #region Combat States
     public PlayerAttackState playerAttackState { get; set; }
@@ -77,6 +80,7 @@ public class Player : MonoBehaviour, IDamagable
         playerIdleState = new PlayerIdleState(this, stateMachine);
         playerWalkingState = new PlayerWalkingState(this, stateMachine);
         playerSprintingState = new PlayerSprintingState(this, stateMachine);
+        playerCrouchState = new PlayerCrouchState(this, stateMachine);
         playerRollingState = new PlayerRollingState(this, stateMachine);
         #endregion
 

@@ -29,7 +29,6 @@ public class PlayerUtilities
 
         DebugExtension.DebugWireSphere(point, playerCap.radius * 0.9f, Time.fixedDeltaTime);
         int numColliders = Physics.OverlapSphereNonAlloc(point, playerCap.radius * 0.9f, groundColliders, LayerMask.GetMask("Ground", "Wall"));
-
         return numColliders;
 
     }

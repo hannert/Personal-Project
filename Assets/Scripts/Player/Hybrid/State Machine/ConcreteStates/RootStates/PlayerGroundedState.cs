@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerGroundedState : PlayerState
 {
+    bool checkGround = true;
     public PlayerGroundedState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
     {
         _isRootState = true;
@@ -29,10 +30,17 @@ public class PlayerGroundedState : PlayerState
 
     public override void FrameUpdate()
     {
+
     }
 
     public override void InitializeSubState()
     {
+        // If player holds down crouch, enter crouch
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            SetSubState(player.playerCrouchState);
+        }
+
         // While grounded, not moving -> Idle
         if(_psm.horizontalInput == 0 && _psm.verticalInput == 0)
         {
@@ -47,12 +55,23 @@ public class PlayerGroundedState : PlayerState
 
     public override void PhysicsUpdate()
     {
-
-        // When grounded, check if there is floor beneath to trigger falling state
-        if (KinematicPlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) == 0)
+        if (!_psm.isCrouched)
         {
-            _psm.onGround = false;
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                SetSubState(player.playerCrouchState);
+                return;
+            }
         }
+        if (checkGround)
+        {
+            // When grounded, check if there is floor beneath to trigger falling state
+            if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) == 0)
+            {
+                _psm.onGround = false;
+            }
+        }
+        
         CheckSwitchStates();
     }
 

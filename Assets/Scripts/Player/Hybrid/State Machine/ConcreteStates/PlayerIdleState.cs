@@ -42,6 +42,7 @@ public class PlayerIdleState : PlayerState
 
     public override void ExitState()
     {
+        Debug.Log("Exited Idle state");
         _psm.playerAnim.SetBool("isIdle", false);
     }
 
