@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerWalkingState : PlayerMovementState
 {
-    public PlayerWalkingState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
+    public PlayerWalkingState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
 
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerIdleWeaponState : PlayerState
 {
 
-    public PlayerIdleWeaponState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
+    public PlayerIdleWeaponState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
     }
 

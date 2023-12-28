@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerGroundedState : PlayerState
 {
     bool goingToCrouch = false;
-    public PlayerGroundedState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
+    public PlayerGroundedState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
         _isRootState = true;
     }

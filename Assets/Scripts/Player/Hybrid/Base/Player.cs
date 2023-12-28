@@ -72,21 +72,21 @@ public class Player : MonoBehaviour, IDamagable
         stateMachine = new PlayerStateMachine(playerRb, playerCap, camera, playerAnim);
 
         # region Root States
-        playerGroundedState = new PlayerGroundedState(this, stateMachine);
-        playerAirState = new PlayerAirState(this, stateMachine);
+        playerGroundedState = new PlayerGroundedState(this, stateMachine, "Grounded");
+        playerAirState = new PlayerAirState(this, stateMachine, "Air");
         #endregion
 
         #region Movement States
-        playerIdleState = new PlayerIdleState(this, stateMachine);
-        playerWalkingState = new PlayerWalkingState(this, stateMachine);
-        playerSprintingState = new PlayerSprintingState(this, stateMachine);
-        playerCrouchState = new PlayerCrouchState(this, stateMachine);
-        playerRollingState = new PlayerRollingState(this, stateMachine);
+        playerIdleState = new PlayerIdleState(this, stateMachine, "Idle");
+        playerWalkingState = new PlayerWalkingState(this, stateMachine, "Walking");
+        playerSprintingState = new PlayerSprintingState(this, stateMachine, "Sprinting");
+        playerCrouchState = new PlayerCrouchState(this, stateMachine, "Crouch");
+        playerRollingState = new PlayerRollingState(this, stateMachine, "Rolling");
         #endregion
 
         #region Combat States
-        playerAttackState = new PlayerAttackState(this, stateMachine);
-        playerIdleWeaponState = new PlayerIdleWeaponState(this, stateMachine);
+        playerAttackState = new PlayerAttackState(this, stateMachine, "Attack");
+        playerIdleWeaponState = new PlayerIdleWeaponState(this, stateMachine, "Weapon-Idle");
         #endregion
 
         stateMachine.Initialize(playerGroundedState);

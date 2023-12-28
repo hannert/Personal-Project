@@ -6,7 +6,7 @@ public class PlayerCrouchState : PlayerState
 {
     private float startYScale;
 
-    public PlayerCrouchState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine) 
+    public PlayerCrouchState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     { 
         startYScale = _psm.playerRb.transform.localScale.y; 
     }

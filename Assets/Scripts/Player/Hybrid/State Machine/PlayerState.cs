@@ -32,14 +32,38 @@ public abstract class PlayerState
     protected PlayerStateMachine _psm;
 
     /// <summary>
+    /// Name of the player class for debugging purposes
+    /// </summary>
+    protected string name;
+
+    /// <summary>
     /// Constructor to pass in a reference to the player its attached to and its stateMachine code
     /// </summary>
     /// <param name="player"></param>
     /// <param name="playerStateMachine"></param>
-    public PlayerState(Player player, PlayerStateMachine playerStateMachine)
+    public PlayerState(Player player, PlayerStateMachine playerStateMachine, string name)
     {
         this.player = player;
         this._psm = playerStateMachine;
+        this.name = name;
+    }
+
+    /// <summary>
+    /// Get the name back 
+    /// </summary>
+    /// <returns></returns>
+    public string GetName()
+    {
+        return this.name;
+    }
+
+    /// <summary>
+    /// Returns the current substate
+    /// </summary>
+    /// <returns></returns>
+    public PlayerState GetSubState()
+    {
+        return this._currentSubState;
     }
 
     // Virtual methods are used when we want to override a certain behavior for the dervied class

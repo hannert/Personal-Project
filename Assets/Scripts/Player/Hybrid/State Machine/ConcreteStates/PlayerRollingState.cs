@@ -13,7 +13,7 @@ public class PlayerRollingState : PlayerMovementState
 
     Vector3 directionOfRoll;
 
-    public PlayerRollingState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
+    public PlayerRollingState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
     }
 

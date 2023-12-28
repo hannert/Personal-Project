@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerSprintingState : PlayerWalkingState
 {
-    public PlayerSprintingState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
+    public PlayerSprintingState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
     }
 

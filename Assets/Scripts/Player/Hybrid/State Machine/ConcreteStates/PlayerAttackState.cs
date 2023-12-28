@@ -11,7 +11,7 @@ public class PlayerAttackState : PlayerState
     // How much time has elapsed since entering this attack
     public float timeSpentAttacking;
 
-    public PlayerAttackState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
+    public PlayerAttackState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
     }
 

@@ -14,7 +14,7 @@ using UnityEngine;
 public class PlayerAirState : PlayerState
 {
     
-    public PlayerAirState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
+    public PlayerAirState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
         _isRootState = true;
     }
