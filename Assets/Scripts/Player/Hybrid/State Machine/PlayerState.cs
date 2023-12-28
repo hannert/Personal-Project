@@ -123,8 +123,8 @@ public abstract class PlayerState
         ExitState();
         if (_isRootState)
         {
-            _currentSubState.ExitState();
-            var tempSub = _currentSubState._currentSubState;
+            _currentSubState?.ExitState();
+            var tempSub = _currentSubState?._currentSubState;
             while (tempSub != null)
             {
                 tempSub.ExitState();

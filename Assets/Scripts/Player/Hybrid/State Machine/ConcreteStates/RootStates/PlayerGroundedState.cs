@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerGroundedState : PlayerState
 {
-    bool checkGround = true;
+    bool goingToCrouch = false;
     public PlayerGroundedState(Player player, PlayerStateMachine playerStateMachine) : base(player, playerStateMachine)
     {
         _isRootState = true;
@@ -30,7 +30,14 @@ public class PlayerGroundedState : PlayerState
 
     public override void FrameUpdate()
     {
-
+        if (!_psm.isCrouched)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                goingToCrouch = true;
+                return;
+            }
+        }
     }
 
     public override void InitializeSubState()
@@ -38,6 +45,7 @@ public class PlayerGroundedState : PlayerState
         // If player holds down crouch, enter crouch
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
+            _psm.checkGround = false;
             SetSubState(player.playerCrouchState);
         }
 
@@ -55,15 +63,22 @@ public class PlayerGroundedState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        if (!_psm.isCrouched)
+        //if (!_psm.isCrouched)
+        //{
+        //    if (Input.GetKeyDown(KeyCode.LeftControl))
+        //    {
+        //        SetSubState(player.playerCrouchState);
+        //        return;
+        //    }
+        //}
+        if (goingToCrouch == true)
         {
-            if (Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                SetSubState(player.playerCrouchState);
-                return;
-            }
+            SetSubState(player.playerCrouchState);
+            goingToCrouch = false;
+            return;
         }
-        if (checkGround)
+
+        if (_psm.checkGround == true && goingToCrouch == false)
         {
             // When grounded, check if there is floor beneath to trigger falling state
             if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) == 0)

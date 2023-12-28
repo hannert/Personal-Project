@@ -18,8 +18,9 @@ public class PlayerCrouchState : PlayerState
 
         // Leave this state. Would be from grounded
         // Set the parent's state child state to this state's child
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyUp(KeyCode.LeftControl))
         {
+            Debug.Log("WAOW!");
             if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
             {
                 SwitchState(player.playerIdleState);
@@ -49,13 +50,12 @@ public class PlayerCrouchState : PlayerState
 
 
         InitializeSubState();
-
+        _psm.checkGround = true;
     }
 
     public override void ExitState()
     {
         Debug.Log("Exited Crouch state");
-        Debug.Log(startYScale);
         _psm.isCrouched = false;
         _psm.playerRb.transform.localScale = new Vector3(_psm.playerRb.transform.localScale.x, startYScale, _psm.playerRb.transform.localScale.z);
 
@@ -69,7 +69,6 @@ public class PlayerCrouchState : PlayerState
 
     public override void InitializeSubState()
     {
-        Debug.Log("init sub for crouch");
         // While grounded and crouched, not moving -> Idle
         if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
         {

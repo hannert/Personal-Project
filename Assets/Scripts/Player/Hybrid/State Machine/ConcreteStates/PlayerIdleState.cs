@@ -67,22 +67,16 @@ public class PlayerIdleState : PlayerState
     {
         // Check if we have a weapon!
         // TODO: Further check for a weapon must be done later!
-        if (_psm.isEquipped)
-        {
-            //Debug.Log("Substate for idle set to weapon idle");
-            SetSubState(player.playerIdleWeaponState);
-        }
+        //if (_psm.isEquipped)
+        //{
+        //    //Debug.Log("Substate for idle set to weapon idle");
+        //    SetSubState(player.playerIdleWeaponState);
+        //}
 
     }
 
     public override void PhysicsUpdate()
     {
-        if (CheckSwitchStates())
-        {
-            return;
-        }
-        
-
     }
 
 
