@@ -47,6 +47,7 @@ public class Player : MonoBehaviour, IDamagable
     public PlayerWalkingState playerWalkingState { get; set; }
     public PlayerSprintingState playerSprintingState { get; set; }
     public PlayerCrouchState playerCrouchState { get; set; }
+    public PlayerSlidingState playerSlidingState { get; set; }
     public PlayerRollingState playerRollingState { get; set; }
 
 
@@ -81,12 +82,13 @@ public class Player : MonoBehaviour, IDamagable
         playerWalkingState = new PlayerWalkingState(this, stateMachine, "Walking");
         playerSprintingState = new PlayerSprintingState(this, stateMachine, "Sprinting");
         playerCrouchState = new PlayerCrouchState(this, stateMachine, "Crouch");
+        playerSlidingState = new PlayerSlidingState(this, stateMachine, "Sliding");
         playerRollingState = new PlayerRollingState(this, stateMachine, "Rolling");
         #endregion
 
-        #region Combat States
-        playerAttackState = new PlayerAttackState(this, stateMachine, "Attack");
-        playerIdleWeaponState = new PlayerIdleWeaponState(this, stateMachine, "Weapon-Idle");
+        #region Combat States   
+        playerAttackState = new PlayerAttackState(this, stateMachine, "-");
+        playerIdleWeaponState = new PlayerIdleWeaponState(this, stateMachine, "-");
         #endregion
 
         stateMachine.Initialize(playerGroundedState);

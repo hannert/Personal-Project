@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerGroundedState : PlayerState
 {
     bool goingToCrouch = false;
+    bool goingToSlide = false;
     public PlayerGroundedState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
         _isRootState = true;
@@ -32,10 +33,22 @@ public class PlayerGroundedState : PlayerState
     {
         if (!_psm.isCrouched)
         {
-            if (Input.GetKeyDown(KeyCode.LeftControl))
+            if (!_psm.isSprinting)
             {
-                goingToCrouch = true;
-                return;
+                if (Input.GetKeyDown(KeyCode.LeftControl))
+                {
+                    goingToCrouch = true;
+                    return;
+                }
+            }
+            if (_psm.isSprinting)
+            {
+                if (Input.GetKeyDown(KeyCode.Mouse3))
+                {
+                    _psm.isSliding = true;
+                    goingToSlide = true;
+                    return;
+                }
             }
         }
     }
@@ -43,14 +56,30 @@ public class PlayerGroundedState : PlayerState
     public override void InitializeSubState()
     {
         // If player holds down crouch, enter crouch
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (!_psm.isCrouched)
         {
-            _psm.checkGround = false;
-            SetSubState(player.playerCrouchState);
+            if (!_psm.isSprinting)
+            {
+                if (Input.GetKeyDown(KeyCode.LeftControl))
+                {
+                    goingToCrouch = true;
+                    return;
+                }
+            }
+            if (_psm.isSprinting)
+            {
+                if (Input.GetKeyDown(KeyCode.Mouse3))
+                {
+                    _psm.isSliding = true;
+                    goingToSlide = true;
+                    return;
+
+                }
+            }
         }
 
         // While grounded, not moving -> Idle
-        if(_psm.horizontalInput == 0 && _psm.verticalInput == 0)
+        if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
         {
             SetSubState(player.playerIdleState);
         } else
@@ -71,6 +100,13 @@ public class PlayerGroundedState : PlayerState
         //        return;
         //    }
         //}
+        if (goingToSlide)
+        {
+            SetSubState(player.playerCrouchState);
+            goingToSlide = false;
+            return;
+        }
+
         if (goingToCrouch == true)
         {
             SetSubState(player.playerCrouchState);
@@ -92,6 +128,8 @@ public class PlayerGroundedState : PlayerState
 
     public override bool CheckSwitchStates()
     {
+
+
         if (_psm.onGround == false)
         {
             SwitchState(player.playerAirState);
@@ -101,5 +139,7 @@ public class PlayerGroundedState : PlayerState
         return false;
 
     }
+
+
 
 }

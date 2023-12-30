@@ -6,6 +6,8 @@ public class PlayerCrouchState : PlayerState
 {
     private float startYScale;
 
+    private bool slideFlag = false;
+
     public PlayerCrouchState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     { 
         startYScale = _psm.playerRb.transform.localScale.y; 
@@ -69,6 +71,13 @@ public class PlayerCrouchState : PlayerState
 
     public override void InitializeSubState()
     {
+        // Set from where it is first encountered (Sprinting)
+        if (_psm.isSliding)
+        {
+            SetSubState(player.playerSlidingState);
+            return;
+        }
+
         // While grounded and crouched, not moving -> Idle
         if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
         {
@@ -82,7 +91,7 @@ public class PlayerCrouchState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        base.PhysicsUpdate();
+        
     }
 
 }

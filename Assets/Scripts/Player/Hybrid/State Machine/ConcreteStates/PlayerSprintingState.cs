@@ -10,6 +10,8 @@ public class PlayerSprintingState : PlayerWalkingState
 
     public override bool CheckSwitchStates()
     {
+
+
         if (!Input.GetKey(KeyCode.LeftShift))
         {
             SwitchState(player.playerWalkingState);

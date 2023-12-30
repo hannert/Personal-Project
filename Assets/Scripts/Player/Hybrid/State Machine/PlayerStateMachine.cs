@@ -43,6 +43,7 @@ public class PlayerStateMachine
     public bool isWalking { get; set; } = false;
     public bool isSprinting { get; set; } = false;
     public bool isCrouched { get; set; } = false;
+    public bool isSliding { get; set; } = false;
     public bool checkGround { get; set; } = true;
     public bool isLockedOn { get; set; } = false;
     public bool isRolling { get; set; } = false;

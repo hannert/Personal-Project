@@ -11,6 +11,9 @@ public class PlayerRollingState : PlayerMovementState
     float timeSpentRolling;
     float timeToRoll;
 
+    // Variable to keep track of the first time the user enters, use impulse to push to make it feel more snappy
+    bool initPush = false;
+
     Vector3 directionOfRoll;
 
     public PlayerRollingState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
@@ -19,7 +22,8 @@ public class PlayerRollingState : PlayerMovementState
 
     public override void AddForceToRB(Vector3 directionToMove, float speed)
     {
-        throw new System.NotImplementedException();
+
+        _psm.playerRb.AddForce(directionToMove * speed * Time.fixedDeltaTime * 200f, ForceMode.Force);
     }
 
 
@@ -62,7 +66,7 @@ public class PlayerRollingState : PlayerMovementState
     public override void EnterState()
     {
         Debug.Log("Enter Roll");
-
+        initPush = true;
         _psm.isRolling = true;
         _psm.playerAnim.SetBool("isRolling", true);
 
@@ -74,11 +78,11 @@ public class PlayerRollingState : PlayerMovementState
         // Once we enter, we need the direction of the roll!
         if (_psm.isLockedOn)
         {
-            directionOfRoll = KinematicPlayerUtilities.GetDirectionFromCamera(_psm.camera.lockOnFocusObject.transform.position, _psm.playerRb.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_psm.camera.lockOnFocusObject.transform.position, _psm.playerRb.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }
         else
         {
-            directionOfRoll = KinematicPlayerUtilities.GetDirectionFromCamera(_psm.projectedPos, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_psm.playerRb.position, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }
         
 
@@ -109,7 +113,19 @@ public class PlayerRollingState : PlayerMovementState
         var distanceToMove = _psm.speed * Time.fixedDeltaTime;
         distanceRolled += distanceToMove;
         Debug.Log(distanceRolled);
+        // Add constant force while turn on ghosting for interactable entities?
 
+        // Initial press should impulse the player torwards the direction
+        if(initPush) { 
+            _psm.playerRb.AddForce(directionOfRoll * _psm.speed * Time.fixedDeltaTime * 300f, ForceMode.Impulse);
+            initPush = false;
+        } 
+        else
+        {
+            AddForceToRB(directionOfRoll, _psm.speed);
+
+        }
+        
 
         if (CheckSwitchStates()) return;
     }
