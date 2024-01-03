@@ -9,7 +9,7 @@ using UnityEngine.Assertions.Must;
 public class PlayerSlidingState : PlayerMovementState
 {
     private float startYScale;
-    private float minimumSlideSpeed;
+    private float minimumSlideSpeed = 3.0f;
 
     // Timer variables
     private float exitTimerElapsed = 0f;
@@ -97,9 +97,11 @@ public class PlayerSlidingState : PlayerMovementState
         }
 
         // If player's velocity is less than a small amount, start timer to leave state
-        if (_psm.playerRb.velocity.magnitude < minimumSlideSpeed)
+        if (!startExitTimer && _psm.playerRb.velocity.magnitude < minimumSlideSpeed)
         {
+            // Debug.Log("Timer started!");
             startExitTimer = true;
+
         }
 
         // TIME IS TICKING!! ⏰
@@ -111,7 +113,6 @@ public class PlayerSlidingState : PlayerMovementState
         // TIMES UP!!
         if (exitTimerElapsed >= exitTimerMaximum)
         {
-            Debug.Break();
             if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
             {
                 SwitchState(player.playerIdleState);

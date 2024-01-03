@@ -16,6 +16,8 @@ public class PlayerGroundedState : PlayerState
         _psm.playerAnim.SetBool("isGrounded", true);
         _psm.onGround = true;
         _psm.playerRb.drag = 5;
+        goingToSlide = false;
+        goingToCrouch = false;
         InitializeSubState();
         
     }
@@ -62,6 +64,7 @@ public class PlayerGroundedState : PlayerState
             {
                 if (Input.GetKeyDown(KeyCode.LeftControl))
                 {
+                    Debug.Log("I want to crouch!");
                     goingToCrouch = true;
                     return;
                 }
@@ -92,23 +95,18 @@ public class PlayerGroundedState : PlayerState
 
     public override void PhysicsUpdate()
     {
-        //if (!_psm.isCrouched)
-        //{
-        //    if (Input.GetKeyDown(KeyCode.LeftControl))
-        //    {
-        //        SetSubState(player.playerCrouchState);
-        //        return;
-        //    }
-        //}
-        if (goingToSlide)
+        if (goingToSlide == true)
         {
+            _currentSubState.ExitState();
             SetSubState(player.playerCrouchState);
             goingToSlide = false;
+            goingToCrouch = false;
             return;
         }
 
         if (goingToCrouch == true)
         {
+            _currentSubState.ExitState();
             SetSubState(player.playerCrouchState);
             goingToCrouch = false;
             return;

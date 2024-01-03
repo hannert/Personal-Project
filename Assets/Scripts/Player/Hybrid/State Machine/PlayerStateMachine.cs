@@ -110,7 +110,8 @@ public class PlayerStateMachine
 
     public void ChangeState(PlayerState newState)
     {
-        currentPlayerState.ExitState();
+        // Issues with current layout of our states, the root states would EXIT twice. If we are switching the state we exit, and then we also change state, we also exit.
+        //currentPlayerState.ExitState();
         currentPlayerState = newState;
         currentPlayerState.EnterState();
     }

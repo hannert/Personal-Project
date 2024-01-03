@@ -35,6 +35,7 @@ public class PlayerSprintingState : PlayerWalkingState
 
     public override void ExitState()
     {
+        Debug.Log("Exited Sprinting state");
         _psm.isSprinting = false;
         _psm.playerAnim.SetBool("isSprinting", false);
 
