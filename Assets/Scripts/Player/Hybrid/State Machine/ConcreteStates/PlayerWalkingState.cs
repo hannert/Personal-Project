@@ -85,6 +85,14 @@ public class PlayerWalkingState : PlayerMovementState
         var tempPlayer = new Vector3(_psm.playerRb.position.x, 0, _psm.playerRb.position.z);
         var tempCamera = new Vector3(_psm.camera.transform.position.x, 0, _psm.camera.transform.position.z);
 
+        if (_psm.isLockedOn)
+        {
+            // the locked on object will become the 'player'
+            tempPlayer = new Vector3(_psm.camera.lockOnFocusObject.transform.position.x, 0, _psm.camera.lockOnFocusObject.transform.position.z);
+            tempCamera = new Vector3(_psm.playerRb.position.x, 0, _psm.playerRb.position.z);
+        }
+
+
         // Get the direction from the camera to the player 
         var testDirection = (tempPlayer - tempCamera).normalized;
 

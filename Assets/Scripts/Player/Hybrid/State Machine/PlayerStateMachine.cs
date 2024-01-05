@@ -207,9 +207,14 @@ public class PlayerStateMachine
             }
         }
 
+        // If player presses the lock on button: Lock on to nearest lock-onable entity
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            playerAnim.SetBool("isLockedOn", camera.toggleLockOn());
+            // Toggle lock on in CameraController and write down bool of status
+            bool lockOnStatus = camera.toggleLockOn();
+            playerAnim.SetBool("isLockedOn", lockOnStatus);
+            isLockedOn = lockOnStatus;
+
         }
 
         playerAnim.SetFloat("horizontalInput", horizontalInput);
