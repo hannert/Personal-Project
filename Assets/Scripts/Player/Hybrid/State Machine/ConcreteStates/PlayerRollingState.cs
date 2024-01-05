@@ -22,8 +22,14 @@ public class PlayerRollingState : PlayerMovementState
 
     public override void AddForceToRB(Vector3 directionToMove, float speed)
     {
-
-        _psm.playerRb.AddForce(directionToMove * speed * Time.fixedDeltaTime * 200f, ForceMode.Force);
+        if(_psm.onGround == true)
+        {
+            _psm.playerRb.AddForce(directionToMove * speed * Time.fixedDeltaTime * 150f, ForceMode.Force);
+        }
+        if(_psm.onGround == false)
+        {
+            _psm.playerRb.AddForce(directionToMove * speed * Time.fixedDeltaTime * 1.5f, ForceMode.Force);
+        }
     }
 
 
@@ -116,8 +122,13 @@ public class PlayerRollingState : PlayerMovementState
         // Add constant force while turn on ghosting for interactable entities?
 
         // Initial press should impulse the player torwards the direction
-        if(initPush) { 
-            _psm.playerRb.AddForce(directionOfRoll * _psm.speed * Time.fixedDeltaTime * 300f, ForceMode.Impulse);
+        if(initPush) {
+            float multiplier = 200f;
+            if (!_psm.onGround)
+            {
+                multiplier = 100f;
+            }
+            _psm.playerRb.AddForce(directionOfRoll * _psm.speed * Time.fixedDeltaTime * multiplier, ForceMode.Impulse);
             initPush = false;
         } 
         else
