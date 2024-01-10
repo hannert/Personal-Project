@@ -113,7 +113,7 @@ public class PlayerGroundedState : PlayerState
             return;
         }
 
-        if (_psm.checkGround == true && goingToCrouch == false)
+        if (_psm.checkGround == true || _psm.playerRb.velocity.y <= 0)
         {
             // When grounded, check if there is floor beneath to trigger falling state
             if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) == 0)
@@ -134,7 +134,7 @@ public class PlayerGroundedState : PlayerState
             _psm.checkGround = false;
             _psm.willJump = false;
             SwitchState(player.playerAirState);
-
+            return true;
 
         }
         if (_psm.onGround == false)
