@@ -56,9 +56,11 @@ public class PlayerIdleState : PlayerState
         {
             if (_psm.canJump == true)
             {
+                // Switch to the air state ( So we avoid the grounded check again, allowing the player to double jump from a crouched position twice )
+
+                _psm.willJump = true;
                 Debug.Log("Jumped");
-                _psm.playerRb.AddForce(Vector3.up * _psm.jumpForce, ForceMode.Impulse);
-                _psm.canJump = false;
+                
             }
         }
     }

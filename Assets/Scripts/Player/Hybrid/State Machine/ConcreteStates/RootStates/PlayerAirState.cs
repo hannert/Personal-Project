@@ -13,7 +13,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerAirState : PlayerState
 {
-    
+
     public PlayerAirState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
         _isRootState = true;
@@ -21,10 +21,14 @@ public class PlayerAirState : PlayerState
 
     public override bool CheckSwitchStates()
     {
-        if (_psm.onGround)
+        if (_psm.isFalling == true)
         {
-            SwitchState(player.playerGroundedState);
-            return true;
+            if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) != 0)
+            {
+                Debug.Log("Ground collision returned true in air state");
+                SwitchState(player.playerGroundedState);
+                return true;
+            }
         }
         return false;
     }
@@ -33,20 +37,15 @@ public class PlayerAirState : PlayerState
     {
         Debug.Log("Entered Air State");
         _psm.onGround = false;
-        InitializeSubState();
-
-        CheckAnimationCondition();
-
-        
+        InitializeSubState();        
     }
 
     public override void ExitState()
     {
         Debug.Log("Exiting air state!!!!!!!!!!!!!!!!!!!!!");
         // Normally exit to the Grounded State
-
-        CheckAnimationCondition();
-
+        _psm.isJumping = false;
+        _psm.isFalling = false;
     }
 
     public override void FrameUpdate()
@@ -74,23 +73,13 @@ public class PlayerAirState : PlayerState
     {
         _psm.playerRb.AddForce(Physics.gravity * 3, ForceMode.Acceleration);
 
-
-        if (PlayerUtilities.checkGroundCollision(_psm.groundColliders, _psm.playerCap) != 0)
+        // Update if the player bool for is the player falling or not ( negative y velocity )
+        if (_psm.playerRb.velocity.y < 0)
         {
-            _psm.onGround = true;
-            _psm.isJumping = false;
-            _psm.canJump = true;
-            _psm.isFalling = false;
-        }
-
-        
+            _psm.isFalling = true;
+        }        
 
         if (CheckSwitchStates()) return;
-
-        UpdatePlayerBools();
-        CheckAnimationCondition();
-
-
 
     }
     private Vector3 applyGravityToVector(Vector3 currentTrajectedPosition)
@@ -134,14 +123,6 @@ public class PlayerAirState : PlayerState
 
     private void UpdatePlayerBools()
     {
-        if (_psm.currentFallVelocity < 0)
-        {
-            _psm.isFalling = true;
-            _psm.isJumping = false;
-        } else
-        {
-            _psm.isFalling = false;
-            _psm.isJumping = true;
-        }
+
     }
 }

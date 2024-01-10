@@ -38,6 +38,8 @@ public class PlayerStateMachine
     // -----------------------
     public bool onGround { get; set; } = false;
     public bool canJump { get; set; } = true;
+    public bool willJump { get; set; } = false;
+
     public bool isJumping { get; set; } = false;
     public bool isFalling { get; set; } = false;
     public bool isWalking { get; set; } = false;
@@ -61,7 +63,7 @@ public class PlayerStateMachine
 
     public bool snapFlag { get; set; } = false;
     public float maxFallSpeed { get; set; } = 30.0f;
-    public float currentFallVelocity { get; set; } = 0.0f;
+    // public float currentFallVelocity { get; set; } = 0.0f;
     public float jumpVelocity { get; set; } = 7.0f;
     public float gravity { get; set; } = -15.0f;
     public float currentYPos { get; set; } = 0f;

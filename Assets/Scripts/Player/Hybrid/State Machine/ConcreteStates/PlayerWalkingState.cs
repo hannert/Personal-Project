@@ -54,9 +54,7 @@ public class PlayerWalkingState : PlayerMovementState
         {
             if (_psm.canJump == true)
             {
-                _psm.canJump = false;
-                Debug.Log("Jumped");
-                _psm.playerRb.AddForce(Vector3.up * _psm.jumpForce, ForceMode.Impulse);
+                _psm.willJump = true;
             }
         }
     }

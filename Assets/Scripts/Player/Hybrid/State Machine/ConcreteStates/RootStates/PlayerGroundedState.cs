@@ -15,6 +15,7 @@ public class PlayerGroundedState : PlayerState
         Debug.Log("Entered grounded state");
         _psm.playerAnim.SetBool("isGrounded", true);
         _psm.onGround = true;
+        _psm.canJump = true;
         _psm.playerRb.drag = 5;
         goingToSlide = false;
         goingToCrouch = false;
@@ -126,8 +127,16 @@ public class PlayerGroundedState : PlayerState
 
     public override bool CheckSwitchStates()
     {
+        if (_psm.willJump)
+        {
+            _psm.playerRb.AddForce(Vector3.up * _psm.jumpForce, ForceMode.Impulse);
+            _psm.canJump = false;
+            _psm.checkGround = false;
+            _psm.willJump = false;
+            SwitchState(player.playerAirState);
 
 
+        }
         if (_psm.onGround == false)
         {
             SwitchState(player.playerAirState);
