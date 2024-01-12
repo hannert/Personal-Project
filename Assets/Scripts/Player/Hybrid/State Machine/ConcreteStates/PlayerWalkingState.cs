@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+
+/// <summary>
+/// Player state where the player is moving
+/// </summary>
 public class PlayerWalkingState : PlayerMovementState
 {
-    public PlayerWalkingState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
-    {
-
-    }
+    public PlayerWalkingState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name) { }
 
     public override bool CheckSwitchStates()
     {
@@ -77,7 +78,9 @@ public class PlayerWalkingState : PlayerMovementState
         // Grounded locked on walking
         // Air walking
         // Air locked on walking
+        // crouch state as an intermediate state between root and movement states
 
+        #region  Get direction of player input
 
         // Get position of the player and the camera without the Y component
         var tempPlayer = new Vector3(_psm.playerRb.position.x, 0, _psm.playerRb.position.z);
@@ -91,21 +94,37 @@ public class PlayerWalkingState : PlayerMovementState
         }
 
 
-        // Get the direction from the camera to the player 
-        var testDirection = (tempPlayer - tempCamera).normalized;
+        // Get the direction from the object (camera) to the reference (player)
+        var objectToReferenceDirection = (tempPlayer - tempCamera).normalized;
+
+
+        // Get horizontal and vertical components from input ------
 
         // Already normalized ( 0 - 1 value for x and z )
+        // Use horizontal input, 'a' or 'd' key
         var horizontalVector = new Vector3(_psm.horizontalInput, 0, 0);
+       
+        // Use vertical input, 'w' or 's' key
         var verticalVector = new Vector3(0, 0, _psm.verticalInput);
+
+        // Currently overriding the horizontal component with the Axis Raw as our own input smoother still needs work (_psm.iput)
+        // TODO: Change back to custom input
+        horizontalVector = new Vector3(Input.GetAxisRaw("Horizontal"), 0, 0);
+        verticalVector = new Vector3(0, 0, Input.GetAxisRaw("Vertical"));
+
+        // ------
+
 
         // Get the combined vector from horizontal and vertical input
         var betweenVector = (horizontalVector + verticalVector).normalized;
 
         // Rotate the vector perpendicular
-        var perpVector = new Vector3(testDirection.z, 0, -testDirection.x);
+        var perpVector = new Vector3(objectToReferenceDirection.z, 0, -objectToReferenceDirection.x);
 
-        var endDirection = betweenVector.x * perpVector + betweenVector.z * testDirection;
+        // The direction the player's key input is pointing towards
+        var endDirection = betweenVector.x * perpVector + betweenVector.z * objectToReferenceDirection;
 
+        #endregion
 
         // Get rotation of the player to reflect the keys inputted 
         if (endDirection != Vector3.zero)
@@ -114,10 +133,31 @@ public class PlayerWalkingState : PlayerMovementState
             var finalRotation = testFinalRotation.eulerAngles.normalized;
             //playerRb.rotation = testFinalRotation;
         }
-        if (!_psm.onGround && _psm.playerRb.velocity.y < 0)
-        {
-            _psm.playerRb.AddForce(Physics.gravity * 3, ForceMode.Acceleration);
-        }
+
+        Vector3 currentPlayerVelocityDirection = _psm.playerRb.velocity.normalized;
+
+        // Get the Vector3 dot product from the players current velocity and the desired velocity direction (endDirection)
+        // The dot product will tell us how similar the new direction is to the current players velocity 
+        // From the Unity Documentation ->
+        // For normalized vectors Dot returns 1 if they point in exactly the same direction, -1 if they point in completely opposite directions and zero if the vectors are perpendicular.
+        float velDotProduct = Vector3.Dot(endDirection, currentPlayerVelocityDirection);
+
+        // From the dot product, we can get a custom value if the player is trying to switch directions, where the acceleration will be about 2x stronger to account for the 
+        float accel = _psm.acceleration * _psm.AccelerationMultiplier.Evaluate(velDotProduct);
+
+        // 
+        Vector3 FinalVel = _psm.playerRb.velocity;
+
+        Vector3 goalVelocity = endDirection * _psm.speed;
+
+        FinalVel = Vector3.MoveTowards(FinalVel, goalVelocity + _psm.playerRb.velocity, accel * Time.fixedDeltaTime);
+
+        Debug.Log(accel);
+
+        Vector3 neededAcceleration = (FinalVel - _psm.playerRb.velocity) / Time.fixedDeltaTime;
+
+        neededAcceleration = Vector3.ClampMagnitude(neededAcceleration, _psm.maxAcceleration);
+
 
         if (!_psm.onGround)
         {
@@ -126,7 +166,9 @@ public class PlayerWalkingState : PlayerMovementState
         }
         else
         {
-            AddForceToRB(endDirection.normalized, _psm.speed);
+            // Else not in the air (On ground), player should move normally
+            //AddForceToRB(endDirection.normalized, _psm.speed);
+            _psm.playerRb.AddForce(Vector3.Scale(neededAcceleration * _psm.playerRb.mass, new Vector3(1, 0, 1)));
         }
         
 

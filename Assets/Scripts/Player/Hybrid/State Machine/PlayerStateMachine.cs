@@ -12,8 +12,11 @@ public class PlayerStateMachine
     // State machine will have all the data?
 
     // Movement variables
+    public AnimationCurve AccelerationMultiplier;
     public float currentSpeed = 0f;
     public float speed = 20.0f;
+    public float acceleration = 100f;
+    public float maxAcceleration = 80f;
     public float sprintSpeed = 15.0f;
     public float jumpForce = 20.0f;
 
@@ -94,12 +97,13 @@ public class PlayerStateMachine
     }
 
     // Dependency Injection of the most important player aspects
-    public PlayerStateMachine(Rigidbody playerRb, CapsuleCollider playerCap, CameraController camera, Animator playerAnim)
+    public PlayerStateMachine(Rigidbody playerRb, CapsuleCollider playerCap, CameraController camera, Animator playerAnim, AnimationCurve AccelerationMultiplier)
     {
         this.playerRb = playerRb;
         this.playerCap = playerCap;
         this.camera = camera;
         this.playerAnim = playerAnim;
+        this.AccelerationMultiplier = AccelerationMultiplier;
     }
 
     public PlayerState currentPlayerState { get; set; }

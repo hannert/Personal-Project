@@ -10,16 +10,32 @@ public class Player : MonoBehaviour, IDamagable
     public float currentHealth { get; set; }
 
     [Header("Movement")]
+    
+    [Tooltip("The players current speed")]
     public float currentSpeed;
+
+    [Tooltip("The players maximum speed")]
     public float speed = 10.0f;
+
+    [Tooltip("Curve for acceleration multiplier when turning the character in opposing directions")]   
+    public AnimationCurve AccelerationMultiplier;
+
+    [Tooltip("Sprint force modifier")]
+    // TODO: Change this to a modifier rather than a set speed for sprint ?
     public float sprintSpeed = 15.0f;
+
+    [Tooltip("Force added when player jumps")]
     public float jumpForce = 20.0f;
     
+
+    // Internal Data for the player
     private Rigidbody playerRb;
     private CapsuleCollider playerCap;
     private new CameraController camera;
     private Animator playerAnim;
 
+    
+    // TODO: create combat system to deal with damage and health
     public void Damage(float damage)
     {
         throw new System.NotImplementedException();
@@ -69,8 +85,7 @@ public class Player : MonoBehaviour, IDamagable
         // Get the cameracontroller component to get a reference to the focal point for rotating the character
         camera = GameObject.Find("Camera").GetComponent<CameraController>();
 
-
-        stateMachine = new PlayerStateMachine(playerRb, playerCap, camera, playerAnim);
+        stateMachine = new PlayerStateMachine(playerRb, playerCap, camera, playerAnim, AccelerationMultiplier);
 
         # region Root States
         playerGroundedState = new PlayerGroundedState(this, stateMachine, "Grounded");
