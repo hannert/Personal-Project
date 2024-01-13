@@ -14,7 +14,7 @@ public class PlayerIdleState : PlayerState
         {
 
             // Left shift detected, go into sprint
-            if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (Input.GetKeyDown(Keybinds.sprint))
             {
                 SwitchState(player.playerSprintingState);
                 return true;
@@ -52,7 +52,7 @@ public class PlayerIdleState : PlayerState
         {
             return;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(Keybinds.jump))
         {
             if (_psm.canJump == true)
             {

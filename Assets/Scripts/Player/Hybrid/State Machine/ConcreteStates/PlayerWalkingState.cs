@@ -14,10 +14,10 @@ public class PlayerWalkingState : PlayerMovementState
 
     public override bool CheckSwitchStates()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(Keybinds.sprint))
         {
             // If player is crouching and tries to sprint, eat the input
-            if(Input.GetKey(KeyCode.LeftControl)) { return false;  }
+            if(_psm.isCrouched) { return false;  }
             SwitchState(player.playerSprintingState);
             return true;
 
@@ -48,12 +48,12 @@ public class PlayerWalkingState : PlayerMovementState
 
     public override void FrameUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.LeftAlt))
+        if (Input.GetKeyDown(Keybinds.roll))
         {
 
             SwitchState(player.playerRollingState);
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(Keybinds.jump))
         {
             if (_psm.canJump == true)
             {
@@ -147,14 +147,13 @@ public class PlayerWalkingState : PlayerMovementState
         // From the dot product, we can get a custom value if the player is trying to switch directions, where the acceleration will be about 2x stronger to account for the 
         float accel = _psm.acceleration * _psm.AccelerationMultiplier.Evaluate(velDotProduct);
 
-        // 
         Vector3 FinalVel = _psm.playerRb.velocity;
 
         Vector3 goalVelocity = endDirection * _psm.speed;
 
         FinalVel = Vector3.MoveTowards(FinalVel, goalVelocity + _psm.playerRb.velocity, accel * Time.fixedDeltaTime);
 
-        Debug.Log(accel);
+        //Debug.Log(accel);
 
         Vector3 neededAcceleration = (FinalVel - _psm.playerRb.velocity) / Time.fixedDeltaTime;
 

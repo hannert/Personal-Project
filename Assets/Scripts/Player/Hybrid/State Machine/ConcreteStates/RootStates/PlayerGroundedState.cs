@@ -34,18 +34,23 @@ public class PlayerGroundedState : PlayerState
 
     public override void FrameUpdate()
     {
+        // If player is not crouched
         if (!_psm.isCrouched)
         {
+            // If player is not sprinting
             if (!_psm.isSprinting)
             {
-                if (Input.GetKeyDown(KeyCode.LeftControl))
+                // IF player is not crouched and not sprinting, press crouch to initate crouch on next physics update cycle
+                if (Input.GetKeyDown(Keybinds.crouch))
                 {
                     goingToCrouch = true;
                     return;
                 }
             }
+            // If player is sprinting
             if (_psm.isSprinting)
             {
+                // If player is not crouched and sprinting, get ready to slide
                 if (Input.GetKeyDown(KeyCode.Mouse3))
                 {
                     _psm.isSliding = true;
@@ -63,7 +68,7 @@ public class PlayerGroundedState : PlayerState
         {
             if (!_psm.isSprinting)
             {
-                if (Input.GetKeyDown(KeyCode.LeftControl))
+                if (Input.GetKeyDown(Keybinds.crouch))
                 {
                     Debug.Log("I want to crouch!");
                     goingToCrouch = true;

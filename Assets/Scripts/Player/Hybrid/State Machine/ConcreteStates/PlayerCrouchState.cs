@@ -20,7 +20,7 @@ public class PlayerCrouchState : PlayerState
 
         // Leave this state. Would be from grounded
         // Set the parent's state child state to this state's child
-        if (Input.GetKeyUp(KeyCode.LeftControl))
+        if (Input.GetKeyUp(Keybinds.crouch))
         {
             Debug.Log("WAOW!");
             if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)

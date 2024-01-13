@@ -33,8 +33,8 @@ public class Player : MonoBehaviour, IDamagable
     private CapsuleCollider playerCap;
     private new CameraController camera;
     private Animator playerAnim;
-
     
+
     // TODO: create combat system to deal with damage and health
     public void Damage(float damage)
     {
