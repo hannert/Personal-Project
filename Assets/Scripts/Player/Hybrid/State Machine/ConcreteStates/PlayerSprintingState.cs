@@ -30,20 +30,23 @@ public class PlayerSprintingState : PlayerWalkingState
     {
         Debug.Log("Entered Sprinting state");
         _psm.isSprinting = true;
+        _psm.speedMultiplier = 1.3f;
         _psm.playerAnim.SetBool("isSprinting", true);
+        
     }
 
     public override void ExitState()
     {
         Debug.Log("Exited Sprinting state");
         _psm.isSprinting = false;
+        _psm.speedMultiplier = 1.0f;
         _psm.playerAnim.SetBool("isSprinting", false);
 
     }
 
-    public override void AddForceToRB(Vector3 directionToMove, float speed)
+    public override void AddForceToRB(Vector3 acceleration)
     {
-        _psm.playerRb.AddForce(directionToMove.normalized * speed * _psm.sprintModifier * Time.fixedDeltaTime * 4, ForceMode.VelocityChange);
+        base.AddForceToRB(acceleration);
     }
 
     public override void PhysicsUpdate()

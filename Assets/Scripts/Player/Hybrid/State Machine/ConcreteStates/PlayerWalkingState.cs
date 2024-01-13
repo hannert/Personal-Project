@@ -16,6 +16,8 @@ public class PlayerWalkingState : PlayerMovementState
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
+            // If player is crouching and tries to sprint, eat the input
+            if(Input.GetKey(KeyCode.LeftControl)) { return false;  }
             SwitchState(player.playerSprintingState);
             return true;
 
@@ -162,13 +164,12 @@ public class PlayerWalkingState : PlayerMovementState
         if (!_psm.onGround)
         {
             // While in the air, input should influence the player's movement less, by a multiplier
-            AddForceToRB(endDirection.normalized, _psm.speed * 0.4f);
+            AddForceToRB(neededAcceleration * 0.4f);
         }
         else
         {
             // Else not in the air (On ground), player should move normally
-            //AddForceToRB(endDirection.normalized, _psm.speed);
-            _psm.playerRb.AddForce(Vector3.Scale(neededAcceleration * _psm.playerRb.mass, new Vector3(1, 0, 1)));
+            AddForceToRB(neededAcceleration);
         }
         
 
@@ -183,9 +184,10 @@ public class PlayerWalkingState : PlayerMovementState
     }
 
     // Method to apply the Velocity vector to the player rigidbody
-    public override void AddForceToRB(Vector3 directionToMove, float speed)
+    // Seperated into another method so that child states can use this to change speed
+    public override void AddForceToRB(Vector3 acceleration)
     {
-        _psm.playerRb.AddForce(directionToMove.normalized * speed * Time.fixedDeltaTime * 4, ForceMode.VelocityChange);
+        _psm.playerRb.AddForce(Vector3.Scale(acceleration * _psm.playerRb.mass * _psm.speedMultiplier, new Vector3(1, 0, 1)));
     }
 
 

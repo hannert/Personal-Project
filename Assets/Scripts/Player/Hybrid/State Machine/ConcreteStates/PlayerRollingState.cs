@@ -20,17 +20,19 @@ public class PlayerRollingState : PlayerMovementState
     {
     }
 
-    public override void AddForceToRB(Vector3 directionToMove, float speed)
+    public override void AddForceToRB(Vector3 acceleration)
     {
         if(_psm.onGround == true)
         {
-            _psm.playerRb.AddForce(directionToMove * speed * Time.fixedDeltaTime * 150f, ForceMode.Force);
+            _psm.playerRb.AddForce(acceleration * Time.fixedDeltaTime * 150f, ForceMode.Force);
         }
         if(_psm.onGround == false)
         {
-            _psm.playerRb.AddForce(directionToMove * speed * Time.fixedDeltaTime * 1.5f, ForceMode.Force);
+            _psm.playerRb.AddForce(acceleration * Time.fixedDeltaTime * 1.5f, ForceMode.Force);
         }
     }
+
+   
 
 
 
@@ -133,8 +135,7 @@ public class PlayerRollingState : PlayerMovementState
         } 
         else
         {
-            AddForceToRB(directionOfRoll, _psm.speed);
-
+            _psm.playerRb.AddForce(directionOfRoll * _psm.speed * Time.fixedDeltaTime, ForceMode.Force);
         }
         
 

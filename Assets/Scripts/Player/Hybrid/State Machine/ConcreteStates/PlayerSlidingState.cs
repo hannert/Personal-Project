@@ -25,9 +25,9 @@ public class PlayerSlidingState : PlayerMovementState
 
     }
 
-    public override void AddForceToRB(Vector3 directionToMove, float speed)
+    public override void AddForceToRB(Vector3 acceleration)
     {
-        throw new System.NotImplementedException();
+        
     }
 
     public override bool CheckSwitchStates()

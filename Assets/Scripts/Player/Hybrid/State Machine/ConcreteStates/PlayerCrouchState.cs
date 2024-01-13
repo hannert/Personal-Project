@@ -45,6 +45,8 @@ public class PlayerCrouchState : PlayerState
     {
         Debug.Log("Entered Crouch state");
         _psm.isCrouched = true;
+        _psm.checkGround = true;
+        _psm.speedMultiplier = 0.4f;
         _psm.playerRb.transform.localScale = new Vector3(_psm.playerRb.transform.localScale.x, 0.5f, _psm.playerRb.transform.localScale.z);
 
         // We'll also have to move the player downward
@@ -52,13 +54,14 @@ public class PlayerCrouchState : PlayerState
 
 
         InitializeSubState();
-        _psm.checkGround = true;
+        
     }
 
     public override void ExitState()
     {
         Debug.Log("Exited Crouch state");
         _psm.isCrouched = false;
+        _psm.speedMultiplier = 1.0f;
         _psm.playerRb.transform.localScale = new Vector3(_psm.playerRb.transform.localScale.x, startYScale, _psm.playerRb.transform.localScale.z);
 
         

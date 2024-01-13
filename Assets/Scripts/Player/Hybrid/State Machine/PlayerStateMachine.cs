@@ -15,6 +15,7 @@ public class PlayerStateMachine
     public AnimationCurve AccelerationMultiplier;
     public float currentSpeed = 0f;
     public float speed = 20.0f;
+    public float speedMultiplier = 1f;
     public float acceleration = 100f;
     public float maxAcceleration = 80f;
     public float sprintSpeed = 15.0f;
@@ -235,4 +236,5 @@ public class PlayerStateMachine
         currentSpeed = playerRb.velocity.magnitude;
         currentPlayerState.UpdatePhysicsStates();
     }
+
 }
