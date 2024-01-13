@@ -58,7 +58,7 @@ public class PlayerSlidingState : PlayerMovementState
 
         exitTimerElapsed = 0;
 
-        _psm.playerRb.drag = 3;
+        //_psm.playerRb.drag = 3;
 
 
         base.EnterState();
