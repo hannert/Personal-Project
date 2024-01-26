@@ -323,29 +323,6 @@ public class PlayerUtilities
         Vector3 answer = Vector3.ProjectOnPlane(vel.normalized, groundPoint).normalized;
         return answer;
 
-
-        //float dist = vel.magnitude + skinWidth + 0.4f + velNormalized.magnitude;
-        //RaycastHit hit;
-        //Debug.DrawRay(point2, Vector3.down, Color.blue);
-        //if (Physics.CapsuleCast(point1, point2, playerCap.radius, Vector3.down, out hit, dist, LayerMask.GetMask("Ground")))
-        //{
-
-        //    Vector3 snapToSurface = vel.normalized * (hit.distance);
-
-        //    // Ensures we have enough room to perform our collision check properly
-        //    if (snapToSurface.magnitude <= skinWidth)
-        //    {
-        //        snapToSurface = Vector3.zero;
-        //    }
-
-        //    Vector3 answer = Vector3.ProjectOnPlane(snapToSurface, hit.normal).normalized;
-
-        //    return answer;
-
-        //}
-
-
-        return Vector3.zero;
     }
 
     public static Vector3 getGroundPoint(Rigidbody playerRb, CapsuleCollider playerCap)
@@ -401,8 +378,6 @@ public class PlayerUtilities
     /// <param name="verticalInput"></param>
     /// <returns>A Vector3 of the direction the player wants to move to.</returns>
     /// 
-
-    //
     public static Vector3 GetDirectionFromCamera(Vector3 projectedPosition, Vector3 referencePosition, float horizontalInput, float verticalInput)
     {
         // Get position of the player and the camera without the Y component
@@ -427,14 +402,34 @@ public class PlayerUtilities
         return endDirection;
     }
 
-    public static void checkRigidBodyOverlap()
+    // ------------- Stairs Functionality
+
+    // We need a foot height raycast to detect if anything is in the way of our player - lowerRaycast
+    // We also need a step height raycast to detect if the object we are hitting with the lowerRay is actually a step and not a wall 
+    // If step, go up
+    // If wall, do nothing
+    
+
+    // variables:
+    // Position to raycast from: 
+    // Player rigidbody
+
+    public static void stepCast(Rigidbody playerRb, Vector3 lowerRaycast, Vector3 upperRaycast, Vector3 playerForward)
     {
-
-    }
-
-    public static void pushRigidBodyOut()
-    {
-
+        RaycastHit hitLower;
+        Debug.DrawRay(lowerRaycast, playerForward, Color.red);
+        if (Physics.Raycast(lowerRaycast, playerForward, out hitLower, 0.6f))
+        {
+            Debug.Log("Lower Raycast hit!");
+            RaycastHit hitUpper;
+            Debug.DrawRay(upperRaycast, playerForward, Color.blue);
+            if (Physics.Raycast(upperRaycast, playerForward, out hitUpper, 0.9f))
+            {
+                Debug.Log("Hit stairs!");
+                playerRb.AddForce(Vector3.up *70f, ForceMode.Force);
+                //playerRb.position -= new Vector3(0f, -0.5f, 0f);
+            }
+        }
     }
 
 
