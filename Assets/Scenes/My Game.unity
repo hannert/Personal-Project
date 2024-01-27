@@ -4549,7 +4549,7 @@ Transform:
   m_GameObject: {fileID: 269770573}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.653, z: -7.658}
+  m_LocalPosition: {x: 35.59, y: 1.653, z: 35.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5060,6 +5060,7 @@ MonoBehaviour:
   zoomspeed: 2
   rightClickActive: 0
   distToPlayer: 15
+  groundGapSize: 0.3
   lockOnXOffset: 0
   lockOnYOffset: 0
   lockOnZOffset: 0
@@ -7264,6 +7265,7 @@ MonoBehaviour:
   zoomspeed: 2
   rightClickActive: 0
   distToPlayer: 15
+  groundGapSize: 0.3
   lockOnXOffset: 0
   lockOnYOffset: 0
   lockOnZOffset: 0
@@ -9537,6 +9539,7 @@ MonoBehaviour:
   zoomspeed: 2
   rightClickActive: 0
   distToPlayer: 15
+  groundGapSize: 0.3
   lockOnXOffset: 1
   lockOnYOffset: 2.3
   lockOnZOffset: -4.5

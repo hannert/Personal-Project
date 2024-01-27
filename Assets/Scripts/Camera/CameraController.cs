@@ -12,11 +12,16 @@ public class CameraController : MonoBehaviour
     private float minHorizontalAngle = -360;
     private float maxHorizontalAngle = 360;
 
-    private float minVerticalAngle = -90;
-    private float maxVerticalAngle = 90;
+    // Set to something less than the 90 since it's considered a straight up POV, which messeses up the movement
+    private float minVerticalAngle = -89.75f;
+    private float maxVerticalAngle = 89.75f;
 
     public float distToPlayer = 15.0f;
     private float maxZoom = 15.0f;
+
+    [Tooltip("The distance between the ground and the camera if there is a hard object btwn")]
+    public float groundGapSize = 0.3f;
+
 
     public float lockOnXOffset = 0f;
     public float lockOnYOffset = 0f;
@@ -35,8 +40,15 @@ public class CameraController : MonoBehaviour
     //Keep track of where the camera would be if it could clip into everything
     private Vector3 ghostPoint;
 
+    [Tooltip("Is any object between the player and the camera?")]
+    private bool clearPath = true;
 
-    public bool belowGround = false;
+    [Tooltip("Stored point of contact of the first object hit btwn player and camera")]
+    private Vector3 rayPathHitPoint = Vector3.zero;
+
+    [Tooltip("Stored normal of contact of the first object hit between player and camera")]
+    private Vector3 rayPathHitNormal = Vector3.zero;
+
     public float groundOffset;
 
 
@@ -53,6 +65,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // First we check if anything is touching the camera 
         CheckForCollider();
         if (rightClickActive && !isLockedOn)
         {
@@ -108,20 +121,16 @@ public class CameraController : MonoBehaviour
             tempPos = playerRb.transform.position + cameraDirection + new Vector3(0, playerYHalf + 1.5f, 0) - (5 * awayFromPlayer);
         }
 
-
-        
-
         // The ghost point shares the position, it is only the cameras true position that is modified after
         ghostPoint = tempPos;
 
-
-        if (belowGround == true)
+        // If not clear path, something is betwixt the player and the camera
+        if (!clearPath)
         {
-            //Debug.Log("LateUpdate belowground " + groundOffset);
-            tempPos.y = 0.3f;
-            transform.position = tempPos;
+            transform.position = rayPathHitPoint + (rayPathHitNormal * groundGapSize);
             transform.LookAt(player.transform);
-        } else
+        }
+        else
         {
             Vector3 vel = Vector3.zero;
             // Scale rotation to same magnitude of distance of focal point?
@@ -134,27 +143,35 @@ public class CameraController : MonoBehaviour
                 transform.position = Vector3.SmoothDamp(transform.position, tempPos, ref vel, 0.05f);
             }
             transform.rotation = targetRotation;
-        }
 
+
+        }
         
     }
-
+    
+    /// <summary>
+    /// Function to check if the camera is below the ground
+    /// </summary>
     private void CheckForCollider()
     {
-        Ray ray = new Ray(ghostPoint, Vector3.up);
-        Debug.DrawRay(ghostPoint, Vector3.up);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            belowGround = true;
-            groundOffset = hit.distance;
-        }
-        else
-        {
-            belowGround = false;
-        }
-        
+        // Get a ray from the midpoint of the player to the ghostPoint to get hard objects btwn the player & camera
+        Vector3 playerMidPoint = playerRb.transform.position + new Vector3(0, playerYHalf);
+        Ray playerToCamera = new Ray(playerMidPoint, (transform.position - playerMidPoint).normalized);
+        Debug.DrawRay(playerMidPoint, (transform.position - playerMidPoint).normalized);
 
+        if (Physics.Linecast(playerMidPoint, ghostPoint, out RaycastHit collisionHit))
+        {
+            Debug.DrawRay(collisionHit.point, Vector3.up);
+
+            clearPath = false;
+            rayPathHitPoint = collisionHit.point;
+            rayPathHitNormal = collisionHit.normal;
+        } else
+        {
+            clearPath = true;
+        }
     }
+
     public bool toggleLockOn()
     {
         isLockedOn = !isLockedOn;
