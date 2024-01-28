@@ -36,14 +36,14 @@ public class PlayerIdleState : PlayerState
     public override void EnterState()
     {
         Debug.Log("Entered Idle State");    
-        _psm.playerAnim.SetBool("isIdle", true);
+        //_psm.playerAnim.SetBool("isIdle", true);
         InitializeSubState();
     }
 
     public override void ExitState()
     {
         Debug.Log("Exited Idle state");
-        _psm.playerAnim.SetBool("isIdle", false);
+        //_psm.playerAnim.SetBool("isIdle", false);
     }
 
     public override void FrameUpdate()

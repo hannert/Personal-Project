@@ -76,7 +76,7 @@ public class PlayerRollingState : PlayerMovementState
         Debug.Log("Enter Roll");
         initPush = true;
         _psm.isRolling = true;
-        _psm.playerAnim.SetBool("isRolling", true);
+        //_psm.playerAnim.SetBool("isRolling", true);
 
         // Reset our counter variables
         distanceRolled = 0;
@@ -100,7 +100,7 @@ public class PlayerRollingState : PlayerMovementState
     public override void ExitState()
     {
         _psm.isRolling = false;
-        _psm.playerAnim.SetBool("isRolling", false);
+        //_psm.playerAnim.SetBool("isRolling", false);
 
         Debug.Log("Exit Roll");
     }

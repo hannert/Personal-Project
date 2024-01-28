@@ -31,7 +31,7 @@ public class PlayerSprintingState : PlayerWalkingState
         Debug.Log("Entered Sprinting state");
         _psm.isSprinting = true;
         _psm.speedMultiplier = 1.3f;
-        _psm.playerAnim.SetBool("isSprinting", true);
+        //_psm.playerAnim.SetBool("isSprinting", true);
         
     }
 
@@ -40,7 +40,7 @@ public class PlayerSprintingState : PlayerWalkingState
         Debug.Log("Exited Sprinting state");
         _psm.isSprinting = false;
         _psm.speedMultiplier = 1.0f;
-        _psm.playerAnim.SetBool("isSprinting", false);
+        //_psm.playerAnim.SetBool("isSprinting", false);
 
     }
 

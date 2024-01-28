@@ -219,13 +219,13 @@ public class PlayerStateMachine
         {
             // Toggle lock on in CameraController and write down bool of status
             bool lockOnStatus = camera.toggleLockOn();
-            playerAnim.SetBool("isLockedOn", lockOnStatus);
+            //playerAnim.SetBool("isLockedOn", lockOnStatus);
             isLockedOn = lockOnStatus;
 
         }
 
-        playerAnim.SetFloat("horizontalInput", horizontalInput);
-        playerAnim.SetFloat("verticalInput", verticalInput);
+        //playerAnim.SetFloat("horizontalInput", horizontalInput);
+        //playerAnim.SetFloat("verticalInput", verticalInput);
 
         currentPlayerState.UpdateStates();
         

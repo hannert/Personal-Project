@@ -35,7 +35,7 @@ public class PlayerWalkingState : PlayerMovementState
         // Play animation
         Debug.Log("Entered Walking state");
         _psm.isWalking = true;
-        _psm.playerAnim.SetBool("isWalking", true);
+        //_psm.playerAnim.SetBool("isWalking", true);
         InitializeSubState();
     }
 
@@ -43,7 +43,7 @@ public class PlayerWalkingState : PlayerMovementState
     {
         Debug.Log("Exited Walking state");
         _psm.isWalking = false;
-        _psm.playerAnim.SetBool("isWalking", false);
+        //_psm.playerAnim.SetBool("isWalking", false);
     }
 
     public override void FrameUpdate()
