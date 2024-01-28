@@ -13,7 +13,7 @@ public class PlayerGroundedState : PlayerState
     public override void EnterState()
     {
         Debug.Log("Entered grounded state");
-        _psm.playerAnim.SetBool("isGrounded", true);
+        //_psm.playerAnim.SetBool("isGrounded", true);
         _psm.onGround = true;
         _psm.canJump = true;
         _psm.playerRb.drag = 5;
@@ -27,7 +27,7 @@ public class PlayerGroundedState : PlayerState
     {
         Debug.Log("Exited grounded root state");
         _psm.onGround = false;
-        _psm.playerAnim.SetBool("isGrounded", false);
+        //_psm.playerAnim.SetBool("isGrounded", false);
         _psm.playerRb.drag = 1;
 
     }

@@ -418,7 +418,7 @@ public class PlayerUtilities
     {
         RaycastHit hitLower;
         Debug.DrawRay(lowerRaycast, playerForward, Color.red);
-        if (Physics.Raycast(lowerRaycast, playerForward, out hitLower, 0.6f))
+        if (Physics.Raycast(lowerRaycast, playerForward, out hitLower, 0.6f, LayerMask.GetMask("Ground")))
         {
             Debug.Log("Lower Raycast hit!");
             RaycastHit hitUpper;

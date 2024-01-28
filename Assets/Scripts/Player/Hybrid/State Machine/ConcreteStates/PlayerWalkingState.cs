@@ -171,13 +171,18 @@ public class PlayerWalkingState : PlayerMovementState
             // Else not in the air (On ground), player should move normally
             AddForceToRB(neededAcceleration);
         }
-        // We need to cast it from inside the player to avoid the issue of the raycast already intersecting the stair in question, thereby not firing the raycast at all
 
-        PlayerUtilities.stepCast(
-            _psm.playerRb, 
-            _psm.playerRb.transform.position + new Vector3(0f, -0.8f, 0f), 
-            _psm.playerRb.transform.position + new Vector3(0f, -0.6f, 0f), 
-            endDirection);
+
+        // We need to cast it from inside the player to avoid the issue of the raycast already intersecting the stair in question, thereby not firing the raycast at all
+        if (_psm.onGround)
+        {
+            PlayerUtilities.stepCast(
+                _psm.playerRb, 
+                _psm.playerRb.transform.position + new Vector3(0f, -0.8f, 0f), 
+                _psm.playerRb.transform.position + new Vector3(0f, -0.6f, 0f), 
+                endDirection);
+        }
+        
 
         #region Rotate the players model
         // Get rotation of the player to reflect where the player is headed
