@@ -109,47 +109,6 @@ public class PlayerAirState : PlayerState
         if (CheckSwitchStates()) return;
 
     }
-    private Vector3 applyGravityToVector(Vector3 currentTrajectedPosition)
-    {
-        Vector3 newPos = _psm.playerRb.position + (_psm.yVelocity * Time.fixedDeltaTime + ((0.5f) * _psm.gravityVector * Time.fixedDeltaTime * Time.fixedDeltaTime));
-        _psm.yVelocity += _psm.gravityVector * Time.fixedDeltaTime;
-        _psm.yVelocity = new Vector3(_psm.yVelocity.x, Mathf.Clamp(_psm.yVelocity.y, -_psm.maxFallSpeed, _psm.jumpVelocity), _psm.yVelocity.z);
-
-        return newPos;
-    }
-
-    private void CheckAnimationCondition()
-    {
-        if (_psm.onGround)
-        {
-            _psm.playerAnim.SetBool("isFalling", false);
-            _psm.playerAnim.SetBool("isJumping", false);
-            return;
-        }
-
-        // If not falling, ascending
-        if (!isFalling())
-        {
-            _psm.playerAnim.SetBool("isFalling", false);
-            _psm.playerAnim.SetBool("isJumping", true);
-
-        }
-        // Player is jumping up
-        else
-        {
-            _psm.playerAnim.SetBool("isFalling", true);
-            _psm.playerAnim.SetBool("isJumping", false);
-        }
-    }
 
 
-    private bool isFalling()
-    {
-        return _psm.isFalling;
-    }
-
-    private void UpdatePlayerBools()
-    {
-
-    }
 }
