@@ -9,33 +9,98 @@ using UnityEngine;
 public class PlayerStateMachine
 {
     #region getters/setters
-    // State machine will have all the data?
 
     // Movement variables
+
+    /// <summary>
+    /// The curve to which ramp up the needed acceleration to account for the instantenous change in speed
+    /// </summary>
     public AnimationCurve AccelerationMultiplier;
+
+    /// <summary>
+    /// The current speed of the player
+    /// </summary>
     public float currentSpeed { get; set; } = 0f;
+
+    /// <summary>
+    /// Speed of the player to move at, Deprecated since acceleration will be used but this is currently used in determining roll distance
+    /// </summary>
     public float speed { get; set; } = 20.0f;
+
+    /// <summary>
+    /// A multiplier to go on top of the movement functions in the future (Faster/slower from skills and or status effects)
+    /// </summary>
     public float speedMultiplier { get; set; } = 1f;
+
+    /// <summary>
+    /// The flat speed multiplier when player is sprinting
+    /// </summary>
+    public float sprintModifier { get; set; } = 1.5f; 
+
+    /// <summary>
+    /// The acceleration the player will have
+    /// </summary>
     public float acceleration { get; set; } = 100f;
+
+    /// <summary>
+    ///  The maximum acceleration the player CAN have
+    /// </summary>
     public float maxAcceleration { get; set; } = 80f;
-    public float sprintSpeed { get; set; } = 15.0f;
+
+    /// <summary>
+    ///  The amount of force the impulse will exert on the player when jumping
+    /// </summary>
     public float jumpForce { get; set; } = 20.0f;
 
-    public float rollDistance = 4f;
+    /// <summary>
+    ///  The maximum number of jumps the player has currently
+    /// </summary>
+    public float numJumpsMax { get; set; }
+
+    /// <summary>
+    ///  The number of jumps the player has taken out of their maximum
+    /// </summary>
+    public float numJumpsTaken { get; set; }
+
+    /// <summary>
+    /// The decceleration of input damping (NOT FOR MOVEMENT)
+    /// </summary>
     private float decceleration = 8f;
+
+    /// <summary>
+    /// The boundary between the player and collision detection services
+    /// </summary>
     public float skinWidth = 0.05f;
 
-    public float sprintModifier = 1.5f; 
 
+    /// <summary>
+    /// Reference to the players RigidBody component
+    /// </summary>
     public Rigidbody playerRb;
+
+    /// <summary>
+    /// Reference to the players CapsuleCollider component
+    /// </summary>
     public CapsuleCollider playerCap { get; set; }
+
+    /// <summary>
+    /// Reference to the camera system
+    /// </summary>
     public CameraController camera { get; set; }
 
+    /// <summary>
+    /// Reference to the players Animator component
+    /// </summary>
     public Animator playerAnim { get; set; }
 
-    [SerializeField]
+    /// <summary>
+    /// The current amount of horizontal input: a, d
+    /// </summary>
     public float horizontalInput { get; set; }
-    [SerializeField]
+
+    /// <summary>
+    /// The current amount of vertical input: w, s
+    /// </summary>
     public float verticalInput { get; set; }
 
     #region Movement booleans
@@ -65,16 +130,6 @@ public class PlayerStateMachine
     // -----------------------
     #endregion
 
-    public bool snapFlag { get; set; } = false;
-    public float maxFallSpeed { get; set; } = 30.0f;
-    // public float currentFallVelocity { get; set; } = 0.0f;
-    public float jumpVelocity { get; set; } = 7.0f;
-    public float gravity { get; set; } = -15.0f;
-    public float currentYPos { get; set; } = 0f;
-
-    public Vector3 projectedPos { get; set; } = Vector3.zero;
-
-
 
     public Vector3 gravityVector { get; set; } = new Vector3(0, -15.0f, 0);
     public Vector3 yVelocity { get; set; } = Vector3.zero;
@@ -94,7 +149,6 @@ public class PlayerStateMachine
 
     private void Awake()
     {
-        projectedPos = playerRb.position;
     }
 
     // Dependency Injection of the most important player aspects
