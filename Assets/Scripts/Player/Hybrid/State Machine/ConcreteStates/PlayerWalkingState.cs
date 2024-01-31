@@ -22,6 +22,7 @@ public class PlayerWalkingState : PlayerMovementState
             return true;
 
         }
+
         if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
         {
             SwitchState(player.playerIdleState);
@@ -48,6 +49,12 @@ public class PlayerWalkingState : PlayerMovementState
 
     public override void FrameUpdate()
     {
+        if (Input.GetKey(Keybinds.slide) ||Input.GetKey(Keybinds.slideAlt))
+        {
+            SwitchState(player.playerSlidingState);
+            return;
+        }
+
         if (Input.GetKeyDown(Keybinds.roll))
         {
 
@@ -84,47 +91,9 @@ public class PlayerWalkingState : PlayerMovementState
 
         #region  Get direction of player input
 
-        // Get position of the player and the camera without the Y component
-        var tempPlayer = new Vector3(_psm.playerRb.position.x, 0, _psm.playerRb.position.z);
-        var tempCamera = new Vector3(_psm.camera.transform.position.x, 0, _psm.camera.transform.position.z);
-
-        if (_psm.isLockedOn)
-        {
-            // the locked on object will become the 'player'
-            tempPlayer = new Vector3(_psm.camera.lockOnFocusObject.transform.position.x, 0, _psm.camera.lockOnFocusObject.transform.position.z);
-            tempCamera = new Vector3(_psm.playerRb.position.x, 0, _psm.playerRb.position.z);
-        }
-
-
-        // Get the direction from the object (camera) to the reference (player)
-        var objectToReferenceDirection = (tempPlayer - tempCamera).normalized;
-
-
-        // Get horizontal and vertical components from input ------
-
-        // Already normalized ( 0 - 1 value for x and z )
-        // Use horizontal input, 'a' or 'd' key
-        var horizontalVector = new Vector3(_psm.horizontalInput, 0, 0);
-       
-        // Use vertical input, 'w' or 's' key
-        var verticalVector = new Vector3(0, 0, _psm.verticalInput);
-
-        // Currently overriding the horizontal component with the Axis Raw as our own input smoother still needs work (_psm.iput)
-        // TODO: Change back to custom input
-        horizontalVector = new Vector3(Input.GetAxisRaw("Horizontal"), 0, 0);
-        verticalVector = new Vector3(0, 0, Input.GetAxisRaw("Vertical"));
-
-        // ------
-
-
-        // Get the combined vector from horizontal and vertical input
-        var betweenVector = (horizontalVector + verticalVector).normalized;
-
-        // Rotate the vector perpendicular
-        var perpVector = new Vector3(objectToReferenceDirection.z, 0, -objectToReferenceDirection.x);
 
         // The direction the player's key input is pointing towards
-        var endDirection = betweenVector.x * perpVector + betweenVector.z * objectToReferenceDirection;
+        var endDirection = PlayerUtilities.GetInputDirection(_psm);
 
 
         #endregion

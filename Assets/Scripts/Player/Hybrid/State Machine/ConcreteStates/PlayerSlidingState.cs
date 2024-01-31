@@ -13,12 +13,17 @@ public class PlayerSlidingState : PlayerMovementState
 
     // Timer variables
     private float exitTimerElapsed = 0f;
-    private float exitTimerMaximum = 3.0f;
+    private float exitTimerMaximum = 1.5f;
 
 
     bool startExitTimer = false;
     bool applyJump = false;
     bool exitFlag = false;
+
+    bool switchToIdle = false;
+    bool switchToWalk = false;
+
+
     public PlayerSlidingState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
     {
         startYScale = _psm.playerRb.transform.localScale.y;
@@ -33,10 +38,11 @@ public class PlayerSlidingState : PlayerMovementState
     public override bool CheckSwitchStates()
     {
         // If player lets go of the slide key
-        if (Input.GetKeyUp(KeyCode.LeftControl))
+        if (Input.GetKeyUp(Keybinds.slide) || Input.GetKeyUp(Keybinds.slideAlt))
         {
             if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
             {
+                // Set flag to switch back to idle state 
                 SwitchState(player.playerIdleState);
                 return true;
             }
@@ -101,6 +107,12 @@ public class PlayerSlidingState : PlayerMovementState
         {
             // Debug.Log("Timer started!");
             startExitTimer = true;
+        }
+        // If player's velocity is enough to be sliding, restart the timer!
+        if (startExitTimer && _psm.playerRb.velocity.magnitude > minimumSlideSpeed)
+        {
+            // Debug.Log("Timer ended!");
+            startExitTimer = false;
 
         }
 
@@ -125,7 +137,18 @@ public class PlayerSlidingState : PlayerMovementState
         }
 
         // raycast down and project on plane
-        
+
+        // Raycast down to the ground to get the normal of the ground
+        if (Physics.Raycast(_psm.playerRb.position, Vector3.down, out RaycastHit hit, 1.0f,LayerMask.GetMask("Ground"))){
+            Vector3 playerDirection = PlayerUtilities.GetInputDirection(_psm);
+            // Check if the angle of the ground is sloping downward
+
+
+
+        }
+
+
+
         // Add more gravity 
         
     }

@@ -30,7 +30,7 @@ public class PlayerAttackState : PlayerState
     public override void EnterState()
     {
         _psm.isAttacking = true;
-        _psm.playerAnim.SetBool("isAttacking", true);
+        //_psm.playerAnim.SetBool("isAttacking", true);
         timeSpentAttacking = 0;
         durationOfAttack = 1;
         Debug.Log("Enter attack");
@@ -39,7 +39,7 @@ public class PlayerAttackState : PlayerState
     public override void ExitState()
     {
         _psm.isAttacking = false;
-        _psm.playerAnim.SetBool("isAttacking", false);
+        //_psm.playerAnim.SetBool("isAttacking", false);
         Debug.Log("Leave attack");
     }
 

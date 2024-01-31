@@ -132,6 +132,8 @@ public class PlayerGroundedState : PlayerState
 
     public override bool CheckSwitchStates()
     {
+
+        // ! TODO: The problem of the bunny hop after pressing jump when falling and after Coyote time comes from this line of code!
         if (_psm.willJump)
         {
             _psm.playerRb.AddForce(Vector3.up * _psm.jumpForce, ForceMode.Impulse);

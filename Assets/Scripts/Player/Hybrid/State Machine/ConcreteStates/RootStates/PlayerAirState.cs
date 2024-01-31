@@ -57,6 +57,9 @@ public class PlayerAirState : PlayerState
         // Check for player input 
         // Check if jump key is pressed (Coyote time)
 
+
+        // Get input whether or not player should slide when hitting the ground!
+
         
     }
 

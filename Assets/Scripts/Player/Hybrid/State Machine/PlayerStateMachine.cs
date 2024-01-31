@@ -131,13 +131,6 @@ public class PlayerStateMachine
     #endregion
 
 
-    public Vector3 gravityVector { get; set; } = new Vector3(0, -15.0f, 0);
-    public Vector3 yVelocity { get; set; } = Vector3.zero;
-    public Vector3 xzVelocity { get; set; } = Vector3.zero;
-    public Vector3 currentVelocity { get; set; } = Vector3.zero;
-
-
-    public Vector3 distanceFromCameraAtJump { get; set; }
 
     public Collider[] groundColliders { get; set; } = new Collider[5];
 

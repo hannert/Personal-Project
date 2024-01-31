@@ -16,5 +16,6 @@ public class Keybinds
     [ReadOnly] public static KeyCode roll = KeyCode.LeftAlt;
     [ReadOnly] public static KeyCode sprint = KeyCode.LeftShift;
     [ReadOnly] public static KeyCode sprintAlt = KeyCode.RightShift;
-
+    [ReadOnly] public static KeyCode slide = KeyCode.LeftControl;
+    [ReadOnly] public static KeyCode slideAlt = KeyCode.Mouse3;
 }
