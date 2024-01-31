@@ -58,6 +58,7 @@ public class PlayerSlidingState : PlayerMovementState
     // isSliding state is set from where it is entered from (Sprinting)
     public override void EnterState()
     {
+        _psm.isSliding = true;
         applyJump = false;
         exitFlag = false;
         startExitTimer = false;
@@ -139,18 +140,28 @@ public class PlayerSlidingState : PlayerMovementState
         // raycast down and project on plane
 
         // Raycast down to the ground to get the normal of the ground
-        if (Physics.Raycast(_psm.playerRb.position, Vector3.down, out RaycastHit hit, 1.0f,LayerMask.GetMask("Ground"))){
-            Vector3 playerDirection = PlayerUtilities.GetInputDirection(_psm);
+        // We need to raycast from inside the player
+        if (Physics.Raycast(_psm.playerRb.position + new Vector3(0, 0.3f), Vector3.down, out RaycastHit hit, 5.0f,LayerMask.GetMask("Ground"))){
+            Debug.Log("Ground hit");
+            Vector3 inputDirection = PlayerUtilities.GetInputDirection(_psm);
+
             // Check if the angle of the ground is sloping downward
-
-
-
+            // To do that, we need to the get Vector parallel to the hit plane.
+            // Project our intended player movement direction on the normal of the plane hit
+            Vector3 ppp = Vector3.ProjectOnPlane(inputDirection, hit.normal);
+            //Debug.DrawRay(_psm.playerRb.position, ppp, Color.yellow);
+            
+            // If the y-component of the projected vector is negative, then the player is trying to slide down a slope
+            if (ppp.y < 0)
+            {
+                _psm.playerRb.AddForce(ppp * 70f, ForceMode.Force);
+            }
         }
 
-
+        //_psm.playerRb.AddForce(Vector3.down * 70f, ForceMode.Force);
 
         // Add more gravity 
-        
+
     }
 
     public override void ProcessInput()

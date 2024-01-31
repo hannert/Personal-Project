@@ -49,11 +49,11 @@ public class PlayerWalkingState : PlayerMovementState
 
     public override void FrameUpdate()
     {
-        if (Input.GetKey(Keybinds.slide) ||Input.GetKey(Keybinds.slideAlt))
-        {
-            SwitchState(player.playerSlidingState);
-            return;
-        }
+        //if (Input.GetKey(Keybinds.slide) ||Input.GetKey(Keybinds.slideAlt))
+        //{
+        //    SwitchState(player.playerSlidingState);
+        //    return;
+        //}
 
         if (Input.GetKeyDown(Keybinds.roll))
         {

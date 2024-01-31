@@ -48,7 +48,7 @@ public class PlayerGroundedState : PlayerState
                 }
             }
             // If player is sprinting
-            if (_psm.isSprinting)
+            if (_psm.isSprinting || _psm.isWalking)
             {
                 // If player is not crouched and sprinting, get ready to slide
                 if (Input.GetKeyDown(KeyCode.Mouse3))
@@ -75,7 +75,7 @@ public class PlayerGroundedState : PlayerState
                     return;
                 }
             }
-            if (_psm.isSprinting)
+            if (_psm.isSprinting || _psm.isWalking)
             {
                 if (Input.GetKeyDown(KeyCode.Mouse3))
                 {
