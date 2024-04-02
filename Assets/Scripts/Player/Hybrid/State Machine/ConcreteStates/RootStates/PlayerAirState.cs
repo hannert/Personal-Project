@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 /// <summary>
@@ -107,7 +108,32 @@ public class PlayerAirState : PlayerState
         if (_psm.playerRb.velocity.y < 0)
         {
             _psm.isFalling = true;
-        }        
+
+            // If player is FALLING, we check for overlapping with walls to SLOW down the descent
+
+            // Add to the radius of the playerCapsule to enable a outer "SKIN" 
+            var localPoint1 = _psm.playerCap.center - Vector3.down * (_psm.playerCap.height / 2 - (_psm.playerCap.radius));
+            var localPoint2 = _psm.playerCap.center + Vector3.down * (_psm.playerCap.height / 2 - (_psm.playerCap.radius));
+
+            var point1 = _psm.playerCap.transform.TransformPoint(localPoint1);
+            var point2 = _psm.playerCap.transform.TransformPoint(localPoint2);
+
+            // Check if wall collision is hitting a wall and store data in wallColliders array in PSM
+            Physics.OverlapCapsuleNonAlloc(point1, point2, _psm.playerCap.radius + 0.4f, _psm.wallColliders, LayerMask.GetMask("Wall"));
+
+            _psm.isWallSliding = _psm.wallColliders[0] != null ? true : false;
+
+            Array.Clear(_psm.wallColliders, 0, _psm.wallColliders.Length);
+
+
+        }      
+        
+        // If player is falling near a wall, slow down 
+        if (_psm.isWallSliding && _psm.isFalling)
+        {
+            _psm.playerRb.AddForce(Physics.gravity * -1, ForceMode.Acceleration);
+        }
+
 
         if (CheckSwitchStates()) return;
 
