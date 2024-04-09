@@ -93,7 +93,11 @@ public class PlayerAirState : PlayerState
             if (_psm.willJump)
             {
                 _psm.playerRb.AddForce(Vector3.up * _psm.jumpForce, ForceMode.Impulse);
-                _psm.canJump = false;
+                _psm.jumpsTaken += 1;
+                if (_psm.jumpsTaken >= _psm.jumpsMax)
+                {
+                    _psm.canJump = false;
+                }
                 _psm.willJump = false;
             }
 

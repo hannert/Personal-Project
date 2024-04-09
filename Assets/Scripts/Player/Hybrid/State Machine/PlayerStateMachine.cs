@@ -103,6 +103,10 @@ public class PlayerStateMachine
     /// </summary>
     public float verticalInput { get; set; }
 
+    public float jumpsMax { get; set; } = 2;
+
+    public float jumpsTaken { get; set; } = 0;
+
     #region Movement booleans
     // -----------------------
     public bool onGround { get; set; } = false;
@@ -118,6 +122,7 @@ public class PlayerStateMachine
     public bool checkGround { get; set; } = true;
     public bool isLockedOn { get; set; } = false;
     public bool isRolling { get; set; } = false;
+    public bool isWallSliding { get; set; } = false;
     // -----------------------
     #endregion
 
@@ -137,6 +142,14 @@ public class PlayerStateMachine
     public Collider[] wallColliders { get; set; } = new Collider[10];
 
     private RaycastHit[] hits = new RaycastHit[10];
+
+
+    #region Intermediate Values
+
+    public Vector3 abovePoint { get; set; }
+    public Vector3 belowPoint { get; set; }
+
+    #endregion
 
     #endregion
 

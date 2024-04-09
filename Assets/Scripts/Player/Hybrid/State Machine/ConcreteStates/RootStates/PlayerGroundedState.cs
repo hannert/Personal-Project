@@ -17,6 +17,7 @@ public class PlayerGroundedState : PlayerState
         _psm.onGround = true;
         _psm.canJump = true;
         _psm.playerRb.drag = 5;
+        _psm.jumpsTaken = 0; // Reset Jumps taken
         goingToSlide = false;
         goingToCrouch = false;
         InitializeSubState();
@@ -137,7 +138,12 @@ public class PlayerGroundedState : PlayerState
         if (_psm.willJump)
         {
             _psm.playerRb.AddForce(Vector3.up * _psm.jumpForce, ForceMode.Impulse);
-            _psm.canJump = false;
+            _psm.jumpsTaken += 1;
+            if(_psm.jumpsTaken >= _psm.jumpsMax)
+            {
+                _psm.canJump = false;
+
+            }
             _psm.checkGround = false;
             _psm.willJump = false;
             SwitchState(player.playerAirState);
