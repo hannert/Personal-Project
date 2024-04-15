@@ -28,7 +28,7 @@ public class PlayerSprintingState : PlayerWalkingState
 
     public override void EnterState()
     {
-        Debug.Log("Entered Sprinting state");
+        Logging.logState("<color=green>Entered</color> <color=lime>Sprinting</color> State");
         _psm.isSprinting = true;
         _psm.speedMultiplier = 1.3f;
         //_psm.playerAnim.SetBool("isSprinting", true);
@@ -37,7 +37,8 @@ public class PlayerSprintingState : PlayerWalkingState
 
     public override void ExitState()
     {
-        Debug.Log("Exited Sprinting state");
+        Logging.logState("<color=red>Exited</color> <color=lime>Sprinting</color> State");
+
         _psm.isSprinting = false;
         _psm.speedMultiplier = 1.0f;
         //_psm.playerAnim.SetBool("isSprinting", false);

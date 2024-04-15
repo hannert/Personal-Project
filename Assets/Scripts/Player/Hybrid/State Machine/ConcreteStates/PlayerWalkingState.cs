@@ -33,18 +33,15 @@ public class PlayerWalkingState : PlayerMovementState
 
     public override void EnterState()
     {
-        // Play animation
-        Debug.Log("Entered Walking state");
+        Logging.logState("<color=green>Entered</color> <color=olive>Walking</color> State");
         _psm.isWalking = true;
-        //_psm.playerAnim.SetBool("isWalking", true);
         InitializeSubState();
     }
 
     public override void ExitState()
     {
-        Debug.Log("Exited Walking state");
+        Logging.logState("<color=red>Exited</color> <color=olive>Walking</color> State");
         _psm.isWalking = false;
-        //_psm.playerAnim.SetBool("isWalking", false);
     }
 
     public override void FrameUpdate()
@@ -64,6 +61,7 @@ public class PlayerWalkingState : PlayerMovementState
         {
             if (_psm.canJump == true)
             {
+                Debug.Log("WillJump set to true");
                 _psm.willJump = true;
             }
         }

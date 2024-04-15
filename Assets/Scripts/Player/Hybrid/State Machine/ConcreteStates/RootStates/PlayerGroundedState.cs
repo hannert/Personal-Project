@@ -12,12 +12,13 @@ public class PlayerGroundedState : PlayerState
 
     public override void EnterState()
     {
-        Debug.Log("Entered grounded state");
+        Logging.logState("<color=green>Entered</color> <color=brown>grounded</color> State");
         //_psm.playerAnim.SetBool("isGrounded", true);
         _psm.onGround = true;
         _psm.canJump = true;
         _psm.playerRb.drag = 5;
-        _psm.jumpsTaken = 0; // Reset Jumps taken
+        _psm.extraJumpsTaken = 0; // Reset extra jumps taken
+        _psm.regJumpTaken = false; // reset regular jump
         goingToSlide = false;
         goingToCrouch = false;
         InitializeSubState();
@@ -26,7 +27,7 @@ public class PlayerGroundedState : PlayerState
 
     public override void ExitState()
     {
-        Debug.Log("Exited grounded root state");
+        Logging.logState("<color=red>Exited</color> <color=brown>grounded</color> State");
         _psm.onGround = false;
         //_psm.playerAnim.SetBool("isGrounded", false);
         _psm.playerRb.drag = 1;
@@ -135,15 +136,13 @@ public class PlayerGroundedState : PlayerState
     {
 
         // ! TODO: The problem of the bunny hop after pressing jump when falling and after Coyote time comes from this line of code!
-        if (_psm.willJump)
+        if (_psm.willJump && !_psm.regJumpTaken)
         {
             _psm.playerRb.AddForce(Vector3.up * _psm.jumpForce, ForceMode.Impulse);
-            _psm.jumpsTaken += 1;
-            if(_psm.jumpsTaken >= _psm.jumpsMax)
-            {
-                _psm.canJump = false;
 
-            }
+            // Consume the regular jump 
+            _psm.regJumpTaken = true;
+            _psm.canJump = false;
             _psm.checkGround = false;
             _psm.willJump = false;
             SwitchState(player.playerAirState);

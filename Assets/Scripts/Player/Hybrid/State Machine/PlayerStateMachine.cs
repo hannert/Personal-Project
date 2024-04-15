@@ -103,25 +103,88 @@ public class PlayerStateMachine
     /// </summary>
     public float verticalInput { get; set; }
 
-    public float jumpsMax { get; set; } = 2;
+    /// <summary>
+    /// maximum number of jumps the player can take after consuming the regular jump 
+    /// </summary>
+    public float extraJumpsMax { get; set; } = 1;
 
-    public float jumpsTaken { get; set; } = 0;
+    /// <summary>
+    /// number of extra jumps the player has taken
+    /// </summary>
+    public float extraJumpsTaken { get; set; } = 0;
 
     #region Movement booleans
     // -----------------------
+    /// <summary>
+    /// boolean to denote whether or not player is touching the ground or not
+    /// </summary>
     public bool onGround { get; set; } = false;
+
+    /// <summary>
+    /// boolean to denote whether or not player can jump (Dependent if extraJumpsTaken is less than extraJumpsMax)
+    /// </summary>
     public bool canJump { get; set; } = true;
+
+    /// <summary>
+    /// boolean to denote whether the player will jump in the current Physics update cycle
+    /// </summary>
     public bool willJump { get; set; } = false;
 
+    /// <summary>
+    /// boolean to keep track if the player CONSUMED regular jump ( Seperate from extra jumps from double jump )
+    /// true == player used reg jump
+    /// false == player can still jump
+    /// </summary>
+    public bool regJumpTaken { get; set; } = false;
+
+    /// <summary>
+    /// deprecated variable to keep track of player having pos y velocity
+    /// </summary>
     public bool isJumping { get; set; } = false;
+
+    /// <summary>
+    /// boolean of player falling ( neg y velocity )
+    /// </summary>
     public bool isFalling { get; set; } = false;
+
+    /// <summary>
+    /// boolean of player walking ( entering the walking state )
+    /// </summary>
     public bool isWalking { get; set; } = false;
+
+    /// <summary>
+    ///  boolean of player sprinting ( entering the sprinting state )
+    /// </summary>
     public bool isSprinting { get; set; } = false;
+
+    /// <summary>
+    /// boolean of player crouching ( entering the crouched state )
+    /// </summary>
     public bool isCrouched { get; set; } = false;
+
+    /// <summary>
+    ///  boolean of player sliding ( entering sliding state )
+    /// </summary>
     public bool isSliding { get; set; } = false;
+
+    /// <summary>
+    /// ! - This variable is kind of freaky. Maybe deperecated...
+    /// </summary>
     public bool checkGround { get; set; } = true;
+
+    /// <summary>
+    /// boolean of if player is locked onto an enemy entity
+    /// </summary>
     public bool isLockedOn { get; set; } = false;
+
+    /// <summary>
+    /// boolean of player rolling
+    /// </summary>
     public bool isRolling { get; set; } = false;
+
+    /// <summary>
+    /// boolean of if player is colliding with a wall and having neg y velocity
+    /// </summary>
     public bool isWallSliding { get; set; } = false;
     // -----------------------
     #endregion

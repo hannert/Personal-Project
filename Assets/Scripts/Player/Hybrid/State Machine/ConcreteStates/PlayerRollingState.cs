@@ -11,7 +11,9 @@ public class PlayerRollingState : PlayerMovementState
     float timeSpentRolling;
     float timeToRoll;
 
-    // Variable to keep track of the first time the user enters, use impulse to push to make it feel more snappy
+    /// <summary>
+    /// Variable to keep track of the first time the user enters, use impulse to push to make it feel more snappy
+    /// </summary>
     bool initPush = false;
 
     Vector3 directionOfRoll;
@@ -38,14 +40,17 @@ public class PlayerRollingState : PlayerMovementState
 
     public override bool CheckSwitchStates()
     {
+        // Check if the player rolled enough distance
         if (distanceRolled > distanceToRoll)
         {
-            Debug.Log("LET ME OUT!");
+            // If no input, set player to idle
             if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
             {
                 SwitchState(player.playerIdleState);
                 return true;
-            } else
+            }
+            // If there is input, go into either sprint or walking
+            else
             {
                 if (_psm.horizontalInput != 0 || _psm.verticalInput != 0)
                 {
@@ -73,7 +78,8 @@ public class PlayerRollingState : PlayerMovementState
 
     public override void EnterState()
     {
-        Debug.Log("Enter Roll");
+        Logging.logState("<color=green>Entered</color> <color=silver>Roll</color> State");
+
         initPush = true;
         _psm.isRolling = true;
         //_psm.playerAnim.SetBool("isRolling", true);
@@ -94,15 +100,14 @@ public class PlayerRollingState : PlayerMovementState
         }
         
 
-        Debug.Log(distanceToRoll);
     }
 
     public override void ExitState()
     {
+        Logging.logState("<color=red>Exited</color> <color=silver>Roll</color> State");
         _psm.isRolling = false;
         //_psm.playerAnim.SetBool("isRolling", false);
-
-        Debug.Log("Exit Roll");
+        
     }
 
     public override void FrameUpdate()
@@ -120,7 +125,6 @@ public class PlayerRollingState : PlayerMovementState
     {
         var distanceToMove = _psm.speed * Time.fixedDeltaTime;
         distanceRolled += distanceToMove;
-        Debug.Log(distanceRolled);
         // Add constant force while turn on ghosting for interactable entities?
 
         // Initial press should impulse the player torwards the direction
