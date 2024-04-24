@@ -12,6 +12,16 @@ public static class Logging
         stateLogger.logEnabled = false;
     }
 
+    public static void DisableStateLog()
+    {
+        stateLogger.logEnabled = false;
+    }
+
+    public static void EnableStateLog()
+    {
+        stateLogger.logEnabled = true;
+    }
+
     public static void logState(string s)
     {
         if(stateLogger.logEnabled == true)
