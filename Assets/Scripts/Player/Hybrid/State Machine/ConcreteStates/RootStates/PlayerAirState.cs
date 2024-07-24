@@ -27,7 +27,7 @@ public class PlayerAirState : PlayerState
     {
         if (_ctx.isFalling == true)
         {
-            if (PlayerUtilities.checkGroundCollision(_ctx.groundColliders, _ctx.playerCap) != 0)
+            if (PlayerUtilities.CheckGroundCollision(_ctx.groundColliders, _ctx.playerCap) != 0)
             {
                 Debug.Log("Ground collision returned true in air state");
                 SwitchState(_factory.Grounded());

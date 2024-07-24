@@ -118,6 +118,8 @@ public class PlayerGroundedState : PlayerState
         //     return;
         // }
 
+
+
         CheckSwitchStates();
     }
 
@@ -138,11 +140,13 @@ public class PlayerGroundedState : PlayerState
             return true;
 
         }
-        if (_ctx.onGround == false)
-        {
+
+        // Check if player is in the air 
+        if (PlayerUtilities.CheckGroundCollision(_ctx.groundColliders, _ctx.playerCap) == 0){
             SwitchState(_factory.Airborne());
             return true;
         }
+
 
         return false;
 
