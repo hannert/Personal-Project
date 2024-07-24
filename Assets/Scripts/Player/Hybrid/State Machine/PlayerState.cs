@@ -20,16 +20,17 @@ public abstract class PlayerState
     protected PlayerState _currentSubState;
 
     /// <summary>
-    /// reference to the Player script
-    /// <para>Player player</para>
+    /// reference to the PlayerStateFactory script
+    /// <para>PlayerStateFactory _factory</para>
     /// </summary>
-    protected Player player;
+    protected PlayerStateFactory _factory;
 
     /// <summary>
+    /// Context
     /// reference to the PlayerStateMachine
-    /// <para>PlayerStateMachine playerStateMachine</para>
+    /// <para>PlayerStateMachine _ctx</para>
     /// </summary>
-    protected PlayerStateMachine _psm;
+    protected PlayerStateMachine _ctx;
 
     /// <summary>
     /// Name of the player class for debugging purposes
@@ -41,10 +42,10 @@ public abstract class PlayerState
     /// </summary>
     /// <param name="player"></param>
     /// <param name="playerStateMachine"></param>
-    public PlayerState(Player player, PlayerStateMachine playerStateMachine, string name)
+    public PlayerState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name)
     {
-        this.player = player;
-        this._psm = playerStateMachine;
+        this._factory = playerStateFactory;
+        this._ctx = playerStateMachine;
         this.name = name;
     }
 
@@ -155,7 +156,7 @@ public abstract class PlayerState
                 tempSub = tempSub._currentSubState;
             }
             // Root state is entered within the playerStateMachine
-            _psm.ChangeState(newState);
+            _ctx.ChangeState(newState);
 
         }
         else if (_currentSuperState != null)

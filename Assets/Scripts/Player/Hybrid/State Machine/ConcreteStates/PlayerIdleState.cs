@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class PlayerIdleState : PlayerState
 {
-    public PlayerIdleState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
+    public PlayerIdleState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name) : base(playerStateFactory, playerStateMachine, name)
     {
     }
 
     public override bool CheckSwitchStates()
     {
-        if (_psm.horizontalInput != 0 || _psm.verticalInput != 0)
+        if (_ctx.horizontalInput != 0 || _ctx.verticalInput != 0)
         {
 
             // Left shift detected, go into sprint
             if (Input.GetKeyDown(Keybinds.sprint))
             {
-                SwitchState(player.playerSprintingState);
+                SwitchState(_factory.Sprinting());
                 return true;
             }
 
             // Else go into normal walking
             else
             {
-                SwitchState(player.playerWalkingState);
+                SwitchState(_factory.Walking());
                 return true;
             }
             
@@ -36,14 +36,14 @@ public class PlayerIdleState : PlayerState
     public override void EnterState()
     {
         Logging.logState("<color=green>Entered</color> <color=yellow>Idle</color> State");
-        //_psm.playerAnim.SetBool("isIdle", true);
+        //_ctx.playerAnim.SetBool("isIdle", true);
         InitializeSubState();
     }
 
     public override void ExitState()
     {
         Logging.logState("<color=red>Exited</color> <color=yellow>Idle</color> State");
-        //_psm.playerAnim.SetBool("isIdle", false);
+        //_ctx.playerAnim.SetBool("isIdle", false);
     }
 
     public override void FrameUpdate()
@@ -54,11 +54,11 @@ public class PlayerIdleState : PlayerState
         }
         if (Input.GetKeyDown(Keybinds.jump))
         {
-            if (_psm.canJump == true)
+            if (_ctx.canJump == true)
             {
                 // Switch to the air state ( So we avoid the grounded check again, allowing the player to double jump from a crouched position twice )
 
-                _psm.willJump = true;
+                _ctx.willJump = true;
                 Debug.Log("Jumped");
                 
             }
@@ -69,7 +69,7 @@ public class PlayerIdleState : PlayerState
     {
         // Check if we have a weapon!
         // TODO: Further check for a weapon must be done later!
-        //if (_psm.isEquipped)
+        //if (_ctx.isEquipped)
         //{
         //    //Debug.Log("Substate for idle set to weapon idle");
         //    SetSubState(player.playerIdleWeaponState);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerSprintingState : PlayerWalkingState
 {
-    public PlayerSprintingState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
+    public PlayerSprintingState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name) : base(playerStateFactory, playerStateMachine, name)
     {
     }
 
@@ -14,13 +14,13 @@ public class PlayerSprintingState : PlayerWalkingState
 
         if (!Input.GetKey(KeyCode.LeftShift))
         {
-            SwitchState(player.playerWalkingState);
+            SwitchState(_factory.Walking());
             return true;
 
         }
-        if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
+        if (_ctx.horizontalInput == 0 && _ctx.verticalInput == 0)
         {
-            SwitchState(player.playerIdleState);
+            SwitchState(_factory.Idle());
             return true;
         }
         return false;
@@ -29,9 +29,9 @@ public class PlayerSprintingState : PlayerWalkingState
     public override void EnterState()
     {
         Logging.logState("<color=green>Entered</color> <color=lime>Sprinting</color> State");
-        _psm.isSprinting = true;
-        _psm.speedMultiplier = 1.3f;
-        //_psm.playerAnim.SetBool("isSprinting", true);
+        _ctx.isSprinting = true;
+        _ctx.speedMultiplier = 1.3f;
+        //_ctx.playerAnim.SetBool("isSprinting", true);
         
     }
 
@@ -39,9 +39,9 @@ public class PlayerSprintingState : PlayerWalkingState
     {
         Logging.logState("<color=red>Exited</color> <color=lime>Sprinting</color> State");
 
-        _psm.isSprinting = false;
-        _psm.speedMultiplier = 1.0f;
-        //_psm.playerAnim.SetBool("isSprinting", false);
+        _ctx.isSprinting = false;
+        _ctx.speedMultiplier = 1.0f;
+        //_ctx.playerAnim.SetBool("isSprinting", false);
 
     }
 

@@ -8,9 +8,9 @@ public class PlayerCrouchState : PlayerState
 
     private bool slideFlag = false;
 
-    public PlayerCrouchState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
+    public PlayerCrouchState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name) : base(playerStateFactory, playerStateMachine, name)
     { 
-        startYScale = _psm.playerRb.transform.localScale.y; 
+        startYScale = _ctx.playerRb.transform.localScale.y; 
     }
 
 
@@ -22,15 +22,15 @@ public class PlayerCrouchState : PlayerState
         // Set the parent's state child state to this state's child
         if (Input.GetKeyUp(Keybinds.crouch))
         {
-            Debug.Log("WAOW!");
-            if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
+            Logging.logState("Let go of <color=red>crouch</red>!");
+            if (_ctx.horizontalInput == 0 && _ctx.verticalInput == 0)
             {
-                SwitchState(player.playerIdleState);
+                SwitchState(_factory.Idle());
                 return true;
             }
             else
             {
-                SwitchState(player.playerWalkingState);
+                SwitchState(_factory.Walking());
                 return true;                            
             }
         }
@@ -44,15 +44,15 @@ public class PlayerCrouchState : PlayerState
     public override void EnterState()
     {
         Logging.logState("<color=green>Entered</color> <color=blue>Crouch</color> State");
-        _psm.isCrouched = true;
-        _psm.checkGround = true;
-        _psm.speedMultiplier = 0.4f;
+        _ctx.isCrouched = true;
+        //_ctx.checkGround = true;
+        _ctx.speedMultiplier = 0.4f;
 
 
-        _psm.playerRb.transform.localScale = new Vector3(_psm.playerRb.transform.localScale.x, 0.5f, _psm.playerRb.transform.localScale.z);
+        _ctx.playerRb.transform.localScale = new Vector3(_ctx.playerRb.transform.localScale.x, 0.5f, _ctx.playerRb.transform.localScale.z);
 
         // We'll also have to move the player downward
-        _psm.playerRb.MovePosition(new Vector3(_psm.playerRb.position.x, _psm.playerRb.position.y - 0.5f, _psm.playerRb.position.z));
+        _ctx.playerRb.MovePosition(new Vector3(_ctx.playerRb.position.x, _ctx.playerRb.position.y - 0.5f, _ctx.playerRb.position.z));
 
 
         InitializeSubState();
@@ -62,9 +62,9 @@ public class PlayerCrouchState : PlayerState
     public override void ExitState()
     {
         Logging.logState("<color=red>Exited</color> <color=blue>Crouch</color> State");
-        _psm.isCrouched = false;
-        _psm.speedMultiplier = 1.0f;
-        _psm.playerRb.transform.localScale = new Vector3(_psm.playerRb.transform.localScale.x, startYScale, _psm.playerRb.transform.localScale.z);
+        _ctx.isCrouched = false;
+        _ctx.speedMultiplier = 1.0f;
+        _ctx.playerRb.transform.localScale = new Vector3(_ctx.playerRb.transform.localScale.x, startYScale, _ctx.playerRb.transform.localScale.z);
 
         
     }
@@ -77,20 +77,20 @@ public class PlayerCrouchState : PlayerState
     public override void InitializeSubState()
     {
         // Set from where it is first encountered (Sprinting)
-        if (_psm.isSliding)
+        if (_ctx.isSliding)
         {
-            SetSubState(player.playerSlidingState);
+            SetSubState(_factory.Sliding());
             return;
         }
 
         // While grounded and crouched, not moving -> Idle
-        if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
+        if (_ctx.horizontalInput == 0 && _ctx.verticalInput == 0)
         {
-            SetSubState(player.playerIdleState);
+            SetSubState(_factory.Idle());
         }
         else
         {
-            SetSubState(player.playerWalkingState);
+            SetSubState(_factory.Walking());
         }
     }
 

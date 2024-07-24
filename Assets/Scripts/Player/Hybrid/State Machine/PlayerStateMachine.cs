@@ -114,7 +114,6 @@ public class PlayerStateMachine
     public float extraJumpsTaken { get; set; } = 0;
 
     #region Movement booleans
-    // -----------------------
     /// <summary>
     /// boolean to denote whether or not player is touching the ground or not
     /// </summary>
@@ -186,7 +185,6 @@ public class PlayerStateMachine
     /// boolean of if player is colliding with a wall and having neg y velocity
     /// </summary>
     public bool isWallSliding { get; set; } = false;
-    // -----------------------
     #endregion
 
     #region Combat booleans
@@ -356,6 +354,7 @@ public class PlayerStateMachine
 
     public void UpdatePhysicsStates()
     {
+        // Update currentSpeed for debugging purposes
         currentSpeed = playerRb.velocity.magnitude;
         currentPlayerState.UpdatePhysicsStates();
     }

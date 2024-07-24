@@ -18,19 +18,19 @@ public class PlayerRollingState : PlayerMovementState
 
     Vector3 directionOfRoll;
 
-    public PlayerRollingState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
+    public PlayerRollingState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name) : base(playerStateFactory, playerStateMachine, name)
     {
     }
 
     public override void AddForceToRB(Vector3 acceleration)
     {
-        if(_psm.onGround == true)
+        if(_ctx.onGround == true)
         {
-            _psm.playerRb.AddForce(acceleration * Time.fixedDeltaTime * 150f, ForceMode.Force);
+            _ctx.playerRb.AddForce(acceleration * Time.fixedDeltaTime * 150f, ForceMode.Force);
         }
-        if(_psm.onGround == false)
+        if(_ctx.onGround == false)
         {
-            _psm.playerRb.AddForce(acceleration * Time.fixedDeltaTime * 1.5f, ForceMode.Force);
+            _ctx.playerRb.AddForce(acceleration * Time.fixedDeltaTime * 1.5f, ForceMode.Force);
         }
     }
 
@@ -44,28 +44,28 @@ public class PlayerRollingState : PlayerMovementState
         if (distanceRolled > distanceToRoll)
         {
             // If no input, set player to idle
-            if (_psm.horizontalInput == 0 && _psm.verticalInput == 0)
+            if (_ctx.horizontalInput == 0 && _ctx.verticalInput == 0)
             {
-                SwitchState(player.playerIdleState);
+                SwitchState(_factory.Idle());
                 return true;
             }
             // If there is input, go into either sprint or walking
             else
             {
-                if (_psm.horizontalInput != 0 || _psm.verticalInput != 0)
+                if (_ctx.horizontalInput != 0 || _ctx.verticalInput != 0)
                 {
 
                     // Left shift detected, go into sprint
                     if (Input.GetKey(KeyCode.LeftShift))
                     {
-                        SwitchState(player.playerSprintingState);
+                        SwitchState(_factory.Sprinting());
                         return true;
                     }
 
                     // Else go into normal walking
                     else
                     {
-                        SwitchState(player.playerWalkingState);
+                        SwitchState(_factory.Walking());
                         return true;
                     }
 
@@ -81,22 +81,22 @@ public class PlayerRollingState : PlayerMovementState
         Logging.logState("<color=green>Entered</color> <color=silver>Roll</color> State");
 
         initPush = true;
-        _psm.isRolling = true;
-        //_psm.playerAnim.SetBool("isRolling", true);
+        _ctx.isRolling = true;
+        //_ctx.playerAnim.SetBool("isRolling", true);
 
         // Reset our counter variables
         distanceRolled = 0;
         timeSpentRolling = 0;
-        distanceToRoll = _psm.speed * 0.8f;
+        distanceToRoll = _ctx.speed * 0.8f;
 
         // Once we enter, we need the direction of the roll!
-        if (_psm.isLockedOn)
+        if (_ctx.isLockedOn)
         {
-            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_psm.camera.lockOnFocusObject.transform.position, _psm.playerRb.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_ctx.camera.lockOnFocusObject.transform.position, _ctx.playerRb.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }
         else
         {
-            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_psm.playerRb.position, _psm.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_ctx.playerRb.position, _ctx.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }
         
 
@@ -105,8 +105,8 @@ public class PlayerRollingState : PlayerMovementState
     public override void ExitState()
     {
         Logging.logState("<color=red>Exited</color> <color=silver>Roll</color> State");
-        _psm.isRolling = false;
-        //_psm.playerAnim.SetBool("isRolling", false);
+        _ctx.isRolling = false;
+        //_ctx.playerAnim.SetBool("isRolling", false);
         
     }
 
@@ -123,23 +123,23 @@ public class PlayerRollingState : PlayerMovementState
 
     public override void PhysicsUpdate()
     {
-        var distanceToMove = _psm.speed * Time.fixedDeltaTime;
+        var distanceToMove = _ctx.speed * Time.fixedDeltaTime;
         distanceRolled += distanceToMove;
         // Add constant force while turn on ghosting for interactable entities?
 
         // Initial press should impulse the player torwards the direction
         if(initPush) {
             float multiplier = 200f;
-            if (!_psm.onGround)
+            if (!_ctx.onGround)
             {
                 multiplier = 100f;
             }
-            _psm.playerRb.AddForce(directionOfRoll * _psm.speed * Time.fixedDeltaTime * multiplier, ForceMode.Impulse);
+            _ctx.playerRb.AddForce(directionOfRoll * _ctx.speed * Time.fixedDeltaTime * multiplier, ForceMode.Impulse);
             initPush = false;
         } 
         else
         {
-            _psm.playerRb.AddForce(directionOfRoll * _psm.speed * Time.fixedDeltaTime, ForceMode.Force);
+            _ctx.playerRb.AddForce(directionOfRoll * _ctx.speed * Time.fixedDeltaTime, ForceMode.Force);
         }
         
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class PlayerMovementState : PlayerState
 {
-    public PlayerMovementState(Player player, PlayerStateMachine playerStateMachine, string name) : base(player, playerStateMachine, name)
+    public PlayerMovementState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name) : base(playerStateFactory, playerStateMachine, name)
     {
     }
 

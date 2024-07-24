@@ -51,29 +51,8 @@ public class Player : MonoBehaviour, IDamagable
 
     public PlayerStateMachine stateMachine;
 
-    #region Root States
-    public PlayerGroundedState playerGroundedState { get; set; }
-    public PlayerAirState playerAirState { get; set; }
-   
-    #endregion
+    protected PlayerStateFactory _psf; 
 
-
-
-    public PlayerIdleState playerIdleState { get; set; }
-    public PlayerWalkingState playerWalkingState { get; set; }
-    public PlayerSprintingState playerSprintingState { get; set; }
-    public PlayerCrouchState playerCrouchState { get; set; }
-    public PlayerSlidingState playerSlidingState { get; set; }
-    public PlayerRollingState playerRollingState { get; set; }
-
-
-
-    #region Combat States
-    public PlayerAttackState playerAttackState { get; set; }
-    public PlayerIdleWeaponState playerIdleWeaponState { get; set; }
-
-
-    #endregion
 
     #endregion
 
@@ -86,27 +65,10 @@ public class Player : MonoBehaviour, IDamagable
         camera = GameObject.Find("Camera").GetComponent<CameraController>();
 
         stateMachine = new PlayerStateMachine(playerRb, playerCap, camera, playerAnim, AccelerationMultiplier);
+        _psf = new PlayerStateFactory(stateMachine);
 
-        # region Root States
-        playerGroundedState = new PlayerGroundedState(this, stateMachine, "Grounded");
-        playerAirState = new PlayerAirState(this, stateMachine, "Air");
-        #endregion
 
-        #region Movement States
-        playerIdleState = new PlayerIdleState(this, stateMachine, "Idle");
-        playerWalkingState = new PlayerWalkingState(this, stateMachine, "Walking");
-        playerSprintingState = new PlayerSprintingState(this, stateMachine, "Sprinting");
-        playerCrouchState = new PlayerCrouchState(this, stateMachine, "Crouch");
-        playerSlidingState = new PlayerSlidingState(this, stateMachine, "Sliding");
-        playerRollingState = new PlayerRollingState(this, stateMachine, "Rolling");
-        #endregion
-
-        #region Combat States   
-        playerAttackState = new PlayerAttackState(this, stateMachine, "-");
-        playerIdleWeaponState = new PlayerIdleWeaponState(this, stateMachine, "-");
-        #endregion
-
-        stateMachine.Initialize(playerGroundedState);
+        stateMachine.Initialize(_psf.Grounded());
     }
 
 
