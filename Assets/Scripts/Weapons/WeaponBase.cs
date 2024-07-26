@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponBase
+public class WeaponBase : MonoBehaviour
 {
-    public float damage;
+    public float baseDamage;
+
+    public CombatBaseObject[] combatBaseObject;
 
     public void Attack() { }
 
