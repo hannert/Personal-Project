@@ -7,7 +7,11 @@ public class WeaponBase : MonoBehaviour
 {
     public float baseDamage;
 
-    public CombatBaseObject[] combatBaseObject;
+    public CombatBaseObject[] moveset;
+
+    public CombatBaseObject[] GetMoveset() {
+        return moveset;
+    }
 
     public void Attack() { }
 

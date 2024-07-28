@@ -63,6 +63,7 @@ public class PlayerStateMachine
     public float skinWidth = 0.05f;
 
 
+    #region Components
     /// <summary>
     /// Reference to the players RigidBody component
     /// </summary>
@@ -82,6 +83,11 @@ public class PlayerStateMachine
     /// Reference to the players Animator component
     /// </summary>
     public Animator playerAnim { get; set; }
+
+    public RuntimeAnimatorController runtimePlayerAnim { get; set; }
+
+    #endregion
+
 
     /// <summary>
     /// The current amount of horizontal input: a, d
@@ -185,11 +191,15 @@ public class PlayerStateMachine
 
     private GameObject currentWeapon { get; set; }
 
-    public GameObject getCurrentWeapon() {
+    public GameObject GetCurrentWeapon() {
+        Debug.Log("Get current weapon");
+        if (currentWeapon == null) {
+            Debug.Log("no weapon on player");
+        }
         return currentWeapon;
     }
 
-    public void setCurrentWeapon(GameObject newWeapon) {
+    public void SetCurrentWeapon(GameObject newWeapon) {
         this.currentWeapon = newWeapon;
     }
 

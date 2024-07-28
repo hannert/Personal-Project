@@ -8,12 +8,13 @@ public class CombatBaseObject : ScriptableObject
     public string attackName;
 
     public CombatBaseObject nextMove;
-    public Animation animation;
+    public AnimationClip animation;
 
     // Time available for player to input for the nextMove
     public float linkTime;
 
-
+    // Multiply base damage of weapon to this value eg(1st move - 1.0f, 2nd move - 1.10f for a 10% increase damage in the second move)
+    public float damageMultiplier;
 
     // Start is called before the first frame update
     void Start()

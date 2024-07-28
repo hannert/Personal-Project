@@ -47,7 +47,7 @@ public class PlayerStateFactory
 
 
     public PlayerState Attacking(){
-        return new PlayerAttackingState(this, _ctx, "Attacking", _ctx.getCurrentWeapon());
+        return new PlayerAttackingState(this, _ctx, "Attacking", _ctx.GetCurrentWeapon());
     }
     
 

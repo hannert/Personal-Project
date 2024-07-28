@@ -53,12 +53,13 @@ public class Player : MonoBehaviour, IDamagable
 
     private GameObject currentWeapon;
     void EquipWeapon(){
-        GameObject tempWeapon = Instantiate(startingWeapon, handObject.transform);
+        currentWeapon = Instantiate(startingWeapon, handObject.transform);
+        stateMachine.SetCurrentWeapon(currentWeapon);
     }
 
     void SwitchWeapon(GameObject newWeapon) {
         currentWeapon = newWeapon;
-        stateMachine.setCurrentWeapon(newWeapon);
+        stateMachine.SetCurrentWeapon(newWeapon);
     }
 
     #region State Machine
@@ -72,7 +73,7 @@ public class Player : MonoBehaviour, IDamagable
 
     public void Awake()
     {
-        EquipWeapon();
+        
         playerRb = GetComponent<Rigidbody>();
         playerCap = GetComponent<CapsuleCollider>();
         playerAnim = GetComponentInChildren<Animator>();
@@ -81,7 +82,7 @@ public class Player : MonoBehaviour, IDamagable
 
         stateMachine = new PlayerStateMachine(playerRb, playerCap, camera, playerAnim, AccelerationMultiplier);
         _psf = new PlayerStateFactory(stateMachine);
-
+        EquipWeapon(); 
         stateMachine.Initialize(_psf.Grounded());
     }
 

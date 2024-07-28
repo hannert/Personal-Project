@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aec2cf86dce9e04296550c3269bbb0c, type: 3}
   m_Name: BasicSwing
   m_EditorClassIdentifier: 
-  attackName: 
+  attackName: SwordSwing0
   nextMove: {fileID: 0}
   animation: {fileID: 0}
-  linkTime: 0
+  linkTime: 1
+  damageMultiplier: 1

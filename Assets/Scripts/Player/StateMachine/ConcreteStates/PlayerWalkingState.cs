@@ -118,7 +118,7 @@ public class PlayerWalkingState : PlayerMovementState
         Vector3 FinalVel = _ctx.playerRb.velocity;
         endDirection = PlayerUtilities.CollideAndSlide(_ctx.playerCap, endDirection, _ctx.playerRb.position, 0, 0.05f, 3, true, _ctx.playerRb.velocity, _ctx.onGround);
         Vector3 goalVelocity = endDirection * _ctx.speed;
-        Debug.Log(goalVelocity);
+        // Debug.Log(goalVelocity);
 
         FinalVel = Vector3.MoveTowards(FinalVel, goalVelocity + _ctx.playerRb.velocity, accel * Time.fixedDeltaTime);
         //Debug.Log(accel);
