@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: SwordSwing0
   nextMove: {fileID: 0}
-  animation: {fileID: 0}
+  animation: {fileID: 7400000, guid: 5515667a3c5041b4d839b859b434ca1c, type: 2}
   linkTime: 1
   damageMultiplier: 1

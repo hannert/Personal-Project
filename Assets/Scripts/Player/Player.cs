@@ -76,7 +76,7 @@ public class Player : MonoBehaviour, IDamagable
         
         playerRb = GetComponent<Rigidbody>();
         playerCap = GetComponent<CapsuleCollider>();
-        playerAnim = GetComponentInChildren<Animator>();
+        playerAnim = GetComponent<Animator>();
         // Get the cameracontroller component to get a reference to the focal point for rotating the character
         camera = GameObject.Find("Camera").GetComponent<CameraController>();
 

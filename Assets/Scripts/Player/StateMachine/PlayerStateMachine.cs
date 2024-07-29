@@ -1,5 +1,6 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -63,7 +64,8 @@ public class PlayerStateMachine
     public float skinWidth = 0.05f;
 
 
-    #region Components
+    #region Components ------
+
     /// <summary>
     /// Reference to the players RigidBody component
     /// </summary>
@@ -84,7 +86,17 @@ public class PlayerStateMachine
     /// </summary>
     public Animator playerAnim { get; set; }
 
+    ///<summary>
+    /// Reference to the players runtime animator component
+    /// </summary>
     public RuntimeAnimatorController runtimePlayerAnim { get; set; }
+
+    /// <summary>
+    /// Reference to the players runtime animator override controller component
+    /// </summary>
+    public AnimatorOverrideController animatorOverrideController { get; set; }
+
+    public CustomAnimationClass.AnimationClipOverrides clipOverrides {get; set;}
 
     #endregion
 
@@ -178,17 +190,11 @@ public class PlayerStateMachine
     public bool isWallSliding { get; set; } = false;
     #endregion
 
-    #region Combat booleans
-    // -----------------------
+    #region Combat
     public bool isAttacking { get; set; } = false;
     public bool hasWeapon { get; set; } = false;
     public bool hasShield { get; set; } = false;
     public bool isEquipped { get; set; } = true;
-    // -----------------------
-    #endregion
-
-    # region Combat Variables
-
     private GameObject currentWeapon { get; set; }
 
     public GameObject GetCurrentWeapon() {
@@ -203,7 +209,23 @@ public class PlayerStateMachine
         this.currentWeapon = newWeapon;
     }
 
-    # endregion
+    public void SwapWeapon(GameObject newWeapon) {
+        SetCurrentWeapon(newWeapon);
+
+    }
+
+    public void SetAttackAnimation(AnimationClip newAnim) {
+        Debug.Log("Setting new attack animation ----");
+        animatorOverrideController["BlankWeapon"] = newAnim;
+        animatorOverrideController["BlankWeapon"].wrapMode = WrapMode.Once;
+    }
+
+    public void PlayAttackAnimation() {
+        Debug.Log("Playing attack animation");
+        playerAnim.Play("OneShot");
+    }
+
+    #endregion
 
 
 
@@ -234,7 +256,16 @@ public class PlayerStateMachine
         this.playerCap = playerCap;
         this.camera = camera;
         this.playerAnim = playerAnim;
+        SetUpAnimator();
+
         this.AccelerationMultiplier = AccelerationMultiplier;
+    }
+
+    void SetUpAnimator(){
+
+        animatorOverrideController = new AnimatorOverrideController(playerAnim.runtimeAnimatorController);
+        playerAnim.runtimeAnimatorController = animatorOverrideController;
+
     }
 
     public PlayerState currentPlayerState { get; set; }

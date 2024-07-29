@@ -34,7 +34,8 @@ public class PlayerAttackingState : PlayerCombatState
         currentMoveIndex = 0;
 
         linkTime = moveset[0].linkTime;
-        
+        _ctx.SetAttackAnimation(moveset[0].animation);
+        _ctx.PlayAttackAnimation();
     }
 
     // Exit when the combo is done or timer has ran out to continue the combo
