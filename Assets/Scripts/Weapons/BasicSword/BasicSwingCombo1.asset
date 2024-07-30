@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0aec2cf86dce9e04296550c3269bbb0c, type: 3}
-  m_Name: BasicSwing
+  m_Name: BasicSwingCombo1
   m_EditorClassIdentifier: 
-  attackName: SwordSwing0
+  attackName: 
   nextMove: {fileID: 0}
-  animation: {fileID: 7400000, guid: 5515667a3c5041b4d839b859b434ca1c, type: 2}
-  linkTime: 1
-  damageMultiplier: 1
+  animation: {fileID: 7400000, guid: 64a9a40dd3f7fdb4dac920c9f4888ace, type: 2}
+  linkTime: 0
+  damageMultiplier: 0

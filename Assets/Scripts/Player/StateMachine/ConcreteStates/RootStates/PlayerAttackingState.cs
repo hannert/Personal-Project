@@ -66,7 +66,8 @@ public class PlayerAttackingState : PlayerCombatState
         timeElapsed = 0;
 
         linkTime = currentMove.linkTime;
-        
+        _ctx.SetAttackAnimation(currentMove.animation);
+        _ctx.PlayAttackAnimation();
     }
 
     public override void FrameUpdate()

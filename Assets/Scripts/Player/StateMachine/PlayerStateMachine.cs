@@ -216,13 +216,14 @@ public class PlayerStateMachine
 
     public void SetAttackAnimation(AnimationClip newAnim) {
         Debug.Log("Setting new attack animation ----");
+        newAnim.name = "BlankWeapon";
         animatorOverrideController["BlankWeapon"] = newAnim;
         animatorOverrideController["BlankWeapon"].wrapMode = WrapMode.Once;
     }
 
     public void PlayAttackAnimation() {
         Debug.Log("Playing attack animation");
-        playerAnim.Play("OneShot");
+        playerAnim.Play("OneShot", -1, 0f);
     }
 
     #endregion

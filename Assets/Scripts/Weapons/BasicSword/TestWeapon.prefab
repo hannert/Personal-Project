@@ -153,3 +153,4 @@ MonoBehaviour:
   baseDamage: 1
   moveset:
   - {fileID: 11400000, guid: 8d5231ee15f65ca40b3a912f4690c28e, type: 2}
+  - {fileID: 11400000, guid: 63649db70c54fc045a58997586ce0d41, type: 2}
