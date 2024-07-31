@@ -17,12 +17,16 @@ public class WeaponBase : MonoBehaviour
 
     private CombatBaseObject currentMove { get; set; }
 
+    private List<Collider> hitEntities = new List<Collider>();
+
+
     public bool NextMove() {
+        hitEntities.Clear();
         if ((++currentMoveIndex) >= moveset.Length) {
             return true;
         }
         currentMove = moveset[currentMoveIndex++ % moveset.Length];
-
+        
         return false;
     }
 
@@ -33,6 +37,26 @@ public class WeaponBase : MonoBehaviour
     public void ResetCombo() {
         currentMoveIndex = 0;
         currentMove = moveset[0];
+        hitEntities.Clear();
+    }
+
+    /// <summary>
+    /// Function to add entity's collider to internal list if hit by weapon movement
+    /// </summary>
+    /// <param name="hitEntity"> The collider of the hit object </param>
+    /// <returns>
+    ///     true - if entity was not already hit
+    ///     <br/>
+    ///     false - if entity was already hit
+    /// </returns>
+    public bool AddToHit(Collider hitEntity) {
+        if (hitEntities.Contains(hitEntity)){
+            return false;
+        } else {
+            hitEntities.Add(hitEntity);
+        }
+        
+        return true;
     }
 
 

@@ -9,6 +9,9 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
     [field: SerializeField] public float currentHealth { get; set; }
 
     public Rigidbody enemyRb { get; set; }
+
+    public Collider hurtBox;
+    public Animator enemyAnimator;
     public class EnemyDamage : ASignal {}
     
     #region Enemy State Machine ---------
@@ -37,7 +40,8 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
     {
 
         enemyRb = GetComponent<Rigidbody>();
-
+        enemyAnimator = GetComponent<Animator>();
+        hurtBox = GetComponent<Collider>();
         stateMachine.Initialize(enemyIdleState);
     }
 
@@ -45,7 +49,10 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
 
 
     public void Damage(float damage)
-    {
+    {   
+        enemyAnimator.Play("Base Layer.Hit");
+        
+        
         currentHealth -= damage;
         Signals.Get<EnemyDamage>().Dispatch();
 
@@ -55,7 +62,7 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
         }
     }
 
-    public void Die()
+    public void Die()   
     {
         Destroy(gameObject);
     }
@@ -66,10 +73,15 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
     /// <param name="other">The other Collider involved in this collision.</param>
     private void OnTriggerEnter(Collider other)
     {
+
         WeaponBase weapon = null;
+        
         // Check if the other collider has the weapon component attached
         if ((weapon = other.gameObject.GetComponent<WeaponBase>()) != null){
-            Damage(weapon.baseDamage);
+            if (weapon.AddToHit(hurtBox) == true) {
+                Damage(weapon.baseDamage);
+        } 
+            
         }
     }
 

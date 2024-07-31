@@ -15,5 +15,6 @@ MonoBehaviour:
   attackName: SwordSwing0
   nextMove: {fileID: 11400000, guid: 63649db70c54fc045a58997586ce0d41, type: 2}
   animation: {fileID: 7400000, guid: 4e6e21679d917f8488dbff3e27f34075, type: 2}
-  linkTime: 1
+  minLinkTime: 0.4
+  maxLinkTime: 0.8
   damageMultiplier: 1
