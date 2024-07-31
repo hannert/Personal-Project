@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using deVoid.Utils;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamagable, IMovable
 {
     [field: SerializeField] public float maxHealth { get; set; } = 100f;
-    public float currentHealth { get; set; }
-    public Rigidbody enemyRb { get; set; }
+    [field: SerializeField] public float currentHealth { get; set; }
 
+    public Rigidbody enemyRb { get; set; }
+    public class EnemyDamage : ASignal {}
+    
     #region Enemy State Machine ---------
 
     public EnemyStateMachine stateMachine;
@@ -25,12 +28,13 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
         enemyIdleState = new EnemyIdleState(this, stateMachine);
         enemyAttackState = new EnemyAttackState(this, stateMachine);
         enemyChaseState = new EnemyChaseState(this, stateMachine);
+        
+        currentHealth = maxHealth;
     }
 
 
     public void Start()
     {
-        currentHealth = maxHealth;
 
         enemyRb = GetComponent<Rigidbody>();
 
@@ -38,9 +42,12 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
     }
 
     #region IDamagable
+
+
     public void Damage(float damage)
     {
         currentHealth -= damage;
+        Signals.Get<EnemyDamage>().Dispatch();
 
         if (currentHealth < 0f )
         {
@@ -51,6 +58,19 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
     public void Die()
     {
         Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// OnTriggerEnter is called when the Collider other enters the trigger.
+    /// </summary>
+    /// <param name="other">The other Collider involved in this collision.</param>
+    private void OnTriggerEnter(Collider other)
+    {
+        WeaponBase weapon = null;
+        // Check if the other collider has the weapon component attached
+        if ((weapon = other.gameObject.GetComponent<WeaponBase>()) != null){
+            Damage(weapon.baseDamage);
+        }
     }
 
     #endregion

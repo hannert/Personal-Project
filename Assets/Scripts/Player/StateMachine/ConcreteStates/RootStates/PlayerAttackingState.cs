@@ -6,13 +6,11 @@ public class PlayerAttackingState : PlayerCombatState
 {
     private GameObject weaponObject;
     private WeaponBase weapon;
-    private CombatBaseObject[] moveset;
-
-    private int currentMoveIndex;
 
     // Time that has passed since the move was triggered
     private float timeElapsed = 0;
-    private float linkTime;
+    private float maxLinkTime;
+    private float minLinkTime;
 
     private CombatBaseObject currentMove;
 
@@ -21,7 +19,7 @@ public class PlayerAttackingState : PlayerCombatState
         _isRootState = true;
         this.weaponObject = weapon;
         this.weapon = weapon.GetComponent<WeaponBase>();
-        this.moveset = this.weapon.GetMoveset();
+        //this.moveset = this.weapon.GetMoveset();
     }
     
     // Should get the weapons moveset
@@ -30,11 +28,13 @@ public class PlayerAttackingState : PlayerCombatState
         Logging.logState("<color=green>Entered</color> <color=red>Attacking</color> State");
         _ctx.isAttacking = true;
 
-        // Initialize the first move
-        currentMoveIndex = 0;
+        weapon.ResetCombo();
 
-        linkTime = moveset[0].linkTime;
-        _ctx.SetAttackAnimation(moveset[0].animation);
+        currentMove = weapon.GetCurrentMove();
+
+        maxLinkTime = currentMove.maxLinkTime;
+        minLinkTime = currentMove.minLinkTime;
+        _ctx.SetAttackAnimation(currentMove.animation);
         _ctx.PlayAttackAnimation();
     }
 
@@ -53,19 +53,18 @@ public class PlayerAttackingState : PlayerCombatState
 
     private void NextMove()
     {
-        currentMoveIndex++;
-        // End of moveset array, exit state
-        if (currentMoveIndex >= moveset.Length) {
+        // Advance and check if end of moveset array, exit state
+        if (weapon.NextMove() == true) {
             return;
         }
-
-        // Advance
-        currentMove = moveset[currentMoveIndex];
+        currentMove = weapon.GetCurrentMove();
 
         // Reset the time variable
         timeElapsed = 0;
 
-        linkTime = currentMove.linkTime;
+        maxLinkTime = currentMove.maxLinkTime;
+        minLinkTime = currentMove.minLinkTime;
+
         _ctx.SetAttackAnimation(currentMove.animation);
         _ctx.PlayAttackAnimation();
     }
@@ -77,11 +76,11 @@ public class PlayerAttackingState : PlayerCombatState
 
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
             // Go to the next move if applicable or exit
-            if (timeElapsed <= linkTime) {
+            if (timeElapsed >= minLinkTime && timeElapsed <= maxLinkTime) {
                 NextMove();
             }
         }
-        if (timeElapsed >= linkTime) {
+        if (timeElapsed >= maxLinkTime) {
             Debug.Log("Time ran out for attack");
             SwitchState(_factory.Grounded());
         }
@@ -91,7 +90,6 @@ public class PlayerAttackingState : PlayerCombatState
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        // Update timers in here 
 
     }
 
