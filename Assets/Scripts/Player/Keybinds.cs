@@ -6,7 +6,8 @@ using UnityEngine;
 public class Keybinds
 {
 
-    [ReadOnly] public static KeyCode fire = KeyCode.Mouse0;
+    [ReadOnly] public static KeyCode primaryFire = KeyCode.Mouse0;
+    [ReadOnly] public static KeyCode secondaryFire = KeyCode.Mouse1;
     [ReadOnly] public static KeyCode foward = KeyCode.W;
     [ReadOnly] public static KeyCode backward = KeyCode.S;
     [ReadOnly] public static KeyCode left = KeyCode.A;

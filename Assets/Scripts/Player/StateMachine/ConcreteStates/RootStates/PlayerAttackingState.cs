@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAttackingState : PlayerCombatState
@@ -12,13 +10,32 @@ public class PlayerAttackingState : PlayerCombatState
     private float maxLinkTime;
     private float minLinkTime;
 
+    /// <summary>
+    /// The initial input when this state is entered
+    /// </summary>
+    private KeyCode initInput;
+
+    /// <summary>
+    /// The current move
+    /// </summary>
     private CombatBaseObject currentMove;
 
-    public PlayerAttackingState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name, GameObject weapon) : base(playerStateFactory, playerStateMachine, name)
+    /// <summary>
+    /// The links available to the current move
+    /// </summary>
+    private CombatLink[] currentMoveLinks;
+
+    /// <summary>
+    /// The key to advance in the combo
+    /// </summary>
+    private CombatBindsEnum currentComboKey;
+
+    public PlayerAttackingState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name, GameObject weapon, KeyCode initInput) : base(playerStateFactory, playerStateMachine, name)
     {
         _isRootState = true;
         this.weaponObject = weapon;
         this.weapon = weapon.GetComponent<WeaponBase>();
+        this.initInput = initInput;
         //this.moveset = this.weapon.GetMoveset();
     }
     
@@ -28,9 +45,12 @@ public class PlayerAttackingState : PlayerCombatState
         Logging.logState("<color=green>Entered</color> <color=red>Attacking</color> State");
         _ctx.isAttacking = true;
 
-        weapon.ResetCombo();
+        //weapon.ResetCombo();
+        weapon.Prepare(initInput);
+
 
         currentMove = weapon.GetCurrentMove();
+        currentMoveLinks = weapon.GetCombatLinks(); 
 
         maxLinkTime = currentMove.maxLinkTime;
         minLinkTime = currentMove.minLinkTime;
@@ -51,15 +71,28 @@ public class PlayerAttackingState : PlayerCombatState
         return base.CheckSwitchStates();
     }
 
-    private void NextMove()
+    private bool NextMove()
     {
-        // Advance and check if end of moveset array, exit state
+        // Advance and check if end of moveset array, return
         if (weapon.NextMove() == true) {
-            return;
+            return false;
         }
-        currentMove = weapon.GetCurrentMove();
 
-        // Reset the time variable
+        NewMove();
+        return true;
+    }
+
+    private void NextCombo(CombatLink link)
+    {
+        weapon.LinkToNewCombo(link);
+        NewMove();
+        currentComboKey = weapon.GetCurrentComboKey();
+    }
+
+    private void NewMove() {
+        currentMove = weapon.GetCurrentMove();
+        currentMoveLinks = weapon.GetCombatLinks();
+
         timeElapsed = 0;
 
         maxLinkTime = currentMove.maxLinkTime;
@@ -74,14 +107,31 @@ public class PlayerAttackingState : PlayerCombatState
 
         timeElapsed += Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.Mouse0)) {
+        // If the key pressed is the same as the current combos key, advance the combo
+        if (Input.GetKeyDown(CombatBinds.enumToCode[currentComboKey])) {
             // Go to the next move if applicable or exit
             if (timeElapsed >= minLinkTime && timeElapsed <= maxLinkTime) {
-                NextMove();
+                if (NextMove() == true) {
+                    return;
+                }
             }
         }
+
+        // If key pressed is in the linkableActions, switch to that combo
+        if (currentMoveLinks != null) {
+            if (timeElapsed >= minLinkTime && timeElapsed <= maxLinkTime) {
+                CombatBindsEnum tempBind;
+                for (int i = 0 ; i < currentMoveLinks.Length; i++) {
+                    tempBind = currentMoveLinks[i].inputToLink;
+                    if (Input.GetKeyDown(CombatBinds.enumToCode[tempBind])) {
+                        NextCombo(currentMoveLinks[i]);
+                    }
+                }
+            }
+        }
+
+
         if (timeElapsed >= maxLinkTime) {
-            Debug.Log("Time ran out for attack");
             SwitchState(_factory.Grounded());
         }
 

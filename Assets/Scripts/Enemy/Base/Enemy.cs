@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using deVoid.Utils;
@@ -75,7 +76,7 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
     {
 
         WeaponBase weapon = null;
-        
+
         // Check if the other collider has the weapon component attached
         if ((weapon = other.gameObject.GetComponent<WeaponBase>()) != null){
             if (weapon.AddToHit(hurtBox) == true) {

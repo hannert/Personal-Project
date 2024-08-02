@@ -8,37 +8,102 @@ public class WeaponBase : MonoBehaviour
 {
     public float baseDamage;
 
-    public CombatBaseObject[] moveset;
+    public CombatMoveset moveset;
 
-    public CombatBaseObject[] GetMoveset() {
+    public CombatMoveset GetMoveset() {
         return moveset;
     }
+
+    /// <summary>
+    /// Index of which combo of the moveset we are on
+    /// </summary>
+    private int currentComboIndex;
+
+    /// <summary>
+    /// Index of which move of the combo we are on
+    /// </summary>
     private int currentMoveIndex;
 
+    private CombatCombo currentCombo { get; set; }
     private CombatBaseObject currentMove { get; set; }
 
+    /// <summary>
+    /// List of colliders hit with the weapon, used to deal damage once per move
+    /// </summary>
     private List<Collider> hitEntities = new List<Collider>();
 
-
-    public bool NextMove() {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="link"></param>
+    /// <returns></returns>
+    public void LinkToNewCombo(CombatLink link) {
+        Debug.Log("Linking new combo" + link.comboIndex.ToString() + " " + link.moveIndex.ToString());
+        // Clear hit colliders array since we are going to a new move
         hitEntities.Clear();
-        if ((++currentMoveIndex) >= moveset.Length) {
+
+        currentComboIndex = link.comboIndex;
+        currentMoveIndex = link.moveIndex;
+
+        currentCombo = moveset.moves[currentComboIndex];
+
+        currentMove = currentCombo.combo[currentMoveIndex].move;
+
+    }
+
+    /// <summary>
+    /// Advances the current move in the current combo
+    /// </summary>
+    /// <returns></returns>
+    public bool NextMove() {
+        // Clear hit colliders array since we are going to a new move
+        hitEntities.Clear();
+
+        // If we reach the end of the combo string, return true
+        if ((++currentMoveIndex) >= currentCombo.combo.Length) {
             return true;
         }
-        currentMove = moveset[currentMoveIndex++ % moveset.Length];
+
+        // Advance to the next move in the combo
+        currentMove = currentCombo.combo[currentMoveIndex].move;
         
         return false;
     }
 
+
+
+
     public CombatBaseObject GetCurrentMove() {
         return currentMove;
     }
-
-    public void ResetCombo() {
-        currentMoveIndex = 0;
-        currentMove = moveset[0];
-        hitEntities.Clear();
+    public CombatBindsEnum GetCurrentComboKey() {
+        return currentCombo.type;
     }
+
+
+    public CombatLink[] GetCombatLinks() {
+        return currentCombo.combo[currentMoveIndex].linkableActions;
+    }
+
+    // public void ResetCombo() {
+    //     currentMoveIndex = 0;
+    //     currentMove = moveset[0];
+    //     hitEntities.Clear();
+    // }
+
+    public bool Prepare(KeyCode key) {
+        // Clear hit colliders array since we are going to a new move
+        hitEntities.Clear();
+
+        currentCombo = moveset.GetCombo(key);
+        currentMoveIndex = 0;
+        
+        currentMove = currentCombo.combo[currentMoveIndex].move;
+
+
+        return false;
+    }
+
 
     /// <summary>
     /// Function to add entity's collider to internal list if hit by weapon movement
@@ -59,9 +124,5 @@ public class WeaponBase : MonoBehaviour
         return true;
     }
 
-
-    public void Attack() { }
-
-    public void Block() { }
 
 }

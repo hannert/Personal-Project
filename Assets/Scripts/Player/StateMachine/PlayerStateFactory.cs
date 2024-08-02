@@ -46,8 +46,8 @@ public class PlayerStateFactory
     }
 
 
-    public PlayerState Attacking(){
-        return new PlayerAttackingState(this, _ctx, "Attacking", _ctx.GetCurrentWeapon());
+    public PlayerState Attacking(UnityEngine.KeyCode initInput){
+        return new PlayerAttackingState(this, _ctx, "Attacking", _ctx.GetCurrentWeapon(), initInput);
     }
     
 

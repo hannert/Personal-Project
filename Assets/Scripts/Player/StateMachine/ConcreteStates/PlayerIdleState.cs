@@ -11,8 +11,8 @@ public class PlayerIdleState : PlayerState
     public override bool CheckSwitchStates()
     {
 
-        if (Input.GetKeyDown(Keybinds.fire)) {
-            SwitchState(_factory.Attacking());
+        if (Input.GetKeyDown(Keybinds.primaryFire)) {
+            SwitchState(_factory.Attacking(Keybinds.primaryFire));
             return true;
         }
 
