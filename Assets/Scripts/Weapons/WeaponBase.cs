@@ -59,14 +59,14 @@ public class WeaponBase : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     public bool NextMove() {
-        // Clear hit colliders array since we are going to a new move
-        hitEntities.Clear();
-
         // If we reach the end of the combo string, return true
         if ((++currentMoveIndex) >= currentCombo.combo.Length) {
             return true;
         }
 
+        // Clear hit colliders array since we are going to a new move
+        hitEntities.Clear();
+        
         // Advance to the next move in the combo
         currentMove = currentCombo.combo[currentMoveIndex].move;
         
