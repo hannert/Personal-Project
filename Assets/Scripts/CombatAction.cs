@@ -18,7 +18,6 @@ public class CombatLink
 
     public int moveIndex;
 
-    [SerializeReference] public CombatBaseObject refer;
     public CombatBindsEnum inputToLink;
 
 }

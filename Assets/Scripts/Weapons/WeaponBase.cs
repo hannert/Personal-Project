@@ -8,11 +8,9 @@ public class WeaponBase : MonoBehaviour
 {
     public float baseDamage;
 
-    public CombatMoveset moveset;
+    public CombatMovesetObject movesetObject;
 
-    public CombatMoveset GetMoveset() {
-        return moveset;
-    }
+    private CombatMoveset moveset;
 
     /// <summary>
     /// Index of which combo of the moveset we are on
@@ -31,6 +29,11 @@ public class WeaponBase : MonoBehaviour
     /// List of colliders hit with the weapon, used to deal damage once per move
     /// </summary>
     private List<Collider> hitEntities = new List<Collider>();
+
+    void Awake() {
+        moveset = movesetObject.moveset;
+    }
+
 
     /// <summary>
     /// 
