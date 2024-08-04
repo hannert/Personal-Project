@@ -93,7 +93,7 @@ public class WeaponBase : MonoBehaviour
         return currentActionSlashDelay;
     }
     public void PlaySlashEffect() {
-        slashObject.transform.position = new Vector3(slashPosition.transform.position.x, slashPosition.transform.position.y, slashPosition.transform.position.z);
+        slashObject.transform.position = slashPosition.transform.position;
         slashEffect.Play();
     }
 
