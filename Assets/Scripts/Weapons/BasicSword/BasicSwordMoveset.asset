@@ -15,19 +15,25 @@ MonoBehaviour:
   moveset:
     moves:
     - combo:
-      - move: {fileID: 11400000, guid: 8d5231ee15f65ca40b3a912f4690c28e, type: 2}
+      - action: {fileID: 11400000, guid: 8d5231ee15f65ca40b3a912f4690c28e, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
         linkableActions:
         - comboIndex: 1
           moveIndex: 0
           inputToLink: 1
-      - move: {fileID: 11400000, guid: 63649db70c54fc045a58997586ce0d41, type: 2}
+      - action: {fileID: 11400000, guid: 63649db70c54fc045a58997586ce0d41, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
         linkableActions:
         - comboIndex: 0
           moveIndex: 0
           inputToLink: 0
       type: 0
     - combo:
-      - move: {fileID: 11400000, guid: 8d5231ee15f65ca40b3a912f4690c28e, type: 2}
+      - action: {fileID: 11400000, guid: 8d5231ee15f65ca40b3a912f4690c28e, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
         linkableActions:
         - comboIndex: 0
           moveIndex: 0

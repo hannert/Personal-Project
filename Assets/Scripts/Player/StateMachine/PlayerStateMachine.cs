@@ -197,6 +197,10 @@ public class PlayerStateMachine
     public bool isEquipped { get; set; } = true;
     private GameObject currentWeapon { get; set; }
 
+    private AnimationClip prevAttackClip { get; set; } = null;
+
+    private String prevAttackName { get; set; } = "";
+
     public GameObject GetCurrentWeapon() {
         Debug.Log("Get current weapon");
         if (currentWeapon == null) {
@@ -215,15 +219,25 @@ public class PlayerStateMachine
     }
 
     public void SetAttackAnimation(AnimationClip newAnim) {
-        Debug.Log("Setting new attack animation ----");
+        Debug.Log("Setting new attack animation ----");        
+        prevAttackClip = newAnim;
+        prevAttackName = newAnim.name;
         newAnim.name = "BlankWeapon";
         animatorOverrideController["BlankWeapon"] = newAnim;
         animatorOverrideController["BlankWeapon"].wrapMode = WrapMode.Once;
+
+        PlayAttackAnimation();
+        
+        //newAnim.name = initName;
     }
 
     public void PlayAttackAnimation() {
-        Debug.Log("Playing attack animation");
+        //Debug.Log("Playing attack animation");
         playerAnim.Play("OneShot", -1, 0f);
+    }
+
+    public void ResetPrevAnimName() {
+
     }
 
     #endregion

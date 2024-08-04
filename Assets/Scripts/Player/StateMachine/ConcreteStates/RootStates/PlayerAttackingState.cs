@@ -10,6 +10,8 @@ public class PlayerAttackingState : PlayerCombatState
     private float maxLinkTime;
     private float minLinkTime;
 
+    private bool slashPlayed;
+
     /// <summary>
     /// The initial input when this state is entered
     /// </summary>
@@ -18,7 +20,7 @@ public class PlayerAttackingState : PlayerCombatState
     /// <summary>
     /// The current move
     /// </summary>
-    private CombatBaseObject currentMove;
+    private CombatBaseObject currentAction;
 
     /// <summary>
     /// The links available to the current move
@@ -49,13 +51,13 @@ public class PlayerAttackingState : PlayerCombatState
         weapon.Prepare(initInput);
 
 
-        currentMove = weapon.GetCurrentMove();
+        currentAction = weapon.GetCurrentAction();
         currentMoveLinks = weapon.GetCombatLinks(); 
 
-        maxLinkTime = currentMove.maxLinkTime;
-        minLinkTime = currentMove.minLinkTime;
-        _ctx.SetAttackAnimation(currentMove.animation);
-        _ctx.PlayAttackAnimation();
+        maxLinkTime = currentAction.maxLinkTime;
+        minLinkTime = currentAction.minLinkTime;
+        _ctx.SetAttackAnimation(currentAction.animation);
+        //_ctx.PlayAttackAnimation();
     }
 
     // Exit when the combo is done or timer has ran out to continue the combo
@@ -90,16 +92,17 @@ public class PlayerAttackingState : PlayerCombatState
     }
 
     private void NewMove() {
-        currentMove = weapon.GetCurrentMove();
+        currentAction = weapon.GetCurrentAction();
         currentMoveLinks = weapon.GetCombatLinks();
 
         timeElapsed = 0;
+        slashPlayed = false;
 
-        maxLinkTime = currentMove.maxLinkTime;
-        minLinkTime = currentMove.minLinkTime;
+        maxLinkTime = currentAction.maxLinkTime;
+        minLinkTime = currentAction.minLinkTime;
 
-        _ctx.SetAttackAnimation(currentMove.animation);
-        _ctx.PlayAttackAnimation();
+        _ctx.SetAttackAnimation(currentAction.animation);
+        //_ctx.PlayAttackAnimation();
     }
 
     public override void FrameUpdate()
@@ -127,6 +130,14 @@ public class PlayerAttackingState : PlayerCombatState
                         NextCombo(currentMoveLinks[i]);
                     }
                 }
+            }
+        }
+
+        if (slashPlayed == false) {
+            if (timeElapsed >= weapon.GetSlashDelay()) {
+                slashPlayed = true;
+                weapon.PlaySlashEffect();
+
             }
         }
 

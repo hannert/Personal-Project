@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class WeaponBase : MonoBehaviour
 {
@@ -23,15 +24,26 @@ public class WeaponBase : MonoBehaviour
     private int currentMoveIndex;
 
     private CombatCombo currentCombo { get; set; }
-    private CombatBaseObject currentMove { get; set; }
+    private CombatMove currentMove { get; set;}
+    private CombatBaseObject currentAction { get; set; }
+
+    private VisualEffectAsset currentActionSlashVFX { get; set; }
+
+    private float currentActionSlashDelay { get; set; }
 
     /// <summary>
     /// List of colliders hit with the weapon, used to deal damage once per move
     /// </summary>
     private List<Collider> hitEntities = new List<Collider>();
 
+    public GameObject slashPosition;
+    public GameObject slashObject;
+
+    private VisualEffect slashEffect;
+
     void Awake() {
         moveset = movesetObject.moveset;
+        slashEffect = slashObject.GetComponentInChildren<VisualEffect>();
     }
 
 
@@ -49,9 +61,11 @@ public class WeaponBase : MonoBehaviour
         currentMoveIndex = link.moveIndex;
 
         currentCombo = moveset.moves[currentComboIndex];
+        currentMove = currentCombo.combo[currentMoveIndex];
+        currentAction = currentCombo.combo[currentMoveIndex].action;
 
-        currentMove = currentCombo.combo[currentMoveIndex].move;
-
+        currentActionSlashVFX = currentMove.slashAsset;
+        currentActionSlashDelay = currentMove.slashDelay;
     }
 
     /// <summary>
@@ -68,16 +82,23 @@ public class WeaponBase : MonoBehaviour
         hitEntities.Clear();
         
         // Advance to the next move in the combo
-        currentMove = currentCombo.combo[currentMoveIndex].move;
+        currentMove = currentCombo.combo[currentMoveIndex];
+        currentAction = currentCombo.combo[currentMoveIndex].action;
         
         return false;
     }
 
 
+    public float GetSlashDelay() {
+        return currentActionSlashDelay;
+    }
+    public void PlaySlashEffect() {
+        slashObject.transform.position = new Vector3(slashPosition.transform.position.x, slashPosition.transform.position.y, slashPosition.transform.position.z);
+        slashEffect.Play();
+    }
 
-
-    public CombatBaseObject GetCurrentMove() {
-        return currentMove;
+    public CombatBaseObject GetCurrentAction() {
+        return currentAction;
     }
     public CombatBindsEnum GetCurrentComboKey() {
         return currentCombo.type;
@@ -100,9 +121,11 @@ public class WeaponBase : MonoBehaviour
 
         currentCombo = moveset.GetCombo(key);
         currentMoveIndex = 0;
+        currentMove = currentCombo.combo[currentMoveIndex];
+        currentAction = currentCombo.combo[currentMoveIndex].action;
         
-        currentMove = currentCombo.combo[currentMoveIndex].move;
-
+        currentActionSlashVFX = currentMove.slashAsset;
+        currentActionSlashDelay = currentMove.slashDelay;
 
         return false;
     }
@@ -126,6 +149,8 @@ public class WeaponBase : MonoBehaviour
         
         return true;
     }
+
+
 
 
 }

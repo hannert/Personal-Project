@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.VFX;
 
 [System.Serializable]
 public class CombatAction
@@ -29,7 +30,11 @@ public class CombatLink
 [System.Serializable]
 public class CombatMove
 {
-    public CombatBaseObject move;
+    public CombatBaseObject action;
+
+    public VisualEffectAsset slashAsset;
+
+    public float slashDelay;
 
     public CombatLink[] linkableActions = new CombatLink[3];
 }
