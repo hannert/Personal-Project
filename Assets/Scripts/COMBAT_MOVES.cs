@@ -2,15 +2,33 @@ using System;
 using UnityEngine;
 using UnityEngine.VFX;
 
-[System.Serializable]
-public class CombatAction
-{
-    public CombatBaseObject combatObject;
+/// The file containing all classes related to a weapons' moves
 
+
+/// <summary>
+/// The lowest tier of data for a player COMBO, which consists of MOVES
+/// </summary>
+[System.Serializable]
+public class CombatMove
+{
+
+    public CombatBaseObject action;
+
+    public VisualEffectAsset slashAsset;
+
+    public float slashDelay;
+
+    public Vector3 slashRotationOffset;
+
+    public Vector3 GetSlashRotation() {
+        return slashRotationOffset;
+    }
+
+    public CombatLink[] linkableActions;
 }
 
 /// <summary>
-/// 
+/// Information on which COMBO to link TO and MOVE to start FROM
 /// </summary>
 [System.Serializable]
 public class CombatLink
@@ -25,22 +43,7 @@ public class CombatLink
 
 
 /// <summary>
-/// 
-/// </summary>
-[System.Serializable]
-public class CombatMove
-{
-    public CombatBaseObject action;
-
-    public VisualEffectAsset slashAsset;
-
-    public float slashDelay;
-
-    public CombatLink[] linkableActions = new CombatLink[3];
-}
-
-/// <summary>
-/// 
+/// A players COMBO, consisting of MOVES, also holds which COMBAT BIND the COMBO is associated with
 /// </summary>
 [System.Serializable]
 public class CombatCombo
@@ -50,7 +53,7 @@ public class CombatCombo
 }
 
 /// <summary>
-/// Awesome
+/// The overarching class to hold all of the players COMBOS
 /// </summary>
 [System.Serializable]
 public class CombatMoveset
