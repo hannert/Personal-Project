@@ -15,6 +15,6 @@ MonoBehaviour:
   attackName: 
   nextMove: {fileID: 0}
   animation: {fileID: 7400000, guid: 64a9a40dd3f7fdb4dac920c9f4888ace, type: 2}
-  minLinkTime: 0.5
-  maxLinkTime: 0.8
+  minLinkTime: 0.3
+  maxLinkTime: 0.7
   damageMultiplier: 1
