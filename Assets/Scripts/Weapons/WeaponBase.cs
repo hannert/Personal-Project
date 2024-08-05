@@ -93,6 +93,8 @@ public class WeaponBase : MonoBehaviour
     /// Apply any rotation adjustments and play the slash effect currently loaded
     /// </summary>
     public void PlaySlashEffect() {
+        // Reset the rotation
+        slashObject.transform.rotation = Quaternion.identity;
 
         // Apply the rotation offset from the current CombatMove
         Vector3 offset = currentMove.GetSlashRotation();
@@ -105,7 +107,8 @@ public class WeaponBase : MonoBehaviour
 
             slashObject.transform.rotation = newRotation;
         }        
-
+        
+        // Play the effect
         slashEffect.Play();
     }
     #endregion
