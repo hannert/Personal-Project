@@ -94,18 +94,19 @@ public class WeaponBase : MonoBehaviour
     /// </summary>
     public void PlaySlashEffect() {
         // Reset the rotation
-        slashObject.transform.rotation = Quaternion.identity;
+        slashObject.transform.localPosition = Vector3.zero;
+        slashObject.transform.localEulerAngles = Vector3.zero;
 
         // Apply the rotation offset from the current CombatMove
         Vector3 offset = currentMove.GetSlashRotation();
         if (offset != Vector3.zero){
-            Quaternion newRotation = slashObject.transform.rotation;
+            Vector3 newRotation = new Vector3();
 
-            newRotation.x += offset.x;
-            newRotation.y += offset.y;
-            newRotation.z += offset.z;
+            newRotation.x = offset.x;
+            newRotation.y = offset.y;
+            newRotation.z = offset.z;
 
-            slashObject.transform.rotation = newRotation;
+            slashObject.transform.localEulerAngles = newRotation;
         }        
         
         // Play the effect

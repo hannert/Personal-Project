@@ -26,19 +26,9 @@ MonoBehaviour:
       - action: {fileID: 11400000, guid: 63649db70c54fc045a58997586ce0d41, type: 2}
         slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
         slashDelay: 0.1
-        slashRotationOffset: {x: 0, y: -30, z: 0}
+        slashRotationOffset: {x: 0, y: -90, z: 0}
         linkableActions:
         - comboIndex: 0
           moveIndex: 0
           inputToLink: 0
       type: 0
-    - combo:
-      - action: {fileID: 11400000, guid: 8d5231ee15f65ca40b3a912f4690c28e, type: 2}
-        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
-        slashDelay: 0.15
-        slashRotationOffset: {x: 0, y: 0, z: 0}
-        linkableActions:
-        - comboIndex: 0
-          moveIndex: 0
-          inputToLink: 0
-      type: 1

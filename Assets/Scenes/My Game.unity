@@ -6650,7 +6650,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2073284167580687623, guid: 2df99f5b3ea50814ca8821aab42deb93, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8137797429989197325, guid: 2df99f5b3ea50814ca8821aab42deb93, type: 3}
       propertyPath: m_LocalScale.x
@@ -6666,7 +6666,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8562231025441583289, guid: 2df99f5b3ea50814ca8821aab42deb93, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8741137782427094943, guid: 2df99f5b3ea50814ca8821aab42deb93, type: 3}
       propertyPath: m_IsActive
