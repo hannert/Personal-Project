@@ -13,11 +13,11 @@ public class PlayerGroundedState : PlayerState
     public override void EnterState()
     {
         Logging.logState("<color=green>Entered</color> <color=brown>grounded</color> State");
-        _ctx.onGround = true;
-        _ctx.canJump = true;
-        _ctx.playerRb.drag = 5;
-        _ctx.extraJumpsTaken = 0; // Reset extra jumps taken
-        _ctx.regJumpTaken = false; // reset regular jump
+        _ctx.OnGround = true;
+        _ctx.CanJump = true;
+        _ctx.PlayerRb.drag = 5;
+        _ctx.ExtraJumpsTaken = 0; // Reset extra jumps taken
+        _ctx.RegJumpTaken = false; // reset regular jump
         goingToSlide = false;
         goingToCrouch = false;
         InitializeSubState();
@@ -27,18 +27,18 @@ public class PlayerGroundedState : PlayerState
     public override void ExitState()
     {
         Logging.logState("<color=red>Exited</color> <color=brown>grounded</color> State");
-        _ctx.onGround = false;
-        _ctx.playerRb.drag = 1;
+        _ctx.OnGround = false;
+        _ctx.PlayerRb.drag = 1;
 
     }
 
     public override void FrameUpdate()
     {
         // If player is not crouched
-        if (!_ctx.isCrouched)
+        if (!_ctx.IsCrouched)
         {
             // If player is not sprinting
-            if (!_ctx.isSprinting)
+            if (!_ctx.IsSprinting)
             {
                 // IF player is not crouched and not sprinting, press crouch to initate crouch on next physics update cycle
                 if (Input.GetKeyDown(Keybinds.crouch))
@@ -48,12 +48,12 @@ public class PlayerGroundedState : PlayerState
                 }
             }
             // If player is sprinting
-            if (_ctx.isSprinting || _ctx.isWalking)
+            if (_ctx.IsSprinting || _ctx.IsWalking)
             {
                 // If player is not crouched and sprinting, get ready to slide
                 if (Input.GetKeyDown(KeyCode.Mouse3))
                 {
-                    _ctx.isSliding = true;
+                    _ctx.IsSliding = true;
                     goingToSlide = true;
                     return;
                 }
@@ -64,9 +64,9 @@ public class PlayerGroundedState : PlayerState
     public override void InitializeSubState()
     {
         // If player holds down crouch, enter crouch
-        if (!_ctx.isCrouched)
+        if (!_ctx.IsCrouched)
         {
-            if (!_ctx.isSprinting)
+            if (!_ctx.IsSprinting)
             {
                 if (Input.GetKeyDown(Keybinds.crouch))
                 {
@@ -75,11 +75,11 @@ public class PlayerGroundedState : PlayerState
                     return;
                 }
             }
-            if (_ctx.isSprinting || _ctx.isWalking)
+            if (_ctx.IsSprinting || _ctx.IsWalking)
             {
                 if (Input.GetKeyDown(KeyCode.Mouse3))
                 {
-                    _ctx.isSliding = true;
+                    _ctx.IsSliding = true;
                     goingToSlide = true;
                     return;
 
@@ -88,7 +88,7 @@ public class PlayerGroundedState : PlayerState
         }
 
         // While grounded, not moving -> Idle
-        if (_ctx.horizontalInput == 0 && _ctx.verticalInput == 0)
+        if (_ctx.HorizontalInput == 0 && _ctx.VerticalInput == 0)
         {
             SetSubState(_factory.Idle());
         } else
@@ -127,22 +127,22 @@ public class PlayerGroundedState : PlayerState
     {
 
         // ! TODO: The problem of the bunny hop after pressing jump when falling and after Coyote time comes from this line of code!
-        if (_ctx.willJump && !_ctx.regJumpTaken)
+        if (_ctx.WillJump && !_ctx.RegJumpTaken)
         {
-            _ctx.playerRb.AddForce(Vector3.up * _ctx.jumpForce, ForceMode.Impulse);
+            _ctx.PlayerRb.AddForce(Vector3.up * _ctx.JumpForce, ForceMode.Impulse);
 
             // Consume the regular jump 
-            _ctx.regJumpTaken = true;
+            _ctx.RegJumpTaken = true;
             //_psm.canJump = false;
             //_psm.checkGround = false;
-            _ctx.willJump = false;
+            _ctx.WillJump = false;
             SwitchState(_factory.Airborne());
             return true;
 
         }
 
         // Check if player is in the air 
-        if (PlayerUtilities.CheckGroundCollision(_ctx.groundColliders, _ctx.playerCap) == 0){
+        if (PlayerUtilities.CheckGroundCollision(_ctx.GroundColliders, _ctx.PlayerCap) == 0){
             SwitchState(_factory.Airborne());
             return true;
         }

@@ -26,7 +26,7 @@ public class PlayerSlidingState : PlayerMovementState
 
     public PlayerSlidingState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name) : base(playerStateFactory, playerStateMachine, name)
     {
-        startYScale = _ctx.playerRb.transform.localScale.y;
+        startYScale = _ctx.PlayerRb.transform.localScale.y;
 
     }
 
@@ -40,7 +40,7 @@ public class PlayerSlidingState : PlayerMovementState
         // If player lets go of the slide key
         if (Input.GetKeyUp(Keybinds.slide) || Input.GetKeyUp(Keybinds.slideAlt))
         {
-            if (_ctx.horizontalInput == 0 && _ctx.verticalInput == 0)
+            if (_ctx.HorizontalInput == 0 && _ctx.VerticalInput == 0)
             {
                 // Set flag to switch back to idle state 
                 SwitchState(_factory.Idle());
@@ -58,7 +58,7 @@ public class PlayerSlidingState : PlayerMovementState
     // isSliding state is set from where it is entered from (Sprinting)
     public override void EnterState()
     {
-        _ctx.isSliding = true;
+        _ctx.IsSliding = true;
         applyJump = false;
         exitFlag = false;
         startExitTimer = false;
@@ -74,7 +74,7 @@ public class PlayerSlidingState : PlayerMovementState
     public override void ExitState()
     {
         Debug.Log("Slide exit");
-        _ctx.isSliding = false;
+        _ctx.IsSliding = false;
     }
 
     public override void FrameUpdate()
@@ -97,20 +97,20 @@ public class PlayerSlidingState : PlayerMovementState
         // Apply jump if possible
         if (applyJump)
         {
-            _ctx.playerRb.AddForce(Vector3.up * _ctx.jumpForce, ForceMode.Impulse);
+            _ctx.PlayerRb.AddForce(Vector3.up * _ctx.JumpForce, ForceMode.Impulse);
             exitFlag = true;
             SwitchState(_factory.Airborne());
             return;
         }
 
         // If player's velocity is less than a small amount, start timer to leave state
-        if (!startExitTimer && _ctx.playerRb.velocity.magnitude < minimumSlideSpeed)
+        if (!startExitTimer && _ctx.PlayerRb.velocity.magnitude < minimumSlideSpeed)
         {
             // Debug.Log("Timer started!");
             startExitTimer = true;
         }
         // If player's velocity is enough to be sliding, restart the timer!
-        if (startExitTimer && _ctx.playerRb.velocity.magnitude > minimumSlideSpeed)
+        if (startExitTimer && _ctx.PlayerRb.velocity.magnitude > minimumSlideSpeed)
         {
             // Debug.Log("Timer ended!");
             startExitTimer = false;
@@ -126,7 +126,7 @@ public class PlayerSlidingState : PlayerMovementState
         // TIMES UP!!
         if (exitTimerElapsed >= exitTimerMaximum)
         {
-            if (_ctx.horizontalInput == 0 && _ctx.verticalInput == 0)
+            if (_ctx.HorizontalInput == 0 && _ctx.VerticalInput == 0)
             {
                 SwitchState(_factory.Idle());
             }
@@ -141,7 +141,7 @@ public class PlayerSlidingState : PlayerMovementState
 
         // Raycast down to the ground to get the normal of the ground
         // We need to raycast from inside the player
-        if (Physics.Raycast(_ctx.playerRb.position + new Vector3(0, 0.3f), Vector3.down, out RaycastHit hit, 5.0f,LayerMask.GetMask("Ground"))){
+        if (Physics.Raycast(_ctx.PlayerRb.position + new Vector3(0, 0.3f), Vector3.down, out RaycastHit hit, 5.0f,LayerMask.GetMask("Ground"))){
             Debug.Log("Ground hit");
             Vector3 inputDirection = PlayerUtilities.GetInputDirection(_ctx);
 
@@ -154,7 +154,7 @@ public class PlayerSlidingState : PlayerMovementState
             // If the y-component of the projected vector is negative, then the player is trying to slide down a slope
             if (ppp.y < 0)
             {
-                _ctx.playerRb.AddForce(ppp * 70f, ForceMode.Force);
+                _ctx.PlayerRb.AddForce(ppp * 70f, ForceMode.Force);
             }
         }
 
@@ -169,7 +169,7 @@ public class PlayerSlidingState : PlayerMovementState
         // If player jumps, leave sliding state
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (_ctx.canJump == true)
+            if (_ctx.CanJump == true)
             {
                 applyJump = true;
             }

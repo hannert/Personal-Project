@@ -13,54 +13,51 @@ public class WeaponBase : MonoBehaviour
     /// <summary>
     /// Base damage the weapon deals before any modifiers
     /// </summary>
-    public float baseDamage;
+    public float BaseDamage {get; private set; }
 
     /// <summary>
     /// The scriptable object holding the moveset for this weapon
     /// </summary>
-    public CombatMovesetObject movesetObject;
+    public CombatMovesetObject MovesetObject { get; private set;}
 
     /// <summary>
-    /// The moveset class for the wepaon
+    /// The moveset class for the weapon
     /// </summary>
-    private CombatMoveset moveset;
+    public CombatMoveset Moveset { get; private set; }
 
     /// <summary>
     /// List of colliders hit with the weapon, used to deal damage once per move
     /// </summary>
-    private List<Collider> hitEntities = new List<Collider>();
+    private List<Collider> HitEntities { get; set; } = new List<Collider>(); 
 
     #region Current Variables
     /// <summary>
     /// Index of which combo of the moveset we are on
     /// </summary>
-    private int currentComboIndex;
+    private int CurrentComboIndex { get; set; }
 
     /// <summary>
     /// Index of which move of the combo we are on
     /// </summary>
-    private int currentMoveIndex;
+    private int CurrentMoveIndex { get; set; }
 
     /// <summary>
     /// The current CombatCombo we are on
     /// </summary>
-    private CombatCombo currentCombo { get; set; }
+    private CombatCombo CurrentCombo { get; set; }
     public CombatBindsEnum GetCurrentComboKey() {
-        return currentCombo.type;
+        return CurrentCombo.type;
     }
 
     /// <summary>
     /// The current CombatMove we are on
     /// </summary>
-    private CombatMove currentMove { get; set;}
+    private CombatMove CurrentMove { get; set; }
 
     /// <summary>
     /// The current CombatAction we are on
     /// </summary>
-    private CombatBaseObject currentAction { get; set; }
-    public CombatBaseObject GetCurrentAction() {
-        return currentAction;
-    }
+    public CombatBaseObject CurrentAction {  get; private set; }
 
     #endregion
 
@@ -69,25 +66,22 @@ public class WeaponBase : MonoBehaviour
     /// <summary>
     /// Which visual effect slash this action is associated with
     /// </summary>
-    private VisualEffectAsset currentActionSlashVFX { get; set; }
+    private VisualEffectAsset CurrentActionSlashVFX { get; set; }
 
     /// <summary>
     /// How long to wait to play the slash effect
     /// </summary>
-    private float currentActionSlashDelay { get; set; }
-    public float GetSlashDelay() {
-        return currentActionSlashDelay;
-    }
+    public float CurrentActionSlashDelay { get; private set; }
 
     /// <summary>
     /// The parent GameObject the slash is attached to on the weapon
     /// </summary>
-    public GameObject slashObject;
+    public GameObject slashObject { get; private set; }
 
     /// <summary>
     /// The visual effect component in the slash GameObject
     /// </summary>
-    private VisualEffect slashEffect;
+    private VisualEffect slashEffect { get; set; }
     
     /// <summary>
     /// Apply any rotation adjustments and play the slash effect currently loaded
@@ -98,7 +92,7 @@ public class WeaponBase : MonoBehaviour
         slashObject.transform.localEulerAngles = Vector3.zero;
 
         // Apply the rotation offset from the current CombatMove
-        Vector3 offset = currentMove.GetSlashRotation();
+        Vector3 offset = CurrentMove.GetSlashRotation();
         if (offset != Vector3.zero){
             Vector3 newRotation = new Vector3();
 
@@ -116,11 +110,11 @@ public class WeaponBase : MonoBehaviour
 
     #region Misc
     public CombatLink[] GetCombatLinks() {
-        return currentCombo.combo[currentMoveIndex].linkableActions;
+        return CurrentCombo.combo[CurrentMoveIndex].linkableActions;
     }
 
     void Awake() {
-        moveset = movesetObject.moveset;
+        Moveset = MovesetObject.moveset;
         slashEffect = slashObject.GetComponentInChildren<VisualEffect>();
     }
 
@@ -132,17 +126,17 @@ public class WeaponBase : MonoBehaviour
     public void LinkToNewCombo(CombatLink link) {
         Debug.Log("Linking new combo" + link.comboIndex.ToString() + " " + link.moveIndex.ToString());
         // Clear hit colliders array since we are going to a new move
-        hitEntities.Clear();
+        HitEntities.Clear();
 
-        currentComboIndex = link.comboIndex;
-        currentMoveIndex = link.moveIndex;
+        CurrentComboIndex = link.comboIndex;
+        CurrentMoveIndex = link.moveIndex;
 
-        currentCombo = moveset.moves[currentComboIndex];
-        currentMove = currentCombo.combo[currentMoveIndex];
-        currentAction = currentCombo.combo[currentMoveIndex].action;
+        CurrentCombo = Moveset.moves[CurrentComboIndex];
+        CurrentMove = CurrentCombo.combo[CurrentMoveIndex];
+        CurrentAction = CurrentCombo.combo[CurrentMoveIndex].action;
 
-        currentActionSlashVFX = currentMove.slashAsset;
-        currentActionSlashDelay = currentMove.slashDelay;
+        CurrentActionSlashVFX = CurrentMove.slashAsset;
+        CurrentActionSlashDelay = CurrentMove.slashDelay;
     }
 
     /// <summary>
@@ -151,16 +145,16 @@ public class WeaponBase : MonoBehaviour
     /// <returns></returns>
     public bool NextMove() {
         // If we reach the end of the combo string, return true
-        if ((++currentMoveIndex) >= currentCombo.combo.Length) {
+        if ((++CurrentMoveIndex) >= CurrentCombo.combo.Length) {
             return true;
         }
 
         // Clear hit colliders array since we are going to a new move
-        hitEntities.Clear();
+        HitEntities.Clear();
         
         // Advance to the next move in the combo
-        currentMove = currentCombo.combo[currentMoveIndex];
-        currentAction = currentCombo.combo[currentMoveIndex].action;
+        CurrentMove = CurrentCombo.combo[CurrentMoveIndex];
+        CurrentAction = CurrentCombo.combo[CurrentMoveIndex].action;
         
         return false;
     }
@@ -172,15 +166,15 @@ public class WeaponBase : MonoBehaviour
     /// <returns>The combo associated with the keycode</returns>
     public bool Prepare(KeyCode key) {
         // Clear hit colliders array since we are going to a new move
-        hitEntities.Clear();
+        HitEntities.Clear();
 
-        currentCombo = moveset.GetCombo(key);
-        currentMoveIndex = 0;
-        currentMove = currentCombo.combo[currentMoveIndex];
-        currentAction = currentCombo.combo[currentMoveIndex].action;
+        CurrentCombo = Moveset.GetCombo(key);
+        CurrentMoveIndex = 0;
+        CurrentMove = CurrentCombo.combo[CurrentMoveIndex];
+        CurrentAction = CurrentCombo.combo[CurrentMoveIndex].action;
         
-        currentActionSlashVFX = currentMove.slashAsset;
-        currentActionSlashDelay = currentMove.slashDelay;
+        CurrentActionSlashVFX = CurrentMove.slashAsset;
+        CurrentActionSlashDelay = CurrentMove.slashDelay;
 
         return false;
     }
@@ -196,10 +190,10 @@ public class WeaponBase : MonoBehaviour
     ///     false - if entity was already hit
     /// </returns>
     public bool AddToHit(Collider hitEntity) {
-        if (hitEntities.Contains(hitEntity)){
+        if (HitEntities.Contains(hitEntity)){
             return false;
         } else {
-            hitEntities.Add(hitEntity);
+            HitEntities.Add(hitEntity);
         }
         
         return true;

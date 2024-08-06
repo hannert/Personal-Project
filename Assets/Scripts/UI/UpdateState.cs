@@ -10,7 +10,7 @@ public class UpdateState : UIBase
     void FixedUpdate()
     {
         string buffer = "";
-        var tempStateHolder = player.stateMachine.currentPlayerState;
+        var tempStateHolder = player.stateMachine.CurrentPlayerState;
         buffer += tempStateHolder.GetName();
         tempStateHolder = tempStateHolder.GetSubState();
         while (tempStateHolder != null)

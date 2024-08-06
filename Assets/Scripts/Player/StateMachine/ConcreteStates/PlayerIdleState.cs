@@ -16,7 +16,7 @@ public class PlayerIdleState : PlayerState
             return true;
         }
 
-        if (_ctx.horizontalInput != 0 || _ctx.verticalInput != 0)
+        if (_ctx.HorizontalInput != 0 || _ctx.VerticalInput != 0)
         {
 
             // Left shift detected, go into sprint
@@ -60,11 +60,11 @@ public class PlayerIdleState : PlayerState
         }
         if (Input.GetKeyDown(Keybinds.jump))
         {
-            if (_ctx.canJump == true)
+            if (_ctx.CanJump == true)
             {
                 // Switch to the air state ( So we avoid the grounded check again, allowing the player to double jump from a crouched position twice )
 
-                _ctx.willJump = true;
+                _ctx.WillJump = true;
                 Debug.Log("Jumped");
                 
             }

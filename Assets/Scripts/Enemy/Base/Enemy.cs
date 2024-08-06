@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamagable, IMovable
 {
-    [field: SerializeField] public float maxHealth { get; set; } = 100f;
-    [field: SerializeField] public float currentHealth { get; set; }
+    [field: SerializeField] public float MaxHealth { get; set; } = 100f;
+    [field: SerializeField] public float CurrentHealth { get; set; }
 
     public Rigidbody enemyRb { get; set; }
 
@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
         enemyAttackState = new EnemyAttackState(this, stateMachine);
         enemyChaseState = new EnemyChaseState(this, stateMachine);
         
-        currentHealth = maxHealth;
+        CurrentHealth = MaxHealth;
     }
 
 
@@ -54,10 +54,10 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
         enemyAnimator.Play("Base Layer.Hit");
         
         
-        currentHealth -= damage;
+        CurrentHealth -= damage;
         Signals.Get<EnemyDamage>().Dispatch();
 
-        if (currentHealth < 0f )
+        if (CurrentHealth < 0f )
         {
             Die();
         }
@@ -80,7 +80,7 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
         // Check if the other collider has the weapon component attached
         if ((weapon = other.gameObject.GetComponent<WeaponBase>()) != null){
             if (weapon.AddToHit(hurtBox) == true) {
-                Damage(weapon.baseDamage);
+                Damage(weapon.BaseDamage);
         } 
             
         }

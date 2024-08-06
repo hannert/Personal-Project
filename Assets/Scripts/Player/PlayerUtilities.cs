@@ -438,14 +438,14 @@ public static class PlayerUtilities
     public static Vector3 GetInputDirection(PlayerStateMachine _psm)
     {
         // Get position of the player and the camera without the Y component
-        var tempPlayer = new Vector3(_psm.playerRb.position.x, 0, _psm.playerRb.position.z);
-        var tempCamera = new Vector3(_psm.camera.transform.position.x, 0, _psm.camera.transform.position.z);
+        var tempPlayer = new Vector3(_psm.PlayerRb.position.x, 0, _psm.PlayerRb.position.z);
+        var tempCamera = new Vector3(_psm.Camera.transform.position.x, 0, _psm.Camera.transform.position.z);
 
-        if (_psm.isLockedOn)
+        if (_psm.IsLockedOn)
         {
             // the locked on object will become the 'player'
-            tempPlayer = new Vector3(_psm.camera.lockOnFocusObject.transform.position.x, 0, _psm.camera.lockOnFocusObject.transform.position.z);
-            tempCamera = new Vector3(_psm.playerRb.position.x, 0, _psm.playerRb.position.z);
+            tempPlayer = new Vector3(_psm.Camera.lockOnFocusObject.transform.position.x, 0, _psm.Camera.lockOnFocusObject.transform.position.z);
+            tempCamera = new Vector3(_psm.PlayerRb.position.x, 0, _psm.PlayerRb.position.z);
         }
 
 
@@ -457,10 +457,10 @@ public static class PlayerUtilities
 
         // Already normalized ( 0 - 1 value for x and z )
         // Use horizontal input, 'a' or 'd' key
-        var horizontalVector = new Vector3(_psm.horizontalInput, 0, 0);
+        var horizontalVector = new Vector3(_psm.HorizontalInput, 0, 0);
 
         // Use vertical input, 'w' or 's' key
-        var verticalVector = new Vector3(0, 0, _psm.verticalInput);
+        var verticalVector = new Vector3(0, 0, _psm.VerticalInput);
 
         // Currently overriding the horizontal component with the Axis Raw as our own input smoother still needs work (_psm.iput)
         // TODO: Change back to custom input

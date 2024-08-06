@@ -5,35 +5,37 @@ using UnityEngine;
 /// The overarching Player script to be attached to the player GameObject
 /// <para>Contains everything about the player..</para>
 /// </summary>
+/// 
+[RequireComponent(typeof(Rigidbody))]
 public class Player : MonoBehaviour, IDamagable
 {
-    public float maxHealth { get ; set ; }
-    public float currentHealth { get; set; }
+    public float MaxHealth { get; set; }
+    public float CurrentHealth { get; set; }
 
     [Header("Movement")]
     
     [Tooltip("The players current speed")]
-    public float currentSpeed;
+    public float CurrentSpeed;
 
     [Tooltip("The players maximum speed")]
-    public float speed = 10.0f;
+    public float Speed = 10.0f;
 
     [Tooltip("Curve for acceleration multiplier when turning the character in opposing directions")]   
     public AnimationCurve AccelerationMultiplier;
 
     [Tooltip("Sprint force modifier")]
     // TODO: Change this to a modifier rather than a set speed for sprint ?
-    public float sprintSpeed = 15.0f;
+    public float SprintSpeed = 15.0f;
 
     [Tooltip("Force added when player jumps")]
-    public float jumpForce = 20.0f;
+    public float JumpForce = 20.0f;
     
 
     // Internal Data for the player
-    private Rigidbody playerRb;
-    private CapsuleCollider playerCap;
-    private new CameraController camera;
-    private Animator playerAnim;
+    private Rigidbody PlayerRb { get; set; }
+    private CapsuleCollider PlayerCap { get; set; }
+    private CameraController Camera { get; set; }
+    private Animator PlayerAnim { get; set; }
     
 
     // TODO: create combat system to deal with damage and health
@@ -48,25 +50,25 @@ public class Player : MonoBehaviour, IDamagable
     }
 
 
-    public GameObject handObject;
-    public GameObject startingWeapon;
+    public GameObject HandObject { get; private set; }
+    public GameObject StartingWeapon { get; private set; }
 
-    private GameObject currentWeapon;
+    private GameObject CurrentWeapon;
     void EquipWeapon(){
-        currentWeapon = Instantiate(startingWeapon, handObject.transform);
-        stateMachine.SetCurrentWeapon(currentWeapon);
+        CurrentWeapon = Instantiate(StartingWeapon, HandObject.transform);
+        stateMachine.SetCurrentWeapon(CurrentWeapon);
     }
 
     void SwitchWeapon(GameObject newWeapon) {
-        currentWeapon = newWeapon;
+        CurrentWeapon = newWeapon;
         stateMachine.SetCurrentWeapon(newWeapon);
     }
 
     #region State Machine
 
-    public PlayerStateMachine stateMachine;
+    public PlayerStateMachine stateMachine { get; private set;}
 
-    protected PlayerStateFactory _psf; 
+    public PlayerStateFactory _psf { get; private set; } 
 
 
     #endregion
@@ -74,13 +76,13 @@ public class Player : MonoBehaviour, IDamagable
     public void Awake()
     {
         
-        playerRb = GetComponent<Rigidbody>();
-        playerCap = GetComponent<CapsuleCollider>();
-        playerAnim = GetComponent<Animator>();
+        PlayerRb = GetComponent<Rigidbody>();
+        PlayerCap = GetComponent<CapsuleCollider>();
+        PlayerAnim = GetComponent<Animator>();
         // Get the cameracontroller component to get a reference to the focal point for rotating the character
-        camera = GameObject.Find("Camera").GetComponent<CameraController>();
+        Camera = GameObject.Find("Camera").GetComponent<CameraController>();
 
-        stateMachine = new PlayerStateMachine(playerRb, playerCap, camera, playerAnim, AccelerationMultiplier);
+        stateMachine = new PlayerStateMachine(PlayerRb, PlayerCap, Camera, PlayerAnim, AccelerationMultiplier);
         _psf = new PlayerStateFactory(stateMachine);
         EquipWeapon(); 
         stateMachine.Initialize(_psf.Grounded());
@@ -90,7 +92,7 @@ public class Player : MonoBehaviour, IDamagable
     // Start is called before the first frame update
     void Start()
     {
-        currentHealth = maxHealth;
+        CurrentHealth = MaxHealth;
 
 
     }
@@ -107,7 +109,7 @@ public class Player : MonoBehaviour, IDamagable
     void FixedUpdate()
     {        
         // Expose the current speed of the player 
-        currentSpeed = stateMachine.currentSpeed;
+        CurrentSpeed = stateMachine.CurrentSpeed;
         stateMachine.UpdatePhysicsStates();
     }
 }

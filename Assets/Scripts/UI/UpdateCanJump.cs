@@ -11,7 +11,7 @@ public class UpdateCanJump : UIBase
     {
         string buffer = "";
         var stateMachine = player.stateMachine;
-        buffer += "can jump? " + stateMachine.canJump;
+        buffer += "can jump? " + stateMachine.CanJump;
         text.text = buffer;
     }
 }

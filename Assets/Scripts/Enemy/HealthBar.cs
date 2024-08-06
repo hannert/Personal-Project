@@ -18,7 +18,7 @@ public class HealthBar : MonoBehaviour
     }
 
     public void updateHealthUI() {
-        UI.text = enemy.currentHealth.ToString() + "/" + enemy.maxHealth.ToString();
+        UI.text = enemy.CurrentHealth.ToString() + "/" + enemy.MaxHealth.ToString();
     }
 
 

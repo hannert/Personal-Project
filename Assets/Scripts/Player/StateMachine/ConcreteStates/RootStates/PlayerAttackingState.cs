@@ -34,7 +34,6 @@ public class PlayerAttackingState : PlayerCombatState
 
     public PlayerAttackingState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name, GameObject weapon, KeyCode initInput) : base(playerStateFactory, playerStateMachine, name)
     {
-        _isRootState = true;
         this.weaponObject = weapon;
         this.weapon = weapon.GetComponent<WeaponBase>();
         this.initInput = initInput;
@@ -45,13 +44,13 @@ public class PlayerAttackingState : PlayerCombatState
     public override void EnterState()
     {
         Logging.logState("<color=green>Entered</color> <color=red>Attacking</color> State");
-        _ctx.isAttacking = true;
+        _ctx.IsAttacking = true;
 
         //weapon.ResetCombo();
         weapon.Prepare(initInput);
 
 
-        currentAction = weapon.GetCurrentAction();
+        currentAction = weapon.CurrentAction;
         currentMoveLinks = weapon.GetCombatLinks(); 
 
         maxLinkTime = currentAction.maxLinkTime;
@@ -64,7 +63,7 @@ public class PlayerAttackingState : PlayerCombatState
     public override void ExitState()
     {
         Logging.logState("<color=red>Exited</color> <color=red>Attacking</color> State");
-        _ctx.isAttacking = false;
+        _ctx.IsAttacking = false;
         
     }
 
@@ -92,7 +91,7 @@ public class PlayerAttackingState : PlayerCombatState
     }
 
     private void NewMove() {
-        currentAction = weapon.GetCurrentAction();
+        currentAction = weapon.CurrentAction;
         currentMoveLinks = weapon.GetCombatLinks();
 
         timeElapsed = 0;
@@ -134,7 +133,7 @@ public class PlayerAttackingState : PlayerCombatState
         }
 
         if (slashPlayed == false) {
-            if (timeElapsed >= weapon.GetSlashDelay()) {
+            if (timeElapsed >= weapon.CurrentActionSlashDelay) {
                 slashPlayed = true;
                 weapon.PlaySlashEffect();
 
@@ -143,7 +142,7 @@ public class PlayerAttackingState : PlayerCombatState
 
 
         if (timeElapsed >= maxLinkTime) {
-            SwitchState(_factory.Grounded());
+            SwitchState(_factory.Idle());
         }
 
     }

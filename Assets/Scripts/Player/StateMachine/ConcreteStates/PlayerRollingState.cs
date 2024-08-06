@@ -24,13 +24,13 @@ public class PlayerRollingState : PlayerMovementState
 
     public override void AddForceToRB(Vector3 acceleration)
     {
-        if(_ctx.onGround == true)
+        if(_ctx.OnGround == true)
         {
-            _ctx.playerRb.AddForce(acceleration * Time.fixedDeltaTime * 150f, ForceMode.Force);
+            _ctx.PlayerRb.AddForce(acceleration * Time.fixedDeltaTime * 150f, ForceMode.Force);
         }
-        if(_ctx.onGround == false)
+        if(_ctx.OnGround == false)
         {
-            _ctx.playerRb.AddForce(acceleration * Time.fixedDeltaTime * 1.5f, ForceMode.Force);
+            _ctx.PlayerRb.AddForce(acceleration * Time.fixedDeltaTime * 1.5f, ForceMode.Force);
         }
     }
 
@@ -44,7 +44,7 @@ public class PlayerRollingState : PlayerMovementState
         if (distanceRolled > distanceToRoll)
         {
             // If no input, set player to idle
-            if (_ctx.horizontalInput == 0 && _ctx.verticalInput == 0)
+            if (_ctx.HorizontalInput == 0 && _ctx.VerticalInput == 0)
             {
                 SwitchState(_factory.Idle());
                 return true;
@@ -52,7 +52,7 @@ public class PlayerRollingState : PlayerMovementState
             // If there is input, go into either sprint or walking
             else
             {
-                if (_ctx.horizontalInput != 0 || _ctx.verticalInput != 0)
+                if (_ctx.HorizontalInput != 0 || _ctx.VerticalInput != 0)
                 {
 
                     // Left shift detected, go into sprint
@@ -81,22 +81,22 @@ public class PlayerRollingState : PlayerMovementState
         Logging.logState("<color=green>Entered</color> <color=silver>Roll</color> State");
 
         initPush = true;
-        _ctx.isRolling = true;
+        _ctx.IsRolling = true;
         //_ctx.playerAnim.SetBool("isRolling", true);
 
         // Reset our counter variables
         distanceRolled = 0;
         timeSpentRolling = 0;
-        distanceToRoll = _ctx.speed * 0.8f;
+        distanceToRoll = _ctx.Speed * 0.8f;
 
         // Once we enter, we need the direction of the roll!
-        if (_ctx.isLockedOn)
+        if (_ctx.IsLockedOn)
         {
-            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_ctx.camera.lockOnFocusObject.transform.position, _ctx.playerRb.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_ctx.Camera.lockOnFocusObject.transform.position, _ctx.PlayerRb.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }
         else
         {
-            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_ctx.playerRb.position, _ctx.camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            directionOfRoll = PlayerUtilities.GetDirectionFromCamera(_ctx.PlayerRb.position, _ctx.Camera.transform.position, Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }
         
 
@@ -105,7 +105,7 @@ public class PlayerRollingState : PlayerMovementState
     public override void ExitState()
     {
         Logging.logState("<color=red>Exited</color> <color=silver>Roll</color> State");
-        _ctx.isRolling = false;
+        _ctx.IsRolling = false;
         //_ctx.playerAnim.SetBool("isRolling", false);
         
     }
@@ -123,23 +123,23 @@ public class PlayerRollingState : PlayerMovementState
 
     public override void PhysicsUpdate()
     {
-        var distanceToMove = _ctx.speed * Time.fixedDeltaTime;
+        var distanceToMove = _ctx.Speed * Time.fixedDeltaTime;
         distanceRolled += distanceToMove;
         // Add constant force while turn on ghosting for interactable entities?
 
         // Initial press should impulse the player torwards the direction
         if(initPush) {
             float multiplier = 200f;
-            if (!_ctx.onGround)
+            if (!_ctx.OnGround)
             {
                 multiplier = 100f;
             }
-            _ctx.playerRb.AddForce(directionOfRoll * _ctx.speed * Time.fixedDeltaTime * multiplier, ForceMode.Impulse);
+            _ctx.PlayerRb.AddForce(directionOfRoll * _ctx.Speed * Time.fixedDeltaTime * multiplier, ForceMode.Impulse);
             initPush = false;
         } 
         else
         {
-            _ctx.playerRb.AddForce(directionOfRoll * _ctx.speed * Time.fixedDeltaTime, ForceMode.Force);
+            _ctx.PlayerRb.AddForce(directionOfRoll * _ctx.Speed * Time.fixedDeltaTime, ForceMode.Force);
         }
         
 

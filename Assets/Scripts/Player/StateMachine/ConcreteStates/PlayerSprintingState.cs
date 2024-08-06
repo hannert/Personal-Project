@@ -18,7 +18,7 @@ public class PlayerSprintingState : PlayerWalkingState
             return true;
 
         }
-        if (_ctx.horizontalInput == 0 && _ctx.verticalInput == 0)
+        if (_ctx.HorizontalInput == 0 && _ctx.VerticalInput == 0)
         {
             SwitchState(_factory.Idle());
             return true;
@@ -29,8 +29,8 @@ public class PlayerSprintingState : PlayerWalkingState
     public override void EnterState()
     {
         Logging.logState("<color=green>Entered</color> <color=lime>Sprinting</color> State");
-        _ctx.isSprinting = true;
-        _ctx.speedMultiplier = 1.3f;
+        _ctx.IsSprinting = true;
+        _ctx.SpeedMultiplier = 1.3f;
         //_ctx.playerAnim.SetBool("isSprinting", true);
         
     }
@@ -39,8 +39,8 @@ public class PlayerSprintingState : PlayerWalkingState
     {
         Logging.logState("<color=red>Exited</color> <color=lime>Sprinting</color> State");
 
-        _ctx.isSprinting = false;
-        _ctx.speedMultiplier = 1.0f;
+        _ctx.IsSprinting = false;
+        _ctx.SpeedMultiplier = 1.0f;
         //_ctx.playerAnim.SetBool("isSprinting", false);
 
     }

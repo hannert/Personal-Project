@@ -31,10 +31,12 @@ public class LoggingManager : MonoBehaviour
     {
         if (_enableStateLog == true)
         {
+            Debug.Log("Logging enabled");
             Logging.EnableStateLog();
         }
         if (_enableStateLog == false)
         {
+            Debug.Log("Logging disabled");
             Logging.DisableStateLog();
         }
     }

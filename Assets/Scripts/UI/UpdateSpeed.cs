@@ -8,6 +8,6 @@ public class UpdateSpeed : UIBase
     // Update is called once per frame
     void FixedUpdate()
     {
-        text.text = "Speed:" + player.currentSpeed;
+        text.text = "Speed:" + player.CurrentSpeed;
     }
 }
