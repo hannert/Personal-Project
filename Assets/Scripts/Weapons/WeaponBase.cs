@@ -13,11 +13,13 @@ public class WeaponBase : MonoBehaviour
     /// <summary>
     /// Base damage the weapon deals before any modifiers
     /// </summary>
+    [field: SerializeField]
     public float BaseDamage {get; private set; }
 
     /// <summary>
     /// The scriptable object holding the moveset for this weapon
     /// </summary>
+    [field: SerializeField]
     public CombatMovesetObject MovesetObject { get; private set;}
 
     /// <summary>
@@ -76,6 +78,7 @@ public class WeaponBase : MonoBehaviour
     /// <summary>
     /// The parent GameObject the slash is attached to on the weapon
     /// </summary>
+    [field: SerializeField]
     public GameObject slashObject { get; private set; }
 
     /// <summary>

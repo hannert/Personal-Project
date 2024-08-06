@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(CombatMovesetObject))]
 public class PlayerAttackingState : PlayerCombatState
 {
     private GameObject weaponObject;

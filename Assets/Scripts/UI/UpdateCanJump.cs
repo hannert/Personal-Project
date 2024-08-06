@@ -10,7 +10,7 @@ public class UpdateCanJump : UIBase
     void FixedUpdate()
     {
         string buffer = "";
-        var stateMachine = player.stateMachine;
+        var stateMachine = player.StateMachine;
         buffer += "can jump? " + stateMachine.CanJump;
         text.text = buffer;
     }

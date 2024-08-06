@@ -6,13 +6,14 @@ using UnityEngine;
 public class UIBase : MonoBehaviour
 {
 
-    public GameObject playerGameObject;
-    public Player player;
-    public TextMeshProUGUI text;
+    private GameObject playerGameObject;
+    protected Player player;
+    protected TextMeshProUGUI text;
 
 
     void Start()
     {
+        playerGameObject = GameObject.Find("Player");
         player = playerGameObject.GetComponent<Player>();
         text = GetComponent<TextMeshProUGUI>();
     }

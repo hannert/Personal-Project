@@ -49,26 +49,28 @@ public class Player : MonoBehaviour, IDamagable
         Debug.Log("Player health 0");
     }
 
-
+    [field: SerializeField]
     public GameObject HandObject { get; private set; }
+
+    [field: SerializeField]
     public GameObject StartingWeapon { get; private set; }
 
     private GameObject CurrentWeapon;
     void EquipWeapon(){
         CurrentWeapon = Instantiate(StartingWeapon, HandObject.transform);
-        stateMachine.SetCurrentWeapon(CurrentWeapon);
+        StateMachine.SetCurrentWeapon(CurrentWeapon);
     }
 
     void SwitchWeapon(GameObject newWeapon) {
         CurrentWeapon = newWeapon;
-        stateMachine.SetCurrentWeapon(newWeapon);
+        StateMachine.SetCurrentWeapon(newWeapon);
     }
 
     #region State Machine
 
-    public PlayerStateMachine stateMachine { get; private set;}
+    public PlayerStateMachine StateMachine { get; private set;}
 
-    public PlayerStateFactory _psf { get; private set; } 
+    public PlayerStateFactory Psf { get; private set; } 
 
 
     #endregion
@@ -82,10 +84,10 @@ public class Player : MonoBehaviour, IDamagable
         // Get the cameracontroller component to get a reference to the focal point for rotating the character
         Camera = GameObject.Find("Camera").GetComponent<CameraController>();
 
-        stateMachine = new PlayerStateMachine(PlayerRb, PlayerCap, Camera, PlayerAnim, AccelerationMultiplier);
-        _psf = new PlayerStateFactory(stateMachine);
+        StateMachine = new PlayerStateMachine(PlayerRb, PlayerCap, Camera, PlayerAnim, AccelerationMultiplier);
+        Psf = new PlayerStateFactory(StateMachine);
         EquipWeapon(); 
-        stateMachine.Initialize(_psf.Grounded());
+        StateMachine.Initialize(Psf.Grounded());
     }
 
 
@@ -100,7 +102,7 @@ public class Player : MonoBehaviour, IDamagable
     // Update is called once per frame
     void Update()
     {
-        stateMachine.Update();
+        StateMachine.Update();
         // stateMachine.speed = speed;
         // stateMachine.jumpForce = jumpForce;
 
@@ -109,7 +111,7 @@ public class Player : MonoBehaviour, IDamagable
     void FixedUpdate()
     {        
         // Expose the current speed of the player 
-        CurrentSpeed = stateMachine.CurrentSpeed;
-        stateMachine.UpdatePhysicsStates();
+        CurrentSpeed = StateMachine.CurrentSpeed;
+        StateMachine.UpdatePhysicsStates();
     }
 }
