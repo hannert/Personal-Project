@@ -19,10 +19,7 @@ MonoBehaviour:
         slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
         slashDelay: 0.1
         slashRotationOffset: {x: 0, y: 0, z: 0}
-        linkableActions:
-        - comboIndex: 1
-          moveIndex: 0
-          inputToLink: 1
+        linkableActions: []
       - action: {fileID: 11400000, guid: 63649db70c54fc045a58997586ce0d41, type: 2}
         slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
         slashDelay: 0.1
