@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class LoggingManager : MonoBehaviour
@@ -29,6 +31,11 @@ public class LoggingManager : MonoBehaviour
 
     private void OnValidate()
     {
+        PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+        bool isValidPrefabStage = prefabStage != null && prefabStage.stageHandle.IsValid();
+        bool prefabConnected = PrefabUtility.GetPrefabInstanceStatus(this.gameObject) == PrefabInstanceStatus.Connected;
+        if (!isValidPrefabStage && prefabConnected) {
+            
         if (_enableStateLog == true)
         {
             Debug.Log("Logging enabled");
@@ -39,5 +46,8 @@ public class LoggingManager : MonoBehaviour
             Debug.Log("Logging disabled");
             Logging.DisableStateLog();
         }
+        }
+         
+
     }
 }
