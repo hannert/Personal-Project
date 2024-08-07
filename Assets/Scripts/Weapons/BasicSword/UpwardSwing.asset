@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0aec2cf86dce9e04296550c3269bbb0c, type: 3}
-  m_Name: BasicSwingCombo1
+  m_Name: UpwardSwing
   m_EditorClassIdentifier: 
   attackName: 
   <NextMove>k__BackingField: {fileID: 0}
-  <Animation>k__BackingField: {fileID: 7400000, guid: 64a9a40dd3f7fdb4dac920c9f4888ace, type: 2}
-  <MinLinkTime>k__BackingField: 0.3
-  <MaxLinkTime>k__BackingField: 0.7
+  <Animation>k__BackingField: {fileID: 0}
+  <MinLinkTime>k__BackingField: 0
+  <MaxLinkTime>k__BackingField: 0
   <DamageMultiplier>k__BackingField: 0
-  AddForce: {x: 0, y: 0, z: 0}
-  ForceMode: 0
+  AddForce: {x: 0, y: 20, z: 0}
+  ForceMode: 1

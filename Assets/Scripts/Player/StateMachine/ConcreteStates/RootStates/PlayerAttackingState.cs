@@ -54,9 +54,9 @@ public class PlayerAttackingState : PlayerCombatState
         currentAction = weapon.CurrentAction;
         currentMoveLinks = weapon.GetCombatLinks(); 
 
-        maxLinkTime = currentAction.maxLinkTime;
-        minLinkTime = currentAction.minLinkTime;
-        _ctx.SetAttackAnimation(currentAction.animation);
+        maxLinkTime = currentAction.MaxLinkTime;
+        minLinkTime = currentAction.MinLinkTime;
+        _ctx.SetAttackAnimation(currentAction.Animation);
         //_ctx.PlayAttackAnimation();
     }
 
@@ -98,10 +98,10 @@ public class PlayerAttackingState : PlayerCombatState
         timeElapsed = 0;
         slashPlayed = false;
 
-        maxLinkTime = currentAction.maxLinkTime;
-        minLinkTime = currentAction.minLinkTime;
+        maxLinkTime = currentAction.MaxLinkTime;
+        minLinkTime = currentAction.MinLinkTime;
 
-        _ctx.SetAttackAnimation(currentAction.animation);
+        _ctx.SetAttackAnimation(currentAction.Animation);
         //_ctx.PlayAttackAnimation();
     }
 

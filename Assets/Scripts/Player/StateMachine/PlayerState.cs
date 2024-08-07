@@ -103,7 +103,8 @@ public abstract class PlayerState
     /// <summary>
     /// Updates the current states through its FrameUpdate() method and proceeds to its children to do the same
     /// </summary>
-    public void UpdateStates() {
+    public void UpdateStates() 
+    {
 
         FrameUpdate();
         _currentSubState?.UpdateStates();
@@ -122,7 +123,18 @@ public abstract class PlayerState
     /// Sets the new superstate of the current state
     /// </summary>
     /// <param name="newSuperState"></param>
-    protected void SetSuperState(PlayerState newSuperState) {
+    protected void SetSuperState(PlayerState newSuperState) 
+    {
+        // If we are trying to swap the root states, exit original super and reparent
+        // Use this part to switch from root states in the attacking state -> ex. If the attack flings the player into the air
+        if (newSuperState._isRootState) {
+            _currentSuperState?.ExitState();
+            _currentSuperState = newSuperState;
+            newSuperState._currentSubState = this;
+            // ! - New superstate is not "Entered" here.. Could have unintended consequences 
+        }
+
+
         _currentSuperState = newSuperState;
     }
 

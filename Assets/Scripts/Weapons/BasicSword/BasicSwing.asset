@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: BasicSwing
   m_EditorClassIdentifier: 
   attackName: SwordSwing0
-  nextMove: {fileID: 11400000, guid: 63649db70c54fc045a58997586ce0d41, type: 2}
-  animation: {fileID: 7400000, guid: 4e6e21679d917f8488dbff3e27f34075, type: 2}
-  minLinkTime: 0.3
-  maxLinkTime: 0.7
-  damageMultiplier: 1
+  <NextMove>k__BackingField: {fileID: 0}
+  <Animation>k__BackingField: {fileID: 7400000, guid: 4e6e21679d917f8488dbff3e27f34075, type: 2}
+  <MinLinkTime>k__BackingField: 0.3
+  <MaxLinkTime>k__BackingField: 0.7
+  <DamageMultiplier>k__BackingField: 0
+  AddForce: {x: 0, y: 0, z: 0}
+  ForceMode: 5
