@@ -34,6 +34,15 @@ public class PlayerGroundedState : PlayerState
 
     public override void FrameUpdate()
     {
+        if (Input.GetKeyDown(Keybinds.jump))
+        {
+            if (_ctx.CanJump == true)
+            {
+                _ctx.WillJump = true;
+                Logging.logState("Will jump in next physics update cycle from <color=brown>GroundedState</color>");
+                
+            }
+        }
         // If player is not crouched
         if (!_ctx.IsCrouched)
         {

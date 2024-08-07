@@ -57,14 +57,7 @@ public class PlayerWalkingState : PlayerMovementState
 
             SwitchState(_factory.Rolling());
         }
-        if (Input.GetKeyDown(Keybinds.jump))
-        {
-            if (_ctx.CanJump == true)
-            {
-                Debug.Log("WillJump set to true");
-                _ctx.WillJump = true;
-            }
-        }
+
     }
 
     public override void InitializeSubState()

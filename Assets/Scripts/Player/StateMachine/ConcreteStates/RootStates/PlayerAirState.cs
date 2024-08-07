@@ -29,7 +29,7 @@ public class PlayerAirState : PlayerState
         {
             if (PlayerUtilities.CheckGroundCollision(_ctx.GroundColliders, _ctx.PlayerCap) != 0)
             {
-                Debug.Log("Ground collision returned true in air state");
+                Logging.logState("Ground collision returned true in air state");
                 SwitchState(_factory.Grounded());
                 return true;
             }
@@ -43,7 +43,11 @@ public class PlayerAirState : PlayerState
         Logging.logState("<color=green>Entered</color> <color=lightblue>Air</color> State");
 
         _ctx.OnGround = false;
-        _ctx.RegJumpTaken = false;
+
+        // If number of jumps taken exceeds max, player can no longer jump
+        _ctx.CanJump = _ctx.ExtraJumpsTaken < _ctx.ExtraJumpsMax;
+
+        //_ctx.RegJumpTaken = false;
         InitializeSubState();        
     }
 
@@ -61,8 +65,16 @@ public class PlayerAirState : PlayerState
     public override void FrameUpdate()
     {
         // Check for player input 
-        // Check if jump key is pressed (Coyote time)
-
+        // Check if jump key is pressed
+        if (Input.GetKeyDown(Keybinds.jump))
+        {
+            if (_ctx.CanJump == true)
+            {
+                _ctx.WillJump = true;
+                Logging.logState("Will jump in next physics update cycle from <color=lightblue>AirState</color>");
+                
+            }
+        }
 
         // Get input whether or not player should slide when hitting the ground!
 
@@ -98,12 +110,12 @@ public class PlayerAirState : PlayerState
             {
                 // Consume regular jump
                 _ctx.RegJumpTaken = true;
-                Debug.Log("Timer Ran out");
+                Logging.logState("Timer Ran out");
             }
 
             if (_ctx.WillJump)
             {
-                Debug.Log("Jump Regular");
+                Logging.logState("Jump Regular");
                 // If regular jump is not taken yet, consume it 
 
                 // What if we stopped the player's velocity at this instant?
@@ -122,19 +134,24 @@ public class PlayerAirState : PlayerState
         {
             if (_ctx.WillJump)
             {
-                Debug.Log("Jump Extra");
+                // Increment the number of extra jumps taken
                 _ctx.ExtraJumpsTaken += 1;
-                // What if we stopped the player's velocity at this instant?
-                Vector3 temp = _ctx.PlayerRb.velocity;
-                temp.y = 0;
-                _ctx.PlayerRb.velocity = temp;
 
-                _ctx.PlayerRb.AddForce(Vector3.up * _ctx.JumpForce, ForceMode.Impulse);
-                if (_ctx.ExtraJumpsTaken >= _ctx.ExtraJumpsMax)
-                {
-                    _ctx.WillJump = false;
-                    _ctx.CanJump = false;
+                // If the player is still within the extra jump limit
+                if (_ctx.ExtraJumpsTaken <= _ctx.ExtraJumpsMax) {
+                    Logging.logState("Jump Extra");
+
+                    // Apply upward force
+                    Vector3 temp = _ctx.PlayerRb.velocity;
+                    temp.y = 0;
+                    _ctx.PlayerRb.velocity = temp;
+
+                    _ctx.PlayerRb.AddForce(Vector3.up * _ctx.JumpForce, ForceMode.Impulse);
                 }
+                // If number of jumps taken exceeds max, player can no longer jump
+                _ctx.CanJump = _ctx.ExtraJumpsTaken < _ctx.ExtraJumpsMax;
+
+                _ctx.WillJump = false;
             }
         }
         

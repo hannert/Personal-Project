@@ -58,18 +58,6 @@ public class PlayerIdleState : PlayerState
         {
             return;
         }
-        if (Input.GetKeyDown(Keybinds.jump))
-        {
-            if (_ctx.CanJump == true)
-            {
-                // Switch to the air state ( So we avoid the grounded check again, allowing the player to double jump from a crouched position twice )
-
-                _ctx.WillJump = true;
-                Debug.Log("Jumped");
-                
-            }
-        }
-
     }
 
     public override void InitializeSubState()
