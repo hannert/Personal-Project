@@ -7,7 +7,9 @@ using UnityEngine;
 /// Hierarchal State Machine to be used by the Player
 /// <para>Contains information on current state of the player movement</para>
 /// </summary>
-public class PlayerStateMachine
+
+[RequireComponent(typeof(Player))]
+public class PlayerStateMachine : MonoBehaviour
 {
     #region getters/setters
 
@@ -16,6 +18,7 @@ public class PlayerStateMachine
     /// <summary>
     /// The curve to which ramp up the needed acceleration to account for the instantenous change in speed
     /// </summary>
+    [Tooltip("Curve for acceleration multiplier when turning the character in opposing directions")]   
     public AnimationCurve AccelerationMultiplier;
 
     /// <summary>
@@ -66,6 +69,9 @@ public class PlayerStateMachine
 
     #region Components ------
 
+    [field: SerializeField]
+    public Player Player { get; private set; }
+
     /// <summary>
     /// Reference to the players RigidBody component
     /// </summary>
@@ -114,6 +120,7 @@ public class PlayerStateMachine
     /// <summary>
     /// maximum number of jumps the player can take after consuming the regular jump 
     /// </summary>
+    [field: SerializeField]
     public float ExtraJumpsMax { get; set; } = 1;
 
     /// <summary>
@@ -282,22 +289,23 @@ public class PlayerStateMachine
 
     #region State Machine
 
+    void Awake() 
+    {
+        this.PlayerRb = Player.GetComponent<Rigidbody>();
+        this.PlayerCap = PlayerCap = GetComponent<CapsuleCollider>();
+        this.PlayerAnim = PlayerAnim = GetComponent<Animator>();
+        // Get the cameracontroller component to get a reference to the focal point for rotating the character
+        Camera = GameObject.Find("Camera").GetComponent<CameraController>();
+
+        SetUpAnimator();
+    }
+
+
     /// <summary>
     /// The current state the player is in
     /// </summary>
     public PlayerState CurrentPlayerState { get; set; }
 
-    // Dependency Injection of the most important player aspects
-    public PlayerStateMachine(Rigidbody playerRb, CapsuleCollider playerCap, CameraController camera, Animator playerAnim, AnimationCurve AccelerationMultiplier)
-    {
-        this.PlayerRb = playerRb;
-        this.PlayerCap = playerCap;
-        this.Camera = camera;
-        this.PlayerAnim = playerAnim;
-        SetUpAnimator();
-
-        this.AccelerationMultiplier = AccelerationMultiplier;
-    }
 
     void SetUpAnimator(){
 
@@ -415,7 +423,7 @@ public class PlayerStateMachine
         
     }
 
-    public void UpdatePhysicsStates()
+    public void FixedUpdate()
     {
         // Update currentSpeed for debugging purposes
         CurrentSpeed = PlayerRb.velocity.magnitude;

@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbf9042bfcc24c1489c49f8eff53b793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <BaseDamage>k__BackingField: 0
+  <BaseDamage>k__BackingField: 2
   <MovesetObject>k__BackingField: {fileID: 11400000, guid: 7313735fd1eb0b84cb69e915f2c8c3f0, type: 2}
   <slashObject>k__BackingField: {fileID: 8741137782427094943}
 --- !u!1 &2101005260974886378

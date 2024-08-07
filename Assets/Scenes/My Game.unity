@@ -3530,6 +3530,73 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 860943338823951925, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
   m_PrefabInstance: {fileID: 2580253871410273342}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &269770574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269770573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6f3be87b9559d648b814956915f2fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AccelerationMultiplier:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -1
+      value: 2
+      inSlope: -0.2860644
+      outSlope: -0.2860644
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: -0.8024559
+      value: 1.9434897
+      inSlope: -0.56529456
+      outSlope: -0.56529456
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.30846986
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0
+      value: 1.0500093
+      inSlope: -0.030689908
+      outSlope: -0.030689908
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.17170314
+    - serializedVersion: 3
+      time: 1
+      value: 1.0040755
+      inSlope: -0.045933723
+      outSlope: -0.045933723
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  skinWidth: 0
+  <Player>k__BackingField: {fileID: 269770575}
+--- !u!114 &269770575 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2936952552481235968, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
+  m_PrefabInstance: {fileID: 2580253871410273342}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269770573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25b6caedfb3430f40876c0fe37c5e8a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &276916525
 GameObject:
   m_ObjectHideFlags: 0
@@ -25462,6 +25529,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1274555306}
     - target: {fileID: 2936952552481235968, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
+      propertyPath: <StateMachine>k__BackingField
+      value: 
+      objectReference: {fileID: 269770574}
+    - target: {fileID: 2936952552481235968, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
       propertyPath: <StartingWeapon>k__BackingField
       value: 
       objectReference: {fileID: 2073284167580687623, guid: 2df99f5b3ea50814ca8821aab42deb93, type: 3}
@@ -25508,7 +25579,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 860943338823951925, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 269770574}
   m_SourcePrefab: {fileID: 100100000, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
 --- !u!1001 &3733152952056123659
 PrefabInstance:
