@@ -1,3 +1,4 @@
+using deVoid.Utils;
 using UnityEngine;
 
 [RequireComponent(typeof(CombatMovesetObject))]
@@ -57,7 +58,9 @@ public class PlayerAttackingState : PlayerCombatState
         maxLinkTime = currentAction.MaxLinkTime;
         minLinkTime = currentAction.MinLinkTime;
         _ctx.SetAttackAnimation(currentAction.Animation);
-        //_ctx.PlayAttackAnimation();
+
+        Signals.Get<Player.AirborneAttack>().AddListener(ChangeSuper);
+
     }
 
     // Exit when the combo is done or timer has ran out to continue the combo
@@ -65,12 +68,21 @@ public class PlayerAttackingState : PlayerCombatState
     {
         Logging.logState("<color=red>Exited</color> <color=red>Attacking</color> State");
         _ctx.IsAttacking = false;
+        Signals.Get<Player.AirborneAttack>().RemoveListener(ChangeSuper);
         
     }
 
     public override bool CheckSwitchStates()
     {
         return base.CheckSwitchStates();
+    }
+
+    /// <summary>
+    /// Called when attack makes the player transition root states: Player launched into the air from the ground (Grounded -> Airborne)
+    /// </summary>
+    private void ChangeSuper()
+    {
+        _ctx.SwitchRootState(_factory.Airborne(), this);
     }
 
     private bool NextMove()

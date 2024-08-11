@@ -83,7 +83,11 @@ public class PlayerAirState : PlayerState
 
     public override void InitializeSubState()
     {
-        // Is falling or ascending(Jumping)
+        if (_ctx.IsAttacking) 
+        {
+            Debug.Log("Is Attacking true");
+            return;
+        }
         if (_ctx.HorizontalInput == 0 && _ctx.VerticalInput == 0)
         {
             SetSubState(_factory.Idle());

@@ -1,4 +1,5 @@
 using deVoid.Utils;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -36,16 +37,23 @@ public class Player : MonoBehaviour, IDamagable
     private Rigidbody PlayerRb { get; set; }
     private CapsuleCollider PlayerCap { get; set; }
     private CameraController Camera { get; set; }
+    
+    #region Animation
     private Animator PlayerAnim { get; set; }
     
     public class DamageTick : ASignal {}
 
-    // TODO: create combat system to deal with damage and health
+    public class AirborneAttack : ASignal {}
+
+    // TODO: Hook up animation events with player functions
     public void Damage(float damage)
     {
         throw new System.NotImplementedException();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void DealDamage() {
         // Send an attack signal to the state machine
         // -> From state machine to the weapon
@@ -57,6 +65,26 @@ public class Player : MonoBehaviour, IDamagable
 
 
     }
+
+    public void TestAnim(AnimationEvent animationEvent) {
+        
+        Object animObj = animationEvent.objectReferenceParameter;
+        CombatBaseObject combatObj = (CombatBaseObject) animObj;
+        if (combatObj == null) {return;}
+
+        Debug.Log("Adding force to player");
+        Signals.Get<AirborneAttack>().Dispatch();
+        PlayerRb.AddForce(combatObj.AddForce, combatObj.ForceMode);
+        
+        return;
+    }
+
+    public void AddForce(Vector3 force) {
+        PlayerRb.AddForce(force, ForceMode.Impulse);
+
+    }
+
+    #endregion
 
     public void Die()
     {

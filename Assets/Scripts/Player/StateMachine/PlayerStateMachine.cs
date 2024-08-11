@@ -322,6 +322,21 @@ public class PlayerStateMachine
         CurrentPlayerState.EnterState();
     }
 
+    /// <summary>
+    /// Function to change the current root state without altering a re-initialization of substates
+    /// </summary>
+    public void SwitchRootState(PlayerState newState, PlayerState subState)
+    {
+        CurrentPlayerState.ExitState();
+        CurrentPlayerState = newState;
+
+        // We set a variable to bypass the InitializeSubState function
+        CurrentPlayerState.EnterState();
+
+        // Manually set the substate to the new root state
+        CurrentPlayerState.SwitchSubState(subState);
+    }
+
     #endregion
 
 

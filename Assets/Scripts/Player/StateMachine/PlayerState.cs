@@ -125,16 +125,6 @@ public abstract class PlayerState
     /// <param name="newSuperState"></param>
     protected void SetSuperState(PlayerState newSuperState) 
     {
-        // If we are trying to swap the root states, exit original super and reparent
-        // Use this part to switch from root states in the attacking state -> ex. If the attack flings the player into the air
-        if (newSuperState._isRootState) {
-            _currentSuperState?.ExitState();
-            _currentSuperState = newSuperState;
-            newSuperState._currentSubState = this;
-            // ! - New superstate is not "Entered" here.. Could have unintended consequences 
-        }
-
-
         _currentSuperState = newSuperState;
     }
 
@@ -147,6 +137,11 @@ public abstract class PlayerState
         _currentSubState = newSubState;
         newSubState.SetSuperState(this);
         newSubState.EnterState();
+    }
+
+    public void SwitchSubState(PlayerState newSubState) {
+        _currentSubState = newSubState;
+        newSubState.SetSuperState(this);
     }
 
     /// <summary>
