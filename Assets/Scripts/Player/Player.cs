@@ -1,3 +1,4 @@
+using deVoid.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,11 +38,24 @@ public class Player : MonoBehaviour, IDamagable
     private CameraController Camera { get; set; }
     private Animator PlayerAnim { get; set; }
     
+    public class DamageTick : ASignal {}
 
     // TODO: create combat system to deal with damage and health
     public void Damage(float damage)
     {
         throw new System.NotImplementedException();
+    }
+
+    public void DealDamage() {
+        // Send an attack signal to the state machine
+        // -> From state machine to the weapon
+        // -> -> Weapon should reset it's hitEntities list
+
+        // Or send a signal directly to the weapon if available?
+        Signals.Get<DamageTick>().Dispatch();
+
+
+
     }
 
     public void Die()

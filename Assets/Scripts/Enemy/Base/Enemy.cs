@@ -55,6 +55,7 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
         
         
         CurrentHealth -= damage;
+        Debug.Log(CurrentHealth.ToString());
         Signals.Get<EnemyDamage>().Dispatch();
 
         if (CurrentHealth < 0f )

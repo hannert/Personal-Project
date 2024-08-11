@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using deVoid.Utils;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -112,13 +113,21 @@ public class WeaponBase : MonoBehaviour
     #endregion
 
     #region Misc
-    public CombatLink[] GetCombatLinks() {
-        return CurrentCombo.combo[CurrentMoveIndex].linkableActions;
-    }
 
     void Awake() {
         Moveset = MovesetObject.moveset;
         slashEffect = slashObject.GetComponentInChildren<VisualEffect>();
+        Signals.Get<Player.DamageTick>().AddListener(ResetHitList);
+    }
+
+
+    public CombatLink[] GetCombatLinks() {
+        return CurrentCombo.combo[CurrentMoveIndex].linkableActions;
+    }
+
+    public void ResetHitList() {
+        Debug.Log("ResetHitList");
+        HitEntities.Clear();
     }
 
     /// <summary>
