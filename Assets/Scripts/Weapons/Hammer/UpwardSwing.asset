@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: 
   <NextMove>k__BackingField: {fileID: 0}
-  <Animation>k__BackingField: {fileID: 0}
+  <Animation>k__BackingField: {fileID: 7400000, guid: af330f2d52850ba46aeca5902b834878, type: 2}
   <MinLinkTime>k__BackingField: 0
-  <MaxLinkTime>k__BackingField: 0
-  <DamageMultiplier>k__BackingField: 0
-  AddForce: {x: 0, y: 20, z: 0}
+  <MaxLinkTime>k__BackingField: 2
+  <DamageMultiplier>k__BackingField: 2
+  AddForce: {x: 0, y: 30, z: 0}
   ForceMode: 1

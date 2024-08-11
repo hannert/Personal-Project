@@ -49,7 +49,12 @@ public class CombatLink
 public class CombatCombo
 {
     public CombatMove[] combo;
+
+    // Input type
     public CombatBindsEnum type;
+
+    // Condition for combo to be executed, Ex. sprint attack
+     
 }
 
 /// <summary>

@@ -25,7 +25,7 @@ public class CombatBaseObject : ScriptableObject
     /// Maximum time for link: Only when minLinkTime has passed, player can advance
     /// </summary>
     [field: SerializeField]
-    public float MaxLinkTime { get; private set; }
+    public float MaxLinkTime { get; private set; } = 1;
 
     /// <summary>
     /// Multiply base damage of weapon to this value eg(1st move - 1.0f, 2nd move - 1.10f for a 10% increase damage in the second move)

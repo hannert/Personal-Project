@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae9975ed5d3a9df45b070c1b55f4f67c, type: 3}
+  m_Name: Hammer
+  m_EditorClassIdentifier: 
+  moveset:
+    moves:
+    - combo:
+      - action: {fileID: 11400000, guid: b7a2d535c8e669843b95216fc07ab844, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
+        slashRotationOffset: {x: 0, y: 0, z: 0}
+        linkableActions: []
+      - action: {fileID: 11400000, guid: 6708eda8aa2aeb44d829e4bf78093dc7, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
+        slashRotationOffset: {x: 0, y: 0, z: 0}
+        linkableActions: []
+      type: 0
