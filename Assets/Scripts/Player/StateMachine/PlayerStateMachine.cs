@@ -244,7 +244,7 @@ public class PlayerStateMachine
         //Debug.Log("Setting new attack animation ----");        
         PrevAttackClip = newAnim;
         PrevAttackName = newAnim.name;
-        newAnim.name = "BlankWeapon";
+        //newAnim.name = "BlankWeapon";
         AnimatorOverrideController["BlankWeapon"] = newAnim;
         AnimatorOverrideController["BlankWeapon"].wrapMode = WrapMode.Once;
 
