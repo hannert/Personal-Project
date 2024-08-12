@@ -15,6 +15,14 @@ MonoBehaviour:
   moveset:
     moves:
     - combo:
+      - action: {fileID: 11400000, guid: b39c5ab5d33ad034981d3187e0a37ef4, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
+        slashRotationOffset: {x: 0, y: 0, z: 0}
+        linkableActions: []
+      type: 0
+      req: 0
+    - combo:
       - action: {fileID: 11400000, guid: b7a2d535c8e669843b95216fc07ab844, type: 2}
         slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
         slashDelay: 0
@@ -25,4 +33,38 @@ MonoBehaviour:
         slashDelay: 0
         slashRotationOffset: {x: 0, y: 0, z: 0}
         linkableActions: []
+      type: 2
+      req: 0
+    - combo:
+      - action: {fileID: 11400000, guid: b7a2d535c8e669843b95216fc07ab844, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
+        slashRotationOffset: {x: 0, y: 0, z: 0}
+        linkableActions:
+        - comboIndex: 0
+          moveIndex: 0
+          inputToLink: 0
+      type: 2
+      req: 1
+    - combo:
+      - action: {fileID: 11400000, guid: b7a2d535c8e669843b95216fc07ab844, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
+        slashRotationOffset: {x: 0, y: 0, z: 0}
+        linkableActions:
+        - comboIndex: 0
+          moveIndex: 0
+          inputToLink: 0
+      type: 2
+      req: 2
+    - combo:
+      - action: {fileID: 11400000, guid: b39c5ab5d33ad034981d3187e0a37ef4, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
+        slashRotationOffset: {x: 0, y: 0, z: 0}
+        linkableActions:
+        - comboIndex: 0
+          moveIndex: 0
+          inputToLink: 0
       type: 0
+      req: 2

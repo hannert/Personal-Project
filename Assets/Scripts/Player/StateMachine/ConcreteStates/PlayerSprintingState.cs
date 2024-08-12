@@ -31,6 +31,9 @@ public class PlayerSprintingState : PlayerWalkingState
         Logging.logState("<color=green>Entered</color> <color=lime>Sprinting</color> State");
         _ctx.IsSprinting = true;
         _ctx.SpeedMultiplier = 1.3f;
+        combatState = PlayerStateReq.SPRINTING;
+        ComboEntryList = _ctx.GetCurrentWeapon().GetComponent<WeaponBase>().GetComboEntryKeys(combatState).ToArray();
+        
         //_ctx.playerAnim.SetBool("isSprinting", true);
         
     }

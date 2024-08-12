@@ -25457,6 +25457,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2256684490580092686, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.306
+      objectReference: {fileID: 0}
     - target: {fileID: 2936952552481235968, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
       propertyPath: <HandObject>k__BackingField
       value: 
@@ -25465,6 +25469,10 @@ PrefabInstance:
       propertyPath: <StartingWeapon>k__BackingField
       value: 
       objectReference: {fileID: 2073284167580687623, guid: 8bc688a2c0cc3eb4f9ca6f3a26a2eeef, type: 3}
+    - target: {fileID: 3918754368039777048, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.3940001
+      objectReference: {fileID: 0}
     - target: {fileID: 7959243079311955253, guid: 492b6e538fa476f49b45b6b64d9d21e2, type: 3}
       propertyPath: m_LocalPosition.x
       value: -59.300915

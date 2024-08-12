@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aec2cf86dce9e04296550c3269bbb0c, type: 3}
+  m_Name: DashAttack
+  m_EditorClassIdentifier: 
+  attackName: 
+  <NextMove>k__BackingField: {fileID: 0}
+  <Animation>k__BackingField: {fileID: 7400000, guid: 0f79f20a2b3aad848a2d48cd422927af, type: 2}
+  <MinLinkTime>k__BackingField: 0
+  <MaxLinkTime>k__BackingField: 0.5
+  <DamageMultiplier>k__BackingField: 1
+  AddForce: {x: 0, y: 0, z: 25}
+  ForceMode: 1

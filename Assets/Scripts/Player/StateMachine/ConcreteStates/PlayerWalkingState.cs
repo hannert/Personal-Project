@@ -12,6 +12,10 @@ public class PlayerWalkingState : PlayerMovementState
 {
     public PlayerWalkingState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name) : base(playerStateFactory, playerStateMachine, name) { }
 
+    protected CombatBindsEnum[] ComboEntryList;
+
+    protected PlayerStateReq combatState = PlayerStateReq.WALKING;
+
     public override bool CheckSwitchStates()
     {
         if (Input.GetKey(Keybinds.sprint))
@@ -35,6 +39,9 @@ public class PlayerWalkingState : PlayerMovementState
     {
         Logging.logState("<color=green>Entered</color> <color=olive>Walking</color> State");
         _ctx.IsWalking = true;
+
+        ComboEntryList = _ctx.GetCurrentWeapon().GetComponent<WeaponBase>().GetComboEntryKeys(combatState).ToArray();
+
         InitializeSubState();
     }
 
@@ -51,6 +58,22 @@ public class PlayerWalkingState : PlayerMovementState
         //    SwitchState(player.playerSlidingState);
         //    return;
         //}
+        CombatBindsEnum tempBind;
+        for (int i = 0; i < ComboEntryList.Length; i++) {
+            tempBind = ComboEntryList[i];
+            if (Input.GetKeyDown(CombatBinds.enumToCode[tempBind])) {
+                if (_ctx.OnGround) {
+                    // Go into the grounded variation
+
+                }
+                else if (!_ctx.OnGround) {
+                    // Go into the airborne variation
+
+                }
+
+                SwitchState(_factory.Attacking(CombatBinds.enumToCode[tempBind], combatState));
+            }
+        }
 
         if (Input.GetKeyDown(Keybinds.roll))
         {

@@ -37,4 +37,5 @@ public class CombatBaseObject : ScriptableObject
     public Vector3 AddForce;
 
     public ForceMode ForceMode;
+
 }

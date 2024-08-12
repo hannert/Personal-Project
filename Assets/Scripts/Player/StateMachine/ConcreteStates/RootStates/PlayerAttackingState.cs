@@ -20,6 +20,11 @@ public class PlayerAttackingState : PlayerCombatState
     private KeyCode initInput;
 
     /// <summary>
+    /// Where the attacking state is coming from
+    /// </summary>
+    private PlayerStateReq incState;
+
+    /// <summary>
     /// The current move
     /// </summary>
     private CombatBaseObject currentAction;
@@ -34,11 +39,12 @@ public class PlayerAttackingState : PlayerCombatState
     /// </summary>
     private CombatBindsEnum currentComboKey;
 
-    public PlayerAttackingState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name, GameObject weapon, KeyCode initInput) : base(playerStateFactory, playerStateMachine, name)
+    public PlayerAttackingState(PlayerStateFactory playerStateFactory, PlayerStateMachine playerStateMachine, string name, GameObject weapon, KeyCode initInput, PlayerStateReq incState) : base(playerStateFactory, playerStateMachine, name)
     {
         this.weaponObject = weapon;
         this.weapon = weapon.GetComponent<WeaponBase>();
         this.initInput = initInput;
+        this.incState = incState;
         //this.moveset = this.weapon.GetMoveset();
     }
     
@@ -49,18 +55,20 @@ public class PlayerAttackingState : PlayerCombatState
         _ctx.IsAttacking = true;
 
         //weapon.ResetCombo();
-        weapon.Prepare(initInput);
+        weapon.Prepare(initInput, incState);
 
 
         currentAction = weapon.CurrentAction;
         currentMoveLinks = weapon.GetCombatLinks(); 
+        currentComboKey = weapon.GetCurrentComboKey();
 
         maxLinkTime = currentAction.MaxLinkTime;
         minLinkTime = currentAction.MinLinkTime;
         _ctx.SetAttackAnimation(currentAction.Animation);
 
+        // Set up signal listeners
         Signals.Get<Player.AirborneAttack>().AddListener(ChangeSuper);
-
+        Signals.Get<Player.AttackApplyForce>().AddListener(ApplyForce);
     }
 
     // Exit when the combo is done or timer has ran out to continue the combo
@@ -68,14 +76,28 @@ public class PlayerAttackingState : PlayerCombatState
     {
         Logging.logState("<color=red>Exited</color> <color=red>Attacking</color> State");
         _ctx.IsAttacking = false;
+
+        // Remove signal listeners
         Signals.Get<Player.AirborneAttack>().RemoveListener(ChangeSuper);
-        
+        Signals.Get<Player.AttackApplyForce>().RemoveListener(ApplyForce);
+
     }
 
     public override bool CheckSwitchStates()
     {
         return base.CheckSwitchStates();
     }
+    
+    #region Signal Functions
+
+    /// <summary>
+    /// Called when an attack event is called from the animation
+    /// </summary>
+    private void DealDamage()
+    {
+        
+    }
+
 
     /// <summary>
     /// Called when attack makes the player transition root states: Player launched into the air from the ground (Grounded -> Airborne)
@@ -84,6 +106,24 @@ public class PlayerAttackingState : PlayerCombatState
     {
         _ctx.SwitchRootState(_factory.Airborne(), this);
     }
+
+    /// <summary>
+    /// Apply force in the CombatBaseObject when signal from the animation is received
+    /// </summary>
+    private void ApplyForce()
+    {
+        var facingDirection = _ctx.PlayerRb.rotation;
+
+
+        // Receive Player directional influence here if applicable for the force application
+        //var inputDirection = PlayerUtilities.GetInputDirection(_ctx);
+
+        Vector3 endForce = facingDirection * currentAction.AddForce;
+
+        _ctx.PlayerRb.AddForce(endForce, currentAction.ForceMode);
+    }
+
+    #endregion
 
     private bool NextMove()
     {
@@ -124,6 +164,7 @@ public class PlayerAttackingState : PlayerCombatState
 
         // If the key pressed is the same as the current combos key, advance the combo
         if (Input.GetKeyDown(CombatBinds.enumToCode[currentComboKey])) {
+            Debug.Log(currentComboKey);
             // Go to the next move if applicable or exit
             if (timeElapsed >= minLinkTime && timeElapsed <= maxLinkTime) {
                 if (NextMove() == true) {

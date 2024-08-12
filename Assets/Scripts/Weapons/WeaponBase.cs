@@ -130,6 +130,20 @@ public class WeaponBase : MonoBehaviour
         HitEntities.Clear();
     }
 
+    public List<CombatBindsEnum> GetComboEntryKeys(PlayerStateReq state) {
+        List<CombatBindsEnum> returnList = new List<CombatBindsEnum>();
+
+        for (int i = 0; i < Moveset.moves.Length; i++) {
+            CombatCombo tempMove = Moveset.moves[i];
+            if (tempMove.req == state){
+                returnList.Add(tempMove.type);
+            }
+        }
+
+        return returnList;
+    }
+
+
     /// <summary>
     /// Jumps to specified MOVE of a specific COMBO via LINK data
     /// </summary>
@@ -176,11 +190,11 @@ public class WeaponBase : MonoBehaviour
     /// </summary>
     /// <param name="key">The keycode entered</param>
     /// <returns>The combo associated with the keycode</returns>
-    public bool Prepare(KeyCode key) {
+    public bool Prepare(KeyCode key, PlayerStateReq state) {
         // Clear hit colliders array since we are going to a new move
         HitEntities.Clear();
 
-        CurrentCombo = Moveset.GetCombo(key);
+        CurrentCombo = Moveset.GetCombo(key, state);
         CurrentMoveIndex = 0;
         CurrentMove = CurrentCombo.combo[CurrentMoveIndex];
         CurrentAction = CurrentCombo.combo[CurrentMoveIndex].action;

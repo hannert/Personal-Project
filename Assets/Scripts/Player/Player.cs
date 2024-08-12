@@ -44,6 +44,7 @@ public class Player : MonoBehaviour, IDamagable
     public class DamageTick : ASignal {}
 
     public class AirborneAttack : ASignal {}
+    public class AttackApplyForce : ASignal {}
 
     // TODO: Hook up animation events with player functions
     public void Damage(float damage)
@@ -66,23 +67,23 @@ public class Player : MonoBehaviour, IDamagable
 
     }
 
-    public void TestAnim(AnimationEvent animationEvent) {
-        
-        Object animObj = animationEvent.objectReferenceParameter;
-        CombatBaseObject combatObj = (CombatBaseObject) animObj;
-        if (combatObj == null) {return;}
-
-        Debug.Log("Adding force to player");
+    /// <summary>
+    /// Send signal to attacking state to switch root state to airborne
+    /// </summary>
+    public void GoAirborne()
+    {
         Signals.Get<AirborneAttack>().Dispatch();
-        PlayerRb.AddForce(combatObj.AddForce, combatObj.ForceMode);
-        
-        return;
     }
 
-    public void AddForce(Vector3 force) {
-        PlayerRb.AddForce(force, ForceMode.Impulse);
+    /// <summary>
+    /// Send signal to the attacking state to apply the force
+    /// </summary>
+    public void AttackForce()
+    {
+        Signals.Get<AttackApplyForce>().Dispatch();
 
     }
+
 
     #endregion
 

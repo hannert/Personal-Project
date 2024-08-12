@@ -29,3 +29,17 @@ MonoBehaviour:
           moveIndex: 0
           inputToLink: 0
       type: 0
+      req: 0
+    - combo:
+      - action: {fileID: 11400000, guid: b7a2d535c8e669843b95216fc07ab844, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0.1
+        slashRotationOffset: {x: 0, y: 0, z: 0}
+        linkableActions: []
+      - action: {fileID: 11400000, guid: f2abed0a27b4aa64d98b1c3a90a6d5ac, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0.1
+        slashRotationOffset: {x: 0, y: 0, z: 0}
+        linkableActions: []
+      type: 2
+      req: 0

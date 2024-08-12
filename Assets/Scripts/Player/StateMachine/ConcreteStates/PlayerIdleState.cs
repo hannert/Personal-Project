@@ -8,13 +8,31 @@ public class PlayerIdleState : PlayerState
     {
     }
 
+    private CombatBindsEnum[] ComboEntryList;
+
     public override bool CheckSwitchStates()
     {
+        // Check for player input combat-wise,
+        // If our movesets' condition matches with IDLE, then poll for input to enter a combo
 
-        if (Input.GetKeyDown(Keybinds.primaryFire)) {
-            SwitchState(_factory.Attacking(Keybinds.primaryFire));
-            return true;
+
+        CombatBindsEnum tempBind;
+        for (int i = 0; i < ComboEntryList.Length; i++) {
+            tempBind = ComboEntryList[i];
+            if (Input.GetKeyDown(CombatBinds.enumToCode[tempBind])) {
+                if (_ctx.OnGround) {
+                    // Go into the grounded variation
+
+                }
+                else if (!_ctx.OnGround) {
+                    // Go into the airborne variation
+
+                }
+
+                SwitchState(_factory.Attacking(CombatBinds.enumToCode[tempBind], PlayerStateReq.IDLE));
+            }
         }
+
 
         if (_ctx.HorizontalInput != 0 || _ctx.VerticalInput != 0)
         {
@@ -43,6 +61,10 @@ public class PlayerIdleState : PlayerState
     {
         Logging.logState("<color=green>Entered</color> <color=yellow>Idle</color> State");
         //_ctx.playerAnim.SetBool("isIdle", true);
+
+        ComboEntryList = _ctx.GetCurrentWeapon().GetComponent<WeaponBase>().GetComboEntryKeys(PlayerStateReq.IDLE).ToArray();
+
+
         InitializeSubState();
     }
 

@@ -54,7 +54,7 @@ public class CombatCombo
     public CombatBindsEnum type;
 
     // Condition for combo to be executed, Ex. sprint attack
-     
+     public PlayerStateReq req;
 }
 
 /// <summary>
@@ -73,7 +73,7 @@ public class CombatMoveset
     ///  The CombatMove array associated with the input <br/>
     ///  <b>null</b> if not found
     /// </returns>
-    public CombatCombo GetCombo(KeyCode comboInput) {
+    public CombatCombo GetCombo(KeyCode comboInput, PlayerStateReq state) {
         CombatBindsEnum combatBind;
 
         if (CombatBinds.codeToEnum.TryGetValue(comboInput, out combatBind) == false){
@@ -81,7 +81,7 @@ public class CombatMoveset
         }
 
         for (int i = 0; i < moves.Length; i++){
-            if (moves[i].type == combatBind){
+            if (moves[i].type == combatBind && moves[i].req == state){
                 return moves[i];
             }
         }
