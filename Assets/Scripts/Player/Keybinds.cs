@@ -21,4 +21,6 @@ public class Keybinds
     [ReadOnly] public static KeyCode sprintAlt = KeyCode.RightShift;
     [ReadOnly] public static KeyCode slide = KeyCode.LeftControl;
     [ReadOnly] public static KeyCode slideAlt = KeyCode.Mouse3;
+    [ReadOnly] public static KeyCode emote = KeyCode.H;
+
 }

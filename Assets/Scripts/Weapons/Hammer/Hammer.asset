@@ -20,6 +20,11 @@ MonoBehaviour:
         slashDelay: 0
         slashRotationOffset: {x: 0, y: 0, z: 0}
         linkableActions: []
+      - action: {fileID: 11400000, guid: 83b02c856e4b36540b33763b665bdc27, type: 2}
+        slashAsset: {fileID: 8926484042661614526, guid: 915eaa76d8d4ca14bbcd0a6245eb58d9, type: 3}
+        slashDelay: 0
+        slashRotationOffset: {x: 0, y: 0, z: 0}
+        linkableActions: []
       type: 0
       req: 0
     - combo:
@@ -41,9 +46,9 @@ MonoBehaviour:
         slashDelay: 0
         slashRotationOffset: {x: 0, y: 0, z: 0}
         linkableActions:
-        - comboIndex: 0
-          moveIndex: 0
-          inputToLink: 0
+        - comboIndex: 1
+          moveIndex: 1
+          inputToLink: 2
       type: 2
       req: 1
     - combo:
@@ -52,9 +57,9 @@ MonoBehaviour:
         slashDelay: 0
         slashRotationOffset: {x: 0, y: 0, z: 0}
         linkableActions:
-        - comboIndex: 0
-          moveIndex: 0
-          inputToLink: 0
+        - comboIndex: 1
+          moveIndex: 1
+          inputToLink: 2
       type: 2
       req: 2
     - combo:

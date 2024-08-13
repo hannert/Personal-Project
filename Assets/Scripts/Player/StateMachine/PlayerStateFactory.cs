@@ -50,7 +50,9 @@ public class PlayerStateFactory
         return new PlayerAttackingState(this, _ctx, "Attacking", _ctx.GetCurrentWeapon(), initInput, incState);
     }
     
-
+    public PlayerState Emoting(){
+        return new PlayerEmotingState(this, _ctx, "Emoting");
+    }
 
 
     #endregion

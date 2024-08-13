@@ -135,8 +135,10 @@ public class WeaponBase : MonoBehaviour
 
         for (int i = 0; i < Moveset.moves.Length; i++) {
             CombatCombo tempMove = Moveset.moves[i];
-            if (tempMove.req == state){
-                returnList.Add(tempMove.type);
+            for (int j = 0; j < tempMove.req.Length; j++){
+                if (tempMove.req[j] == state){
+                    returnList.Add(tempMove.type);
+                }
             }
         }
 

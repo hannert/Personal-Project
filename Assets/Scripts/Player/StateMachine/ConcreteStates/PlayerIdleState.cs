@@ -12,10 +12,12 @@ public class PlayerIdleState : PlayerState
 
     public override bool CheckSwitchStates()
     {
+        if (Input.GetKeyDown(Keybinds.emote)) {
+            SwitchState(_factory.Emoting());
+        }
+
         // Check for player input combat-wise,
         // If our movesets' condition matches with IDLE, then poll for input to enter a combo
-
-
         CombatBindsEnum tempBind;
         for (int i = 0; i < ComboEntryList.Length; i++) {
             tempBind = ComboEntryList[i];

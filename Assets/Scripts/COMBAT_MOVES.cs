@@ -54,7 +54,7 @@ public class CombatCombo
     public CombatBindsEnum type;
 
     // Condition for combo to be executed, Ex. sprint attack
-     public PlayerStateReq req;
+     public PlayerStateReq[] req;
 }
 
 /// <summary>
@@ -81,8 +81,12 @@ public class CombatMoveset
         }
 
         for (int i = 0; i < moves.Length; i++){
-            if (moves[i].type == combatBind && moves[i].req == state){
-                return moves[i];
+            if (moves[i].type == combatBind){
+                for (int j = 0; j < moves[i].req.Length; j++){
+                    if (moves[i].req[j] == state) {
+                        return moves[i];
+                    }
+                }
             }
         }
 

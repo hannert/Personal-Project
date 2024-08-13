@@ -18,5 +18,5 @@ MonoBehaviour:
   <MinLinkTime>k__BackingField: 0.3
   <MaxLinkTime>k__BackingField: 0.7
   <DamageMultiplier>k__BackingField: 0
-  AddForce: {x: 0, y: 0, z: 6}
+  AddForce: {x: 0, y: 0, z: 1}
   ForceMode: 1

@@ -93,14 +93,14 @@ public class Player : MonoBehaviour, IDamagable
     }
 
     [field: SerializeField]
-    public GameObject HandObject { get; private set; }
+    public GameObject WeaponParent { get; private set; }
 
     [field: SerializeField]
     public GameObject StartingWeapon { get; private set; }
 
     private GameObject CurrentWeapon;
     void EquipWeapon(){
-        CurrentWeapon = Instantiate(StartingWeapon, HandObject.transform);
+        CurrentWeapon = Instantiate(StartingWeapon, WeaponParent.transform);
         StateMachine.SetCurrentWeapon(CurrentWeapon);
     }
 
